@@ -16,7 +16,7 @@ const NAV_ITEMS: IBottomNav[] = [
 
 const MobileBottomMenu = () => {
   return (
-    <nav className="fixed bottom-4 left-4 right-4 rounded-full h-16 bg-white/70 shadow-sm backdrop-blur-2xl md:hidden">
+    <nav className="fixed bottom-4 left-4 right-4 rounded-full h-16 bg-white/70 border border-neutral-700/20  backdrop-blur-2xl md:hidden">
       <div className="flex justify-around items-center h-full">
         {NAV_ITEMS.map((item) => (
           <Link
@@ -36,7 +36,7 @@ const MobileBottomMenu = () => {
                   />
                   <span
                     className={`mt-1 transition-all ${
-                      isActive ? "font-bold text-primary" : "font-normal"
+                      isActive ? "font-semibold text-primary" : "font-normal"
                     }`}
                   >
                     {item.label}

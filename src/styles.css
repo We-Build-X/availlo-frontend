@@ -6,6 +6,7 @@
 @theme {
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
 
+  /* Your Custom Colors */
   --color-primary: #0066cc;
   --color-primary-foreground: #ffffff;
 
@@ -41,6 +42,37 @@
   --color-neutral-700: #334155;
   --color-neutral-800: #1e293b;
   --color-neutral-900: #0f172a;
+
+  /* Shadcn UI Variable Mapping */
+  --background: var(--color-neutral-50);
+  --foreground: var(--color-neutral-800);
+
+  --card: var(--color-neutral-50);
+  --card-foreground: var(--color-neutral-800);
+
+  --popover: var(--color-neutral-50);
+  --popover-foreground: var(--color-neutral-800);
+
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+
+  --secondary: var(--color-neutral-200);
+  --secondary-foreground: var(--color-neutral-800);
+
+  --muted: var(--color-neutral-200);
+  --muted-foreground: var(--color-neutral-500);
+
+  --accent: var(--color-neutral-200);
+  --accent-foreground: var(--color-neutral-800);
+
+  --destructive: var(--color-red-500);
+  --destructive-foreground: var(--color-neutral-50);
+
+  --border: var(--color-neutral-300);
+  --input: var(--color-neutral-300);
+  --ring: var(--color-primary);
+
+  --radius: 0.5rem;
 }
 
 html,
@@ -48,4 +80,6 @@ body,
 #root {
   min-height: 100%;
   font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
 }
