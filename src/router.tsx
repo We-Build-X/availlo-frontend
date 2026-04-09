@@ -83,13 +83,13 @@ const adminRoute = createRoute({
 
 const adminDashboardRoute = createRoute({
   getParentRoute: () => adminRoute,
-  path: '/dashboard',
+  path: 'dashboard',
   component: AdminDashboardPage,
 })
 
 const adminOverridesRoute = createRoute({
   getParentRoute: () => adminRoute,
-  path: '/overrides',
+  path: 'overrides',
   component: AdminOverridesPage,
 })
 
