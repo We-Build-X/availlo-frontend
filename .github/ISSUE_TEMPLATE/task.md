@@ -1,6 +1,6 @@
 ---
 name: Task
-about: Standard template for MediNexus development tasks.
+about: Standard template for Availlo development tasks.
 title: "[TASK]: "
 labels: task
 assignees: ''
