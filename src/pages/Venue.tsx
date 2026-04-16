@@ -18,13 +18,11 @@ export default function Venue() {
         <h1 className="text-2xl font-black uppercase text-slate-900 mb-4">
           Venue not found
         </h1>
-        <Link to="/explore">
-          <button
-            type="button"
-            className="px-6 py-3 bg-slate-900 text-white font-black uppercase tracking-wider rounded-xl transition-all hover:bg-slate-800 shadow-lg shadow-slate-200"
-          >
-            Back to Explore
-          </button>
+        <Link
+          to="/explore"
+          className="px-6 py-3 bg-slate-900 text-white font-black uppercase tracking-wider rounded-xl transition-all hover:bg-slate-800 shadow-lg shadow-slate-200"
+        >
+          Back to Explore
         </Link>
       </div>
     );
