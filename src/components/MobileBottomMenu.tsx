@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Map } from "@solar-icons/react";
+import { Home, Map as MapIcon } from "@solar-icons/react";
 import { Search } from "@solar-icons/react/category";
 
 interface IBottomNav {
@@ -11,12 +11,12 @@ interface IBottomNav {
 const NAV_ITEMS: IBottomNav[] = [
   { href: "/", label: "Home", icon: Home },
   { href: "/explore", label: "Search", icon: Search.Magnifier },
-  { href: "/map", label: "Map", icon: Map },
+  { href: "/map", label: "Map", icon: MapIcon },
 ];
 
 const MobileBottomMenu = () => {
   return (
-    <nav className="fixed bottom-4 left-4 right-4 rounded-full h-16 bg-white/70 border border-neutral-700/20  backdrop-blur-2xl md:hidden">
+    <nav className="fixed bottom-4 left-4 right-4 rounded-full h-16 bg-white/10 border border-neutral-700/10  backdrop-blur-md md:hidden">
       <div className="flex justify-around items-center h-full">
         {NAV_ITEMS.map((item) => (
           <Link
