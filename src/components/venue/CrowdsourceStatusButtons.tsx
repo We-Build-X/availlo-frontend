@@ -1,11 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle, CloseCircle } from "@solar-icons/react";
 import { Button } from "@/components/ui/button";
 
-export function CrowdsourceStatusButtons() {
-  const [yesVotes, setYesVotes] = useState(17);
-  const [noVotes, setNoVotes] = useState(3);
+type CrowdsourceStatusButtonsProps = {
+  venueId?: string | number;
+};
+
+const INITIAL_YES_VOTES = 17;
+const INITIAL_NO_VOTES = 3;
+
+export function CrowdsourceStatusButtons({
+  venueId,
+}: CrowdsourceStatusButtonsProps) {
+  const [yesVotes, setYesVotes] = useState(INITIAL_YES_VOTES);
+  const [noVotes, setNoVotes] = useState(INITIAL_NO_VOTES);
   const [voted, setVoted] = useState<"yes" | "no" | null>(null);
+
+  useEffect(() => {
+    setYesVotes(INITIAL_YES_VOTES);
+    setNoVotes(INITIAL_NO_VOTES);
+    setVoted(null);
+  }, [venueId]);
 
   const handleVote = (type: "yes" | "no") => {
     if (voted) return;
