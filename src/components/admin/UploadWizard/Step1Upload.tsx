@@ -97,7 +97,7 @@ export function Step1Upload({ facultyName, onNext }: Step1UploadProps) {
           size="lg"
           className="w-full sm:w-auto"
         >
-          Continue to Validation <ArrowRight className="size-5" />
+          Continue <ArrowRight className="size-5" />
         </Button>
       </div>
     </div>
