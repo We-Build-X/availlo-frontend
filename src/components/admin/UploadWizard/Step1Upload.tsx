@@ -1,10 +1,6 @@
 import { useState, useRef } from "react";
 import type { DragEvent } from "react";
-import {
-  CloudUpload,
-  DocumentText,
-   ArrowRight,
-} from "@solar-icons/react";
+import { CloudUpload, DocumentText, ArrowRight } from "@solar-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -32,7 +28,7 @@ export function Step1Upload({ facultyName, onNext }: Step1UploadProps) {
   return (
     <div className="space-y-8">
       <div>
-        <Badge className="bg-blue-600 text-white hover:bg-blue-700 text-sm px-3 py-1 font-bold">
+        <Badge className="bg-primary text-white hover:bg-primary/90 text-sm px-3 py-1 font-bold">
           {facultyName}
         </Badge>
         <p className="text-slate-500 text-sm mt-3 font-medium">

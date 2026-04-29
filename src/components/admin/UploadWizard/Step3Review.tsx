@@ -167,7 +167,7 @@ export function Step3Review({ onNext, onBack }: Step3ReviewProps) {
         </div>
       </div>
 
-      <div className="flex justify-between pt-4 border-t border-slate-100">
+      <div className="flex flex-col md:flex-row gap-4 justify-between pt-4 border-t border-slate-100">
         <Button
           onClick={onBack}
           size="lg"

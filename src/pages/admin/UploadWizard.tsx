@@ -1,5 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft } from "@solar-icons/react";
+import { useNavigate } from "@tanstack/react-router";
 import { MOCK_FACULTY_STATUSES } from "@/lib/mock-data";
 import { adminTimetableUploadRoute } from "@/router";
 
@@ -23,18 +22,8 @@ export default function AdminUploadWizard() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto w-full space-y-6 pb-20 animate-in fade-in pt-4">
-      {/* Back Button */}
-      <div className="flex items-center gap-4 mb-2">
-        <Link
-          to="/admin/timetables"
-          className="p-2 hover:bg-slate-200 rounded-full transition-colors -ml-2"
-        >
-          <ArrowLeft className="size-6 text-slate-600" />
-        </Link>
-      </div>
-
-      <div className="px-2 sm:px-4">
+    <div className="max-w-6xl mx-auto w-full space-y-6 pb-20 animate-in fade-in pt-4">
+      <div className="">
         <div className="text-sm font-medium text-slate-500 mb-1">
           Step {step} of 4: {STEPS[step - 1]}
         </div>
@@ -43,7 +32,7 @@ export default function AdminUploadWizard() {
         </h1>
 
         {/* Stepper */}
-        <div className="flex justify-between w-full max-w-2xl mb-8 mx-auto">
+        <div className="flex justify-between w-full max-w-5xl mb-8 mx-auto">
           {STEPS.map((label, i) => {
             const num = i + 1;
             const isActive = step === num;
@@ -57,16 +46,14 @@ export default function AdminUploadWizard() {
                 {/* Connecting Line */}
                 {!isLast && (
                   <div
-                    className="absolute top-[15px] left-[50%] h-[2px] bg-slate-200"
+                    className="absolute top-[17px] md:top-[20px] left-[50%] h-[2px] bg-slate-200"
                     style={{ width: "calc(100% - 3rem)", marginLeft: "1.5rem" }}
                   />
                 )}
                 {/* Circle */}
                 <div
-                  onClick={() =>
-                    isPast && navigate({ search: { step: num } })
-                  }
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold z-10 transition-colors ${
+                  onClick={() => isPast && navigate({ search: { step: num } })}
+                  className={`size-10 md:size-12 rounded-full flex items-center justify-center text-sm font-bold z-10 transition-colors ${
                     isActive
                       ? "bg-primary text-white"
                       : isPast
