@@ -16,7 +16,8 @@ export interface Venue {
   name: string;
   fullName: string;
   building: string;
-  floor: string;
+  floor?: string;
+  type: "Hall" | "Lecture Theatre" | "Classroom";
   faculty: "Engineering" | "Science" | "Arts";
   capacity: number;
   hasPower: boolean;
@@ -138,6 +139,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "New Engineering Building",
     building: "NECB",
     floor: "Ground",
+    type: "Classroom",
     faculty: "Engineering",
     capacity: 50,
     hasPower: true,
@@ -158,6 +160,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "New Engineering Building",
     building: "NECB",
     floor: "First",
+    type: "Classroom",
     faculty: "Engineering",
     capacity: 30,
     hasPower: true,
@@ -176,6 +179,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "Science Building",
     building: "SCI",
     floor: "Ground",
+    type: "Lecture Theatre",
     faculty: "Science",
     capacity: 100,
     hasPower: true,
@@ -196,6 +200,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "Arts Building",
     building: "ARTS",
     floor: "Second",
+    type: "Classroom",
     faculty: "Arts",
     capacity: 25,
     hasPower: false,
@@ -213,6 +218,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "New Engineering Building",
     building: "NECB",
     floor: "Third",
+    type: "Hall",
     faculty: "Engineering",
     capacity: 40,
     hasPower: true,
