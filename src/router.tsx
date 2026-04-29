@@ -14,6 +14,7 @@ import VenuePage from "./pages/Venue";
 import AdminDashboardPage from "./pages/admin/Dashboard";
 import AdminOverridesPage from "./pages/admin/Overrides";
 import AdminTimetablesPage from "./pages/admin/Timetables";
+import AdminUploadWizardPage from "./pages/admin/UploadWizard";
 import MobileBottomMenu from "./components/MobileBottomMenu";
 
 interface RouterContext {
@@ -100,12 +101,28 @@ const adminTimetablesRoute = createRoute({
   component: AdminTimetablesPage,
 });
 
+export const adminTimetableUploadRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "timetables/upload/$id",
+  validateSearch: (search: Record<string, unknown>): { step: number } => {
+    return {
+      step: Number(search?.step) || 1,
+    };
+  },
+  component: AdminUploadWizardPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   exploreRoute,
   mapRoute,
   venueRoute,
-  adminRoute.addChildren([adminDashboardRoute, adminOverridesRoute, adminTimetablesRoute]),
+  adminRoute.addChildren([
+    adminDashboardRoute,
+    adminOverridesRoute,
+    adminTimetablesRoute,
+    adminTimetableUploadRoute,
+  ]),
 ]);
 
 export const router = createRouter({
