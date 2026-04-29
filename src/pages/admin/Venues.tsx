@@ -42,6 +42,8 @@ export default function AdminVenues() {
   const [facultyFilter, setFacultyFilter] = useState<string>("all");
   const [open, setOpen] = useState(false);
   const [editingVenue, setEditingVenue] = useState<Venue | undefined>(undefined);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [venueToDelete, setVenueToDelete] = useState<string | null>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const filteredVenues = venues.filter((venue) => {
@@ -54,7 +56,16 @@ export default function AdminVenues() {
   });
 
   const handleDelete = (id: string) => {
-    setVenues(venues.filter((v) => v.id !== id));
+    setVenueToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (venueToDelete) {
+      setVenues(venues.filter((v) => v.id !== venueToDelete));
+      setVenueToDelete(null);
+      setDeleteConfirmOpen(false);
+    }
   };
 
   const handleEdit = (venue: Venue) => {
@@ -91,6 +102,61 @@ export default function AdminVenues() {
   const handleCancel = () => {
     setOpen(false);
     setEditingVenue(undefined);
+  };
+
+  // Delete confirmation dialog
+  const renderDeleteConfirm = () => {
+    if (!deleteConfirmOpen) return null;
+    
+    return isDesktop ? (
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-2xl border-0">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-black text-slate-900">Confirm Delete</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-slate-500">
+              Are you sure you want to delete this venue? This action cannot be undone.
+            </p>
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button variant="ghost" onClick={() => setDeleteConfirmOpen(false)} className="font-bold">
+              Cancel
+            </Button>
+            <Button 
+              onClick={confirmDelete} 
+              className="bg-red-500 hover:bg-red-600 text-white font-bold"
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    ) : (
+      <Drawer open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle className="text-xl font-black text-slate-900">Confirm Delete</DrawerTitle>
+          </DrawerHeader>
+          <div className="px-4 py-4">
+            <p className="text-sm text-slate-500">
+              Are you sure you want to delete this venue? This action cannot be undone.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 p-4">
+            <Button 
+              onClick={confirmDelete} 
+              className="bg-red-500 hover:bg-red-600 text-white font-bold w-full"
+            >
+              Delete
+            </Button>
+            <Button variant="ghost" onClick={() => setDeleteConfirmOpen(false)} className="font-bold w-full">
+              Cancel
+            </Button>
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
   };
 
   return (
@@ -278,6 +344,8 @@ export default function AdminVenues() {
           </div>
         )}
       </div>
+
+      {renderDeleteConfirm()}
     </div>
   );
 }
