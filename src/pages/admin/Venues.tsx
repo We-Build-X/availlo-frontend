@@ -134,7 +134,7 @@ export default function AdminVenues() {
       </Dialog>
     ) : (
       <Drawer open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <DrawerContent>
+        <DrawerContent className="border-0">
           <DrawerHeader>
             <DrawerTitle className="text-xl font-black text-slate-900">Confirm Delete</DrawerTitle>
           </DrawerHeader>
@@ -198,7 +198,7 @@ export default function AdminVenues() {
               <DrawerTrigger asChild>
                 <Button className="text-white w-full" onClick={handleAddNew}>+ Add Venue</Button>
               </DrawerTrigger>
-              <DrawerContent className="max-h-[90vh]">
+              <DrawerContent className="max-h-[90vh] border-0">
                 <DrawerHeader className="text-left pb-0">
                   <DrawerTitle className="text-xl font-black text-slate-900">
                     {editingVenue ? "Edit Venue" : "Add Venue"}
@@ -229,7 +229,7 @@ export default function AdminVenues() {
             />
           </div>
           <Select value={facultyFilter} onValueChange={setFacultyFilter}>
-            <SelectTrigger className="h-11 w-full sm:w-[200px]">
+            <SelectTrigger className="h-11 w-full">
               <SelectValue placeholder="Filter by faculty" />
             </SelectTrigger>
             <SelectContent>

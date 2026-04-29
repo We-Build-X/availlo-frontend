@@ -136,7 +136,7 @@ export function VenueForm({ initialData, onSubmit, onCancel }: VenueFormProps) {
         <div className="space-y-2">
           <Label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Type</Label>
           <Select value={formData.type} onValueChange={(value: Venue["type"]) => setFormData({...formData, type: value})}>
-            <SelectTrigger className="h-11">
+            <SelectTrigger className="h-11 w-full">
               <SelectValue placeholder="Select type" />
             </SelectTrigger>
             <SelectContent>
@@ -152,7 +152,7 @@ export function VenueForm({ initialData, onSubmit, onCancel }: VenueFormProps) {
         <div className="space-y-2">
           <Label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Floor (Optional)</Label>
           <Select value={formData.floor} onValueChange={(value) => setFormData({...formData, floor: value})}>
-            <SelectTrigger className="h-11">
+            <SelectTrigger className="h-11 w-full">
               <SelectValue placeholder="Select floor" />
             </SelectTrigger>
             <SelectContent>
@@ -167,7 +167,7 @@ export function VenueForm({ initialData, onSubmit, onCancel }: VenueFormProps) {
         <div className="space-y-2">
           <Label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Faculty</Label>
           <Select value={formData.faculty} onValueChange={(value: Venue["faculty"]) => setFormData({...formData, faculty: value})}>
-            <SelectTrigger className="h-11">
+            <SelectTrigger className="h-11 w-full">
               <SelectValue placeholder="Select faculty" />
             </SelectTrigger>
             <SelectContent>
@@ -193,6 +193,7 @@ export function VenueForm({ initialData, onSubmit, onCancel }: VenueFormProps) {
       <div className="flex items-center justify-between">
         <Label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Has Power</Label>
         <Switch 
+          variant={"ios"}
           checked={formData.hasPower} 
           onCheckedChange={(checked) => setFormData({...formData, hasPower: checked})}
         />
