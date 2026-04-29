@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { Link } from "@tanstack/react-router";
-import { Magnifer } from "@solar-icons/react";
+import { Magnifier } from "@solar-icons/react";
 import {
   MOCK_FACULTY_STATUSES,
   type TimetableStatus,
@@ -63,7 +63,7 @@ export default function AdminTimetables() {
 
       {/* Search */}
       <div className="relative max-w-sm">
-        <Magnifer className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+        <Magnifier className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
         <input
           type="text"
           placeholder="Search faculties…"
