@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import type { DragEvent } from "react";
 import {
   CloudUpload,
   DocumentText,

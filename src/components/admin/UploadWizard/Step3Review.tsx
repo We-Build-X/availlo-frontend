@@ -15,14 +15,16 @@ import {
   Pen,
   DangerTriangle,
   CheckCircle,
+  ArrowLeft,
 } from "@solar-icons/react";
 import { MOCK_REVIEW_ENTRIES } from "@/lib/mock-data";
 
 interface Step3ReviewProps {
   onNext: () => void;
+  onBack: () => void;
 }
 
-export function Step3Review({ onNext }: Step3ReviewProps) {
+export function Step3Review({ onNext, onBack }: Step3ReviewProps) {
   const stats = { new: 12, removed: 4, conflicts: 2 };
 
   return (
@@ -165,7 +167,15 @@ export function Step3Review({ onNext }: Step3ReviewProps) {
         </div>
       </div>
 
-      <div className="flex justify-end pt-4 border-t border-slate-100">
+      <div className="flex justify-between pt-4 border-t border-slate-100">
+        <Button
+          onClick={onBack}
+          size="lg"
+          variant="outline"
+          className="w-full sm:w-auto"
+        >
+          <ArrowLeft className="size-5" /> Back
+        </Button>
         <Button onClick={onNext} size="lg" className="w-full sm:w-auto">
           Publish Timetable <CheckCircle className="size-5" />
         </Button>

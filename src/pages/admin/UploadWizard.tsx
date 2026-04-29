@@ -25,14 +25,14 @@ export default function AdminUploadWizard() {
   return (
     <div className="max-w-4xl mx-auto w-full space-y-6 pb-20 animate-in fade-in pt-4">
       {/* Back Button */}
-      {/* <div className="flex items-center gap-4 mb-2"> */}
-      {/*   <Link */}
-      {/*     to="/admin/timetables" */}
-      {/*     className="p-2 hover:bg-slate-200 rounded-full transition-colors -ml-2" */}
-      {/*   > */}
-      {/*     <ArrowLeft className="size-6 text-slate-600" /> */}
-      {/*   </Link> */}
-      {/* </div> */}
+      <div className="flex items-center gap-4 mb-2">
+        <Link
+          to="/admin/timetables"
+          className="p-2 hover:bg-slate-200 rounded-full transition-colors -ml-2"
+        >
+          <ArrowLeft className="size-6 text-slate-600" />
+        </Link>
+      </div>
 
       <div className="px-2 sm:px-4">
         <div className="text-sm font-medium text-slate-500 mb-1">
@@ -63,10 +63,15 @@ export default function AdminUploadWizard() {
                 )}
                 {/* Circle */}
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold z-10 ${
+                  onClick={() =>
+                    isPast && navigate({ search: { step: num } })
+                  }
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold z-10 transition-colors ${
                     isActive
                       ? "bg-primary text-white"
-                      : "bg-slate-200 text-slate-500"
+                      : isPast
+                        ? "bg-primary/20 text-primary cursor-pointer hover:bg-primary/30"
+                        : "bg-slate-200 text-slate-500"
                   }`}
                 >
                   {num}
@@ -74,7 +79,7 @@ export default function AdminUploadWizard() {
                 {/* Label */}
                 <div
                   className={`mt-2 text-xs font-bold ${
-                    isActive ? "text-primary" : "text-slate-500"
+                    isActive || isPast ? "text-primary" : "text-slate-500"
                   }`}
                 >
                   {label}
@@ -99,7 +104,10 @@ export default function AdminUploadWizard() {
             <Step2Processing onNext={() => navigate({ search: { step: 3 } })} />
           )}
           {step === 3 && (
-            <Step3Review onNext={() => navigate({ search: { step: 4 } })} />
+            <Step3Review
+              onNext={() => navigate({ search: { step: 4 } })}
+              onBack={() => navigate({ search: { step: 1 } })}
+            />
           )}
           {step === 4 && <Step4Finish facultyName={faculty.facultyName} />}
         </div>
