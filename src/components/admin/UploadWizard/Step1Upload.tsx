@@ -16,7 +16,7 @@ export function Step1Upload({ facultyName, onNext }: Step1UploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.dataTransfer.files?.length > 0) {
       const droppedFile = e.dataTransfer.files[0];
