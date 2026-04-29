@@ -15,12 +15,13 @@ export function Step2Processing({ onNext }: Step2ProcessingProps) {
 
   useEffect(() => {
     let currentProgress = 0;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
     const interval = setInterval(() => {
       currentProgress += Math.random() * 15;
       if (currentProgress >= 100) {
         currentProgress = 100;
         clearInterval(interval);
-        setTimeout(onNext, 600); // Wait a bit then move
+        timeout = setTimeout(onNext, 600); // Wait a bit then move
       }
       setProgress(currentProgress);
 
@@ -32,7 +33,10 @@ export function Step2Processing({ onNext }: Step2ProcessingProps) {
         return next;
       });
     }, 300);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, [onNext]);
 
   return (
