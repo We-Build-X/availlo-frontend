@@ -14,6 +14,7 @@ import VenuePage from "./pages/Venue";
 import AdminDashboardPage from "./pages/admin/Dashboard";
 import AdminOverridesPage from "./pages/admin/Overrides";
 import AdminTimetablesPage from "./pages/admin/Timetables";
+import AdminVenuesPage from "./pages/admin/Venues";
 import AdminUploadWizardPage from "./pages/admin/UploadWizard";
 import MobileBottomMenu from "./components/MobileBottomMenu";
 
@@ -95,6 +96,12 @@ const adminOverridesRoute = createRoute({
   component: AdminOverridesPage,
 });
 
+const adminVenuesRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "venues",
+  component: AdminVenuesPage,
+});
+
 const adminTimetablesRoute = createRoute({
   getParentRoute: () => adminRoute,
   path: "timetables",
@@ -131,6 +138,7 @@ const routeTree = rootRoute.addChildren([
   adminRoute.addChildren([
     adminDashboardRoute,
     adminOverridesRoute,
+    adminVenuesRoute,
     adminTimetablesRoute,
     adminTimetableUploadRoute,
   ]),
