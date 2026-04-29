@@ -1,52 +1,52 @@
-import { useState } from "react"
-import { useDebounce } from "@/hooks/useDebounce"
-import { MOCK_VENUES, type Venue } from "@/lib/mock-data"
-import { FilterSidebar } from "@/components/explore/FilterSidebar"
-import { VenueCard } from "@/components/VenueCard"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
+import { MOCK_VENUES, type Venue } from "@/lib/mock-data";
+import { FilterSidebar } from "@/components/explore/FilterSidebar";
+import { VenueCard } from "@/components/VenueCard";
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
-import Filter from "@solar-icons/react/ui/Filter"
-import { Input } from "@/components/ui/input"
-import { Search } from "@solar-icons/react/category"
+} from "@/components/ui/drawer";
+import Filter from "@solar-icons/react/ui/Filter";
+import { Input } from "@/components/ui/input";
+import { Search } from "@solar-icons/react/category";
 
 export default function Explore() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const debouncedSearchQuery = useDebounce(searchQuery, 300)
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   const [filters, setFilters] = useState({
     faculty: "all",
     status: "all" as "all" | Venue["availability"]["status"],
     hasPower: false,
-  })
+  });
 
-  const [appliedFilters, setAppliedFilters] = useState(filters)
+  const [appliedFilters, setAppliedFilters] = useState(filters);
 
-  const [isDrawerOpen, setDrawerOpen] = useState(false)
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   const handleApplyFilters = () => {
-    setAppliedFilters(filters)
-    setDrawerOpen(false)
-  }
+    setAppliedFilters(filters);
+    setDrawerOpen(false);
+  };
 
   const filteredVenues = MOCK_VENUES.filter((venue) => {
     const nameMatch =
       venue.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-      venue.fullName.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      venue.fullName.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
     const facultyMatch =
       appliedFilters.faculty === "all" ||
-      venue.faculty === appliedFilters.faculty
+      venue.faculty === appliedFilters.faculty;
     const statusMatch =
       appliedFilters.status === "all" ||
-      venue.availability.status === appliedFilters.status
-    const powerMatch = !appliedFilters.hasPower || venue.hasPower
-    return nameMatch && facultyMatch && statusMatch && powerMatch
-  })
+      venue.availability.status === appliedFilters.status;
+    const powerMatch = !appliedFilters.hasPower || venue.hasPower;
+    return nameMatch && facultyMatch && statusMatch && powerMatch;
+  });
 
   return (
     <div className="mx-auto px-4 py-8 md:p-10 ">
@@ -59,7 +59,7 @@ export default function Explore() {
               placeholder="Search classrooms or buildings..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-full"
+              className="pl-10 w-full bg-white!"
             />
           </div>
           <Drawer open={isDrawerOpen} onOpenChange={setDrawerOpen}>
@@ -107,5 +107,5 @@ export default function Explore() {
         </main>
       </div>
     </div>
-  )
+  );
 }

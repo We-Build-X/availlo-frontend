@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { Link } from "@tanstack/react-router";
-import { Magnifier } from "@solar-icons/react";
-import {
-  MOCK_FACULTY_STATUSES,
-  type TimetableStatus,
-} from "@/lib/mock-data";
+import { Search } from "@solar-icons/react/category";
+import { MOCK_FACULTY_STATUSES, type TimetableStatus } from "@/lib/mock-data";
 import {
   Table,
   TableBody,
@@ -15,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
 const STATUS_CONFIG: Record<
   TimetableStatus,
@@ -46,30 +44,30 @@ export default function AdminTimetables() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredFaculties = MOCK_FACULTY_STATUSES.filter((f) =>
-    f.facultyName.toLowerCase().includes(searchQuery.toLowerCase())
+    f.facultyName.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-2">
+    <div className="w-full max-w-6xl mx-auto space-y-6 sm:space-y-8 pt-4 sm:pt-8 animate-in fade-in slide-in-from-bottom-2">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-1 sm:mb-2">
           Timetable Management
         </h1>
-        <p className="text-sm font-medium text-slate-500">
+        <p className="text-xs sm:text-sm font-medium text-slate-500">
           Review, upload, and publish faculty schedules across the institution.
         </p>
       </div>
 
       {/* Search */}
-      <div className="relative max-w-sm">
-        <Magnifier className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-        <input
+      <div className="relative flex-grow max-w-md">
+        <Search.Magnifier className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none" />
+        <Input
           type="text"
           placeholder="Search faculties…"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+          className="w-full pl-10 bg-white!"
         />
       </div>
 
@@ -119,16 +117,16 @@ export default function AdminTimetables() {
                     <TableCell className="py-4">
                       <Badge
                         variant="secondary"
-                        className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 ${config.className}`}
+                        className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 ${config.className}`}
                       >
                         {config.label}
                       </Badge>
                     </TableCell>
                     <TableCell className="py-4 text-right">
-                      {/* In a real app, this would link to /admin/timetables/upload/$id */}
                       <Link
-                        to="/admin/dashboard"
-                        className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors px-3 py-2 -mr-3 rounded-lg hover:bg-blue-50"
+                        to="/admin/timetables/upload/$id"
+                        params={{ id: faculty.id }}
+                        className="text-sm font-bold text-primary hover:text-blue-600 transition-colors px-3 py-2 -mr-3 rounded-lg hover:bg-blue-50"
                       >
                         {config.action}
                       </Link>
@@ -146,7 +144,7 @@ export default function AdminTimetables() {
                   </TableCell>
                 </TableRow>
               )}
-              </TableBody>
+            </TableBody>
           </Table>
         </div>
       </div>
