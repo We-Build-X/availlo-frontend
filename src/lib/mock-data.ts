@@ -226,7 +226,17 @@ export const MOCK_VENUES: Venue[] = [
   },
 ];
 
-export const MOCK_REVIEW_ENTRIES: any[] = [
+export interface MockReviewEntry {
+  id: string;
+  courseCode: string;
+  day: string;
+  time: string;
+  venue: string;
+  status: "VALID" | "CONFLICT" | "UNKNOWN_VENUE";
+  conflictMessage?: string;
+}
+
+export const MOCK_REVIEW_ENTRIES: MockReviewEntry[] = [
   {
     id: "1",
     courseCode: "MEC 301",
