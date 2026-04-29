@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { Link } from "@tanstack/react-router";
+import { Magnifer } from "@solar-icons/react";
 import {
   MOCK_FACULTY_STATUSES,
   type TimetableStatus,
@@ -60,6 +61,18 @@ export default function AdminTimetables() {
         </p>
       </div>
 
+      {/* Search */}
+      <div className="relative max-w-sm">
+        <Magnifer className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+        <input
+          type="text"
+          placeholder="Search faculties…"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+        />
+      </div>
+
       {/* Table Container */}
       <div className="bg-white rounded-2xl border border-slate-200  overflow-hidden">
         {/* Inner padding for the table to match design */}
@@ -114,7 +127,7 @@ export default function AdminTimetables() {
                     <TableCell className="py-4 text-right">
                       {/* In a real app, this would link to /admin/timetables/upload/$id */}
                       <Link
-                        to="/admin"
+                        to="/admin/dashboard"
                         className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors px-3 py-2 -mr-3 rounded-lg hover:bg-blue-50"
                       >
                         {config.action}
