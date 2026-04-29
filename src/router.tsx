@@ -101,12 +101,23 @@ const adminTimetablesRoute = createRoute({
   component: AdminTimetablesPage,
 });
 
+const ADMIN_UPLOAD_WIZARD_MIN_STEP = 1;
+const ADMIN_UPLOAD_WIZARD_MAX_STEP = 4;
+
 export const adminTimetableUploadRoute = createRoute({
   getParentRoute: () => adminRoute,
   path: "timetables/upload/$id",
   validateSearch: (search: Record<string, unknown>): { step: number } => {
+    const parsedStep = Number.parseInt(String(search?.step ?? ""), 10);
+    const step = Number.isFinite(parsedStep)
+      ? Math.min(
+          ADMIN_UPLOAD_WIZARD_MAX_STEP,
+          Math.max(ADMIN_UPLOAD_WIZARD_MIN_STEP, parsedStep),
+        )
+      : ADMIN_UPLOAD_WIZARD_MIN_STEP;
+
     return {
-      step: Number(search?.step) || 1,
+      step,
     };
   },
   component: AdminUploadWizardPage,
