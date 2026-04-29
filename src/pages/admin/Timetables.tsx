@@ -125,9 +125,9 @@ export default function AdminTimetables() {
                       </Badge>
                     </TableCell>
                     <TableCell className="py-4 text-right">
-                      {/* In a real app, this would link to /admin/timetables/upload/$id */}
                       <Link
-                        to="/admin/dashboard"
+                        to="/admin/timetables/upload/$id"
+                        params={{ id: faculty.id }}
                         className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors px-3 py-2 -mr-3 rounded-lg hover:bg-blue-50"
                       >
                         {config.action}

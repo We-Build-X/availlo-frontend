@@ -225,3 +225,42 @@ export const MOCK_VENUES: Venue[] = [
     schedule: DEFAULT_SCHEDULE,
   },
 ];
+
+export interface MockReviewEntry {
+  id: string;
+  courseCode: string;
+  day: string;
+  time: string;
+  venue: string;
+  status: "VALID" | "CONFLICT" | "UNKNOWN_VENUE";
+  conflictMessage?: string;
+}
+
+export const MOCK_REVIEW_ENTRIES: MockReviewEntry[] = [
+  {
+    id: "1",
+    courseCode: "MEC 301",
+    day: "Monday",
+    time: "08:00 - 10:00",
+    venue: "ELT 1",
+    status: "VALID",
+  },
+  {
+    id: "2",
+    courseCode: "ELE 311",
+    day: "Monday",
+    time: "09:00 - 11:00",
+    venue: "ELT 1",
+    status: "CONFLICT",
+    conflictMessage: "Overlaps with MEC 301 in same room.",
+  },
+  {
+    id: "3",
+    courseCode: "CVE 502",
+    day: "Tuesday",
+    time: "14:00 - 17:00",
+    venue: "Old Lab",
+    status: "UNKNOWN_VENUE",
+    conflictMessage: "TBD (Main Hall?)",
+  }
+];
