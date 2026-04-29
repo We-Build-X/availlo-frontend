@@ -41,7 +41,9 @@ export default function AdminVenues() {
   const [searchQuery, setSearchQuery] = useState("");
   const [facultyFilter, setFacultyFilter] = useState<string>("all");
   const [open, setOpen] = useState(false);
-  const [editingVenue, setEditingVenue] = useState<Venue | undefined>(undefined);
+  const [editingVenue, setEditingVenue] = useState<Venue | undefined>(
+    undefined,
+  );
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [venueToDelete, setVenueToDelete] = useState<string | null>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -78,12 +80,22 @@ export default function AdminVenues() {
     setOpen(true);
   };
 
-  const handleSubmit = (data: Omit<Venue, "id" | "amenities" | "availability" | "schedule">) => {
+  const handleSubmit = (
+    data: Omit<Venue, "id" | "amenities" | "availability" | "schedule">,
+  ) => {
     if (editingVenue) {
       setVenues(
         venues.map((v) =>
-          v.id === editingVenue.id ? { ...v, ...data, amenities: v.amenities, availability: v.availability, schedule: v.schedule } : v
-        )
+          v.id === editingVenue.id
+            ? {
+                ...v,
+                ...data,
+                amenities: v.amenities,
+                availability: v.availability,
+                schedule: v.schedule,
+              }
+            : v,
+        ),
       );
     } else {
       const newVenue: Venue = {
@@ -107,24 +119,31 @@ export default function AdminVenues() {
   // Delete confirmation dialog
   const renderDeleteConfirm = () => {
     if (!deleteConfirmOpen) return null;
-    
+
     return isDesktop ? (
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <DialogContent className="sm:max-w-[425px] rounded-2xl border-0">
           <DialogHeader>
-            <DialogTitle className="text-xl font-black text-slate-900">Confirm Delete</DialogTitle>
+            <DialogTitle className="text-xl font-black text-slate-900">
+              Confirm Delete
+            </DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p className="text-sm text-slate-500">
-              Are you sure you want to delete this venue? This action cannot be undone.
+              Are you sure you want to delete this venue? This action cannot be
+              undone.
             </p>
           </div>
           <div className="flex justify-end gap-3">
-            <Button variant="ghost" onClick={() => setDeleteConfirmOpen(false)} className="font-bold">
+            <Button
+              variant="ghost"
+              onClick={() => setDeleteConfirmOpen(false)}
+              className="font-bold"
+            >
               Cancel
             </Button>
-            <Button 
-              onClick={confirmDelete} 
+            <Button
+              onClick={confirmDelete}
               className="bg-red-500 hover:bg-red-600 text-white font-bold"
             >
               Delete
@@ -136,21 +155,28 @@ export default function AdminVenues() {
       <Drawer open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <DrawerContent className="border-0">
           <DrawerHeader>
-            <DrawerTitle className="text-xl font-black text-slate-900">Confirm Delete</DrawerTitle>
+            <DrawerTitle className="text-xl font-black text-slate-900">
+              Confirm Delete
+            </DrawerTitle>
           </DrawerHeader>
           <div className="px-4 py-4">
             <p className="text-sm text-slate-500">
-              Are you sure you want to delete this venue? This action cannot be undone.
+              Are you sure you want to delete this venue? This action cannot be
+              undone.
             </p>
           </div>
           <div className="flex flex-col gap-2 p-4">
-            <Button 
-              onClick={confirmDelete} 
+            <Button
+              onClick={confirmDelete}
               className="bg-red-500 hover:bg-red-600 text-white font-bold w-full"
             >
               Delete
             </Button>
-            <Button variant="ghost" onClick={() => setDeleteConfirmOpen(false)} className="font-bold w-full">
+            <Button
+              variant="ghost"
+              onClick={() => setDeleteConfirmOpen(false)}
+              className="font-bold w-full"
+            >
               Cancel
             </Button>
           </div>
@@ -176,7 +202,10 @@ export default function AdminVenues() {
           {isDesktop ? (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="text-white px-4 sm:px-6 font-bold h-10 sm:h-11 text-sm sm:text-base" onClick={handleAddNew}>
+                <Button
+                  className="text-white px-4 sm:px-6 font-bold h-10 sm:h-11 text-sm sm:text-base"
+                  onClick={handleAddNew}
+                >
                   + Add Venue
                 </Button>
               </DialogTrigger>
@@ -196,7 +225,9 @@ export default function AdminVenues() {
           ) : (
             <Drawer open={open} onOpenChange={setOpen}>
               <DrawerTrigger asChild>
-                <Button className="text-white w-full" onClick={handleAddNew}>+ Add Venue</Button>
+                <Button className="text-white w-full" onClick={handleAddNew}>
+                  + Add Venue
+                </Button>
               </DrawerTrigger>
               <DrawerContent className="max-h-[90vh] border-0">
                 <DrawerHeader className="text-left pb-0">
@@ -229,7 +260,7 @@ export default function AdminVenues() {
             />
           </div>
           <Select value={facultyFilter} onValueChange={setFacultyFilter}>
-            <SelectTrigger className="h-11 w-full">
+            <SelectTrigger className="h-11 w-full md:w-auto bg-white">
               <SelectValue placeholder="Filter by faculty" />
             </SelectTrigger>
             <SelectContent>
@@ -292,7 +323,9 @@ export default function AdminVenues() {
                   </TableCell>
                   <TableCell className="py-4">
                     <div className="font-bold text-slate-900">{venue.name}</div>
-                    <div className="text-xs text-slate-400">{venue.fullName}</div>
+                    <div className="text-xs text-slate-400">
+                      {venue.fullName}
+                    </div>
                   </TableCell>
                   <TableCell className="py-4 text-sm text-slate-700">
                     {venue.building}
@@ -330,7 +363,8 @@ export default function AdminVenues() {
                     colSpan={7}
                     className="h-32 text-center text-slate-500 font-medium"
                   >
-                    No venues found{searchQuery ? ` matching "${searchQuery}"` : ""}.
+                    No venues found
+                    {searchQuery ? ` matching "${searchQuery}"` : ""}.
                   </TableCell>
                 </TableRow>
               )}
