@@ -13,6 +13,7 @@ import MapPage from "./pages/Map";
 import VenuePage from "./pages/Venue";
 import AdminDashboardPage from "./pages/admin/Dashboard";
 import AdminOverridesPage from "./pages/admin/Overrides";
+import AdminTimetablesPage from "./pages/admin/Timetables";
 import MobileBottomMenu from "./components/MobileBottomMenu";
 
 interface RouterContext {
@@ -70,9 +71,9 @@ const adminRoute = createRoute({
     return (
       <div className="flex h-screen bg-neutral-100">
         <AdminSidebar />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           <AdminHeader />
-          <main className="flex-1 p-4">
+          <main className="flex-1 p-4 overflow-auto min-h-0 min-w-0">
             <Outlet />
           </main>
         </div>
@@ -93,12 +94,18 @@ const adminOverridesRoute = createRoute({
   component: AdminOverridesPage,
 });
 
+const adminTimetablesRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "timetables",
+  component: AdminTimetablesPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   exploreRoute,
   mapRoute,
   venueRoute,
-  adminRoute.addChildren([adminDashboardRoute, adminOverridesRoute]),
+  adminRoute.addChildren([adminDashboardRoute, adminOverridesRoute, adminTimetablesRoute]),
 ]);
 
 export const router = createRouter({
