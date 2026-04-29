@@ -169,3 +169,62 @@ export const MOCK_VENUES: Venue[] = [
     schedule: DEFAULT_SCHEDULE,
   },
 ];
+
+export interface Override {
+  id: string;
+  venueId: string;
+  venueName: string;
+  building: string;
+  faculty: string;
+  reason: string;
+  date: string; // ISO format or YYYY-MM-DD
+  startTime: string; // HH:mm format
+  endTime: string; // HH:mm format
+}
+
+export const MOCK_OVERRIDES: Override[] = [
+  {
+    id: "1",
+    venueId: "v1",
+    venueName: "NECB 101",
+    building: "Engineering Block",
+    faculty: "Engineering",
+    reason: "Guest Speaker Setup and Tech Rehearsal.",
+    date: new Date().toISOString().split("T")[0], // Today
+    startTime: "09:00",
+    endTime: "11:30",
+  },
+  {
+    id: "2",
+    venueId: "v2",
+    venueName: "ELF ",
+    building: "ELF Hall",
+    faculty: "Engineering",
+    reason: "Guest Speaker Setup and Tech Rehearsal.",
+    date: "2026-11-24", // Future Date (2026 Nov 24)
+    startTime: "14:00",
+    endTime: "16:00",
+  },
+  {
+    id: "3",
+    venueId: "v3",
+    venueName: "ICT II",
+    building: "ICT Building",
+    faculty: "Computing",
+    reason: "Guest Speaker Setup and Tech Rehearsal.",
+    date: new Date().toISOString().split("T")[0], // Today
+    startTime: "11:00",
+    endTime: "13:00",
+  },
+  {
+    id: "4",
+    venueId: "v4",
+    venueName: "OLD 101",
+    building: "Old Block",
+    faculty: "Science",
+    reason: "Past event that should not be visible",
+    date: "2020-01-01", // Past Date
+    startTime: "10:00",
+    endTime: "12:00",
+  },
+];
