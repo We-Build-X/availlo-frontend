@@ -13,6 +13,7 @@ import MapPage from "./pages/Map";
 import VenuePage from "./pages/Venue";
 import AdminDashboardPage from "./pages/admin/Dashboard";
 import AdminOverridesPage from "./pages/admin/Overrides";
+import NotFound from "./pages/NotFound";
 import AdminTimetablesPage from "./pages/admin/Timetables";
 import AdminVenuesPage from "./pages/admin/Venues";
 import AdminUploadWizardPage from "./pages/admin/UploadWizard";
@@ -23,10 +24,17 @@ interface RouterContext {
 }
 
 export const rootRoute = createRootRouteWithContext<RouterContext>()({
-  component: Root,
+  component: () => <Outlet />,
+  notFoundComponent: NotFound,
 });
 
-function Root() {
+const publicLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "public-layout",
+  component: PublicLayout,
+});
+
+function PublicLayout() {
   return (
     <div className="flex flex-col min-h-screen mb-20">
       <Header />
@@ -40,25 +48,25 @@ function Root() {
 }
 
 const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => publicLayoutRoute,
   path: "/",
   component: HomePage,
 });
 
 const exploreRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => publicLayoutRoute,
   path: "/explore",
   component: ExplorePage,
 });
 
 const mapRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => publicLayoutRoute,
   path: "/map",
   component: MapPage,
 });
 
 export const venueRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => publicLayoutRoute,
   path: "/venue/$id",
   component: VenuePage,
 });
@@ -131,10 +139,9 @@ export const adminTimetableUploadRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
-  indexRoute,
-  exploreRoute,
-  mapRoute,
-  venueRoute,
+
+  publicLayoutRoute.addChildren([indexRoute, exploreRoute, mapRoute, venueRoute]),
+ 
   adminRoute.addChildren([
     adminDashboardRoute,
     adminOverridesRoute,
@@ -142,6 +149,7 @@ const routeTree = rootRoute.addChildren([
     adminTimetablesRoute,
     adminTimetableUploadRoute,
   ]),
+
 ]);
 
 export const router = createRouter({
