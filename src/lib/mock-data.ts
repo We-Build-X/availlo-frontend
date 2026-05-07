@@ -16,7 +16,8 @@ export interface Venue {
   name: string;
   fullName: string;
   building: string;
-  floor: string;
+  floor?: string;
+  type: "Hall" | "Lecture Theatre" | "Classroom";
   faculty: "Engineering" | "Science" | "Arts";
   capacity: number;
   hasPower: boolean;
@@ -29,6 +30,62 @@ export interface Venue {
   };
   schedule: ScheduleItem[];
 }
+
+export type TimetableStatus =
+  | "ACTIVE"
+  | "OUTDATED"
+  | "NO_TIMETABLE"
+  | "PENDING_REVIEW";
+
+export interface FacultyTimetableStatus {
+  id: string;
+  facultyName: string;
+  currentSemester: string;
+  lastUploadedAt: string | null;
+  status: TimetableStatus;
+}
+
+const now = new Date();
+
+export const MOCK_FACULTY_STATUSES: FacultyTimetableStatus[] = [
+  {
+    id: "eng",
+    facultyName: "Engineering",
+    currentSemester: "2nd - 2025/2026",
+    lastUploadedAt: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
+    status: "ACTIVE",
+  },
+  {
+    id: "comp",
+    facultyName: "Computing",
+    currentSemester: "2nd - 2025/2026",
+    lastUploadedAt: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
+    status: "OUTDATED",
+  },
+  {
+    id: "sci",
+    facultyName: "Sciences",
+    currentSemester: "2nd - 2025/2026",
+    lastUploadedAt: null,
+    status: "NO_TIMETABLE",
+  },
+  {
+    id: "agri",
+    facultyName: "Agriculture",
+    currentSemester: "2nd - 2025/2026",
+    lastUploadedAt: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString(),
+    status: "PENDING_REVIEW",
+  },
+  {
+    id: "arts",
+    facultyName: "Arts",
+    currentSemester: "2nd - 2025/2026",
+    lastUploadedAt: new Date(
+      now.getTime() - 7 * 24 * 60 * 60 * 1000,
+    ).toISOString(),
+    status: "ACTIVE",
+  },
+];
 
 const DEFAULT_SCHEDULE: ScheduleItem[] = [
   {
@@ -82,6 +139,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "New Engineering Building",
     building: "NECB",
     floor: "Ground",
+    type: "Classroom",
     faculty: "Engineering",
     capacity: 50,
     hasPower: true,
@@ -102,6 +160,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "New Engineering Building",
     building: "NECB",
     floor: "First",
+    type: "Classroom",
     faculty: "Engineering",
     capacity: 30,
     hasPower: true,
@@ -120,6 +179,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "Science Building",
     building: "SCI",
     floor: "Ground",
+    type: "Lecture Theatre",
     faculty: "Science",
     capacity: 100,
     hasPower: true,
@@ -140,6 +200,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "Arts Building",
     building: "ARTS",
     floor: "Second",
+    type: "Classroom",
     faculty: "Arts",
     capacity: 25,
     hasPower: false,
@@ -157,6 +218,7 @@ export const MOCK_VENUES: Venue[] = [
     fullName: "New Engineering Building",
     building: "NECB",
     floor: "Third",
+    type: "Hall",
     faculty: "Engineering",
     capacity: 40,
     hasPower: true,
@@ -167,5 +229,102 @@ export const MOCK_VENUES: Venue[] = [
       freeUntil: "6:00 PM",
     },
     schedule: DEFAULT_SCHEDULE,
+  },
+];
+
+export interface Override {
+  id: string;
+  venueId: string;
+  venueName: string;
+  building: string;
+  faculty: string;
+  reason: string;
+  date: string; // ISO format or YYYY-MM-DD
+  startTime: string; // HH:mm format
+  endTime: string; // HH:mm format
+}
+
+export const MOCK_OVERRIDES: Override[] = [
+  {
+    id: "1",
+    venueId: "v1",
+    venueName: "NECB 101",
+    building: "Engineering Block",
+    faculty: "Engineering",
+    reason: "Guest Speaker Setup and Tech Rehearsal.",
+    date: new Date().toISOString().split("T")[0], // Today
+    startTime: "09:00",
+    endTime: "11:30",
+  },
+  {
+    id: "2",
+    venueId: "v2",
+    venueName: "ELF ",
+    building: "ELF Hall",
+    faculty: "Engineering",
+    reason: "Guest Speaker Setup and Tech Rehearsal.",
+    date: "2026-11-24", // Future Date (2026 Nov 24)
+    startTime: "14:00",
+    endTime: "16:00",
+  },
+  {
+    id: "3",
+    venueId: "v3",
+    venueName: "ICT II",
+    building: "ICT Building",
+    faculty: "Computing",
+    reason: "Guest Speaker Setup and Tech Rehearsal.",
+    date: new Date().toISOString().split("T")[0], // Today
+    startTime: "11:00",
+    endTime: "13:00",
+  },
+  {
+    id: "4",
+    venueId: "v4",
+    venueName: "OLD 101",
+    building: "Old Block",
+    faculty: "Science",
+    reason: "Past event that should not be visible",
+    date: "2020-01-01", // Past Date
+    startTime: "10:00",
+    endTime: "12:00",
+  },
+];
+export interface MockReviewEntry {
+  id: string;
+  courseCode: string;
+  day: string;
+  time: string;
+  venue: string;
+  status: "VALID" | "CONFLICT" | "UNKNOWN_VENUE";
+  conflictMessage?: string;
+}
+
+export const MOCK_REVIEW_ENTRIES: MockReviewEntry[] = [
+  {
+    id: "1",
+    courseCode: "MEC 301",
+    day: "Monday",
+    time: "08:00 - 10:00",
+    venue: "ELT 1",
+    status: "VALID",
+  },
+  {
+    id: "2",
+    courseCode: "ELE 311",
+    day: "Monday",
+    time: "09:00 - 11:00",
+    venue: "ELT 1",
+    status: "CONFLICT",
+    conflictMessage: "Overlaps with MEC 301 in same room.",
+  },
+  {
+    id: "3",
+    courseCode: "CVE 502",
+    day: "Tuesday",
+    time: "14:00 - 17:00",
+    venue: "Old Lab",
+    status: "UNKNOWN_VENUE",
+    conflictMessage: "TBD (Main Hall?)",
   },
 ];

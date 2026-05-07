@@ -14,6 +14,9 @@ import VenuePage from "./pages/Venue";
 import AdminDashboardPage from "./pages/admin/Dashboard";
 import AdminOverridesPage from "./pages/admin/Overrides";
 import NotFound from "./pages/NotFound";
+import AdminTimetablesPage from "./pages/admin/Timetables";
+import AdminVenuesPage from "./pages/admin/Venues";
+import AdminUploadWizardPage from "./pages/admin/UploadWizard";
 import MobileBottomMenu from "./components/MobileBottomMenu";
 
 interface RouterContext {
@@ -78,9 +81,9 @@ const adminRoute = createRoute({
     return (
       <div className="flex h-screen bg-neutral-100">
         <AdminSidebar />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           <AdminHeader />
-          <main className="flex-1 p-4">
+          <main className="flex-1 p-4 overflow-auto min-h-0 min-w-0">
             <Outlet />
           </main>
         </div>
@@ -101,9 +104,52 @@ const adminOverridesRoute = createRoute({
   component: AdminOverridesPage,
 });
 
+const adminVenuesRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "venues",
+  component: AdminVenuesPage,
+});
+
+const adminTimetablesRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "timetables",
+  component: AdminTimetablesPage,
+});
+
+const ADMIN_UPLOAD_WIZARD_MIN_STEP = 1;
+const ADMIN_UPLOAD_WIZARD_MAX_STEP = 4;
+
+export const adminTimetableUploadRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "timetables/upload/$id",
+  validateSearch: (search: Record<string, unknown>): { step: number } => {
+    const parsedStep = Number.parseInt(String(search?.step ?? ""), 10);
+    const step = Number.isFinite(parsedStep)
+      ? Math.min(
+          ADMIN_UPLOAD_WIZARD_MAX_STEP,
+          Math.max(ADMIN_UPLOAD_WIZARD_MIN_STEP, parsedStep),
+        )
+      : ADMIN_UPLOAD_WIZARD_MIN_STEP;
+
+    return {
+      step,
+    };
+  },
+  component: AdminUploadWizardPage,
+});
+
 const routeTree = rootRoute.addChildren([
+
   publicLayoutRoute.addChildren([indexRoute, exploreRoute, mapRoute, venueRoute]),
-  adminRoute.addChildren([adminDashboardRoute, adminOverridesRoute]),
+ 
+  adminRoute.addChildren([
+    adminDashboardRoute,
+    adminOverridesRoute,
+    adminVenuesRoute,
+    adminTimetablesRoute,
+    adminTimetableUploadRoute,
+  ]),
+
 ]);
 
 export const router = createRouter({
