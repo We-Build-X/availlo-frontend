@@ -11,7 +11,3 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
-
-# Screenshots
-public/2026*.png
-public/2025*.png
