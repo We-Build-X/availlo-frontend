@@ -3,6 +3,7 @@ import {
   createRoute,
   createRouter,
   Outlet,
+  useMatches,
 } from "@tanstack/react-router";
 import { QueryClient } from "@tanstack/react-query";
 import Header from "./components/Header";
@@ -24,17 +25,18 @@ interface RouterContext {
 }
 
 export const rootRoute = createRootRouteWithContext<RouterContext>()({
-  component: () => <Outlet />,
+  component: Root,
   notFoundComponent: NotFound,
 });
 
-const publicLayoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  id: "public-layout",
-  component: PublicLayout,
-});
+function Root() {
+  const matches = useMatches();
+  const isAdmin = matches.some((m) => m.pathname.startsWith("/admin"));
 
-function PublicLayout() {
+  if (isAdmin) {
+    return <Outlet />;
+  }
+
   return (
     <div className="flex flex-col min-h-screen mb-20">
       <Header />
@@ -48,25 +50,25 @@ function PublicLayout() {
 }
 
 const indexRoute = createRoute({
-  getParentRoute: () => publicLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: "/",
   component: HomePage,
 });
 
 const exploreRoute = createRoute({
-  getParentRoute: () => publicLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: "/explore",
   component: ExplorePage,
 });
 
 const mapRoute = createRoute({
-  getParentRoute: () => publicLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: "/map",
   component: MapPage,
 });
 
 export const venueRoute = createRoute({
-  getParentRoute: () => publicLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: "/venue/$id",
   component: VenuePage,
 });
@@ -139,6 +141,7 @@ export const adminTimetableUploadRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
+<<<<<<< HEAD
 
   publicLayoutRoute.addChildren([indexRoute, exploreRoute, mapRoute, venueRoute]),
  
@@ -150,6 +153,13 @@ const routeTree = rootRoute.addChildren([
     adminTimetableUploadRoute,
   ]),
 
+=======
+  indexRoute,
+  exploreRoute,
+  mapRoute,
+  venueRoute,
+  adminRoute.addChildren([adminDashboardRoute, adminOverridesRoute]),
+>>>>>>> d1d2939 (Flatten routing structure: remove publicLayoutRoute, use Root component with conditional layout)
 ]);
 
 export const router = createRouter({
