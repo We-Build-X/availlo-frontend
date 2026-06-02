@@ -29,7 +29,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-white/90 flex items-center justify-between sticky top-0 backdrop-blur-md border-b border-black/5 px-5 py-2 md:py-4 h-20">
+    <header className="bg-white/90 flex z-50 items-center justify-between sticky top-0 backdrop-blur-md border-b border-black/5 px-5 py-2 md:py-4 h-20">
       <div className="flex-1">
         <Logo />
       </div>
