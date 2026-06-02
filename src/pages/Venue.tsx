@@ -9,7 +9,7 @@ import { DailyTimetable } from "@/components/venue/DailyTimetable";
 import { ArrowLeft } from "@solar-icons/react";
 
 export default function Venue() {
-  const { id } = useParams({ from: "/venue/$id" });
+  const { id } = useParams({ from: "/public-layout/venue/$id" });
   const venue = MOCK_VENUES.find((v) => v.id === id);
 
   if (!venue) {
