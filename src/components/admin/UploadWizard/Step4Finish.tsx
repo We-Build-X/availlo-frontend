@@ -6,12 +6,14 @@ import {
    ArrowLeft,
 } from "@solar-icons/react";
 import { Button } from "@/components/ui/button";
+import type { TimetableUploadResponse } from "@/lib/api-types";
 
 interface Step4FinishProps {
   facultyName: string;
+  uploadResult?: TimetableUploadResponse;
 }
 
-export function Step4Finish({ facultyName }: Step4FinishProps) {
+export function Step4Finish({ facultyName, uploadResult }: Step4FinishProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center space-y-6">
       <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-2">
@@ -36,7 +38,7 @@ export function Step4Finish({ facultyName }: Step4FinishProps) {
             <span className="text-slate-500 flex items-center gap-2">
               <DocumentText className="w-4 h-4" /> Total Entries
             </span>
-            <span className="font-bold text-slate-900">342</span>
+            <span className="font-bold text-slate-900">{uploadResult?.extracted_count ?? 342}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-slate-500 flex items-center gap-2">

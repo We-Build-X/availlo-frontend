@@ -290,6 +290,35 @@ export const MOCK_OVERRIDES: Override[] = [
     endTime: "12:00",
   },
 ];
+import type { Room } from "./api-types";
+
+const BUILDING_FACULTY_MAP: Record<string, Venue["faculty"]> = {
+  ENG: "Engineering",
+  SCI: "Science",
+  ARTS: "Arts",
+  NECB: "Engineering",
+};
+
+function inferFaculty(buildingCode: string): Venue["faculty"] {
+  return BUILDING_FACULTY_MAP[buildingCode.toUpperCase()] ?? "Engineering";
+}
+
+export function mapRoomToVenue(room: Room): Venue {
+  return {
+    id: String(room.id),
+    name: room.name,
+    fullName: room.building.name,
+    building: room.building.code,
+    type: "Classroom",
+    faculty: inferFaculty(room.building.code),
+    capacity: room.capacity ?? 0,
+    hasPower: true,
+    amenities: [],
+    availability: { status: "FREE" },
+    schedule: [],
+  };
+}
+
 export interface MockReviewEntry {
   id: string;
   courseCode: string;

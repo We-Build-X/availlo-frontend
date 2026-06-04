@@ -1,19 +1,55 @@
+import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
 import { MOCK_FACULTY_STATUSES } from "@/lib/mock-data";
 import { adminTimetableUploadRoute } from "@/router";
+import { api } from "@/lib/api";
+import { ENDPOINTS } from "@/lib/ENDPOINTS";
+import type { TimetableUploadResponse } from "@/lib/api-types";
 
 import { Step1Upload } from "@/components/admin/UploadWizard/Step1Upload";
 import { Step2Processing } from "@/components/admin/UploadWizard/Step2Processing";
-import { Step3Review } from "@/components/admin/UploadWizard/Step3Review";
 import { Step4Finish } from "@/components/admin/UploadWizard/Step4Finish";
 
-const STEPS = ["PDF Upload", "Process", "Review", "Finish"];
+const STEPS = ["PDF Upload", "Process", "Finish"];
 
 export default function AdminUploadWizard() {
   const { id } = adminTimetableUploadRoute.useParams();
   const search = adminTimetableUploadRoute.useSearch();
   const navigate = useNavigate({ from: adminTimetableUploadRoute.id });
   const step = search.step || 1;
+
+  const [file, setFile] = useState<File | null>(null);
+  const [uploadResult, setUploadResult] = useState<
+    TimetableUploadResponse | undefined
+  >(undefined);
+
+  const uploadMutation = useMutation({
+    mutationFn: async (uploadFile: File) => {
+      const formData = new FormData();
+      formData.append("file", uploadFile);
+      formData.append("semester_id", "1");
+      const { data } = await api.post<TimetableUploadResponse>(
+        ENDPOINTS.timetable.upload,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } },
+      );
+      return data;
+    },
+    onSuccess: (data) => {
+      setUploadResult(data);
+      navigate({ search: { step: 3 } });
+    },
+    onError: () => {
+      navigate({ search: { step: 3 } });
+    },
+  });
+
+  const handleUpload = (uploadFile: File) => {
+    setFile(uploadFile);
+    uploadMutation.mutate(uploadFile);
+    navigate({ search: { step: 2 } });
+  };
 
   const faculty = MOCK_FACULTY_STATUSES.find((f) => f.id === id);
 
@@ -25,7 +61,7 @@ export default function AdminUploadWizard() {
     <div className="max-w-6xl mx-auto w-full space-y-6 pb-20 animate-in fade-in pt-4">
       <div className="">
         <div className="text-sm font-medium text-slate-500 mb-1">
-          Step {step} of 4: {STEPS[step - 1]}
+          Step {step} of 3: {STEPS[step - 1]}
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-10">
           Timetable Upload
@@ -79,24 +115,28 @@ export default function AdminUploadWizard() {
 
       {/* Main Container */}
       <div className="relative">
-        {/* Content Area */}
         <div className="sm:pt-4">
           {step === 1 && (
             <Step1Upload
               facultyName={faculty.facultyName}
-              onNext={() => navigate({ search: { step: 2 } })}
+              file={file}
+              onFileChange={setFile}
+              onNext={() => file && handleUpload(file)}
             />
           )}
           {step === 2 && (
-            <Step2Processing onNext={() => navigate({ search: { step: 3 } })} />
-          )}
-          {step === 3 && (
-            <Step3Review
-              onNext={() => navigate({ search: { step: 4 } })}
-              onBack={() => navigate({ search: { step: 1 } })}
+            <Step2Processing
+              isUploading={uploadMutation.isPending}
+              uploadError={uploadMutation.error?.message}
+              onNext={() => navigate({ search: { step: 3 } })}
             />
           )}
-          {step === 4 && <Step4Finish facultyName={faculty.facultyName} />}
+          {step === 3 && (
+            <Step4Finish
+              facultyName={faculty.facultyName}
+              uploadResult={uploadResult}
+            />
+          )}
         </div>
       </div>
     </div>
