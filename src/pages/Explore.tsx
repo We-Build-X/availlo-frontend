@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
-import { MOCK_VENUES, type Venue } from "@/lib/mock-data";
+import { MOCK_VENUES, mapRoomToVenue, type Venue } from "@/lib/mock-data";
 import { FilterSidebar } from "@/components/explore/FilterSidebar";
 import { VenueCard } from "@/components/VenueCard";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,12 @@ import {
 import Filter from "@solar-icons/react/ui/Filter";
 import { Input } from "@/components/ui/input";
 import { Search } from "@solar-icons/react/category";
+import { api } from "@/lib/api";
+import { API_BASE_URL, ENDPOINTS } from "@/lib/ENDPOINTS";
+import type { Room } from "@/lib/api-types";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const USE_API = !!API_BASE_URL;
 
 export default function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,12 +36,42 @@ export default function Explore() {
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
+  const { data: apiRooms, isPending: roomsLoading } = useQuery({
+    queryKey: ["rooms"],
+    queryFn: async () => {
+      const { data } = await api.get<Room[]>(ENDPOINTS.rooms.list);
+      return data.map(mapRoomToVenue);
+    },
+    enabled: USE_API && !debouncedSearchQuery,
+    staleTime: 30_000,
+  });
+
+  const { data: searchResults, isPending: searchLoading } = useQuery({
+    queryKey: ["rooms", "search", debouncedSearchQuery],
+    queryFn: async () => {
+      const { data } = await api.get<Room[]>(ENDPOINTS.search, {
+        params: { q: debouncedSearchQuery },
+      });
+      return data.map(mapRoomToVenue);
+    },
+    enabled: USE_API && debouncedSearchQuery.length > 0,
+    staleTime: 15_000,
+  });
+
+  const isLoading = USE_API && (debouncedSearchQuery ? searchLoading : roomsLoading);
+
+  const rooms = !USE_API
+    ? MOCK_VENUES
+    : debouncedSearchQuery
+      ? (searchResults ?? [])
+      : (apiRooms ?? []);
+
   const handleApplyFilters = () => {
     setAppliedFilters(filters);
     setDrawerOpen(false);
   };
 
-  const filteredVenues = MOCK_VENUES.filter((venue) => {
+  const filteredVenues = rooms.filter((venue) => {
     const nameMatch =
       venue.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
       venue.fullName.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
@@ -100,9 +137,24 @@ export default function Explore() {
             </span>{" "}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredVenues.map((venue) => (
-              <VenueCard key={venue.id} venue={venue} />
-            ))}
+            {isLoading
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="border-2 border-border rounded-xl p-5 space-y-4">
+                    <div className="flex justify-between items-start">
+                      <Skeleton className="h-7 w-28" />
+                      <Skeleton className="h-6 w-20 rounded-full" />
+                    </div>
+                    <Skeleton className="h-4 w-40" />
+                    <div className="space-y-2 pt-2">
+                      <Skeleton className="h-5 w-36" />
+                      <Skeleton className="h-5 w-44" />
+                    </div>
+                    <Skeleton className="h-10 w-full rounded-lg" />
+                  </div>
+                ))
+              : filteredVenues.map((venue) => (
+                  <VenueCard key={venue.id} venue={venue} />
+                ))}
           </div>
         </main>
       </div>

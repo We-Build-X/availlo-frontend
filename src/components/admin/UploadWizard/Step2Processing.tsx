@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
-import { CheckCircle } from "@solar-icons/react";
+import { CheckCircle, DangerTriangle } from "@solar-icons/react";
 
 interface Step2ProcessingProps {
+  isUploading: boolean;
+  uploadError?: string;
   onNext: () => void;
 }
 
-export function Step2Processing({ onNext }: Step2ProcessingProps) {
+export function Step2Processing({ isUploading, uploadError, onNext }: Step2ProcessingProps) {
   const [progress, setProgress] = useState(0);
+
   const [logs, setLogs] = useState<{ msg: string; done: boolean }[]>([
     { msg: "Scanning pages...", done: false },
     { msg: "Detecting entries...", done: false },
@@ -14,6 +17,19 @@ export function Step2Processing({ onNext }: Step2ProcessingProps) {
   ]);
 
   useEffect(() => {
+    if (uploadError) {
+      setProgress(100);
+      setLogs((prev) => prev.map((l) => ({ ...l, done: true })));
+      return;
+    }
+
+    if (!isUploading) {
+      setProgress(100);
+      setLogs((prev) => prev.map((l) => ({ ...l, done: true })));
+      const timeout = setTimeout(onNext, 600);
+      return () => clearTimeout(timeout);
+    }
+
     let currentProgress = 0;
     let timeout: ReturnType<typeof setTimeout> | undefined;
     const interval = setInterval(() => {
@@ -21,7 +37,7 @@ export function Step2Processing({ onNext }: Step2ProcessingProps) {
       if (currentProgress >= 100) {
         currentProgress = 100;
         clearInterval(interval);
-        timeout = setTimeout(onNext, 600); // Wait a bit then move
+        timeout = setTimeout(onNext, 600);
       }
       setProgress(currentProgress);
 
@@ -37,7 +53,7 @@ export function Step2Processing({ onNext }: Step2ProcessingProps) {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-  }, [onNext]);
+  }, [isUploading, uploadError, onNext]);
 
   return (
     <div className="space-y-8 py-8">
@@ -53,6 +69,13 @@ export function Step2Processing({ onNext }: Step2ProcessingProps) {
           />
         </div>
       </div>
+
+      {uploadError && (
+        <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-sm font-medium text-red-700">
+          <DangerTriangle className="w-5 h-5 text-red-500 shrink-0" />
+          <span>{uploadError}</span>
+        </div>
+      )}
 
       <div className="space-y-4">
         {logs.map((log, i) => (

@@ -117,7 +117,7 @@ const adminTimetablesRoute = createRoute({
 });
 
 const ADMIN_UPLOAD_WIZARD_MIN_STEP = 1;
-const ADMIN_UPLOAD_WIZARD_MAX_STEP = 4;
+const ADMIN_UPLOAD_WIZARD_MAX_STEP = 3;
 
 export const adminTimetableUploadRoute = createRoute({
   getParentRoute: () => adminRoute,

@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "@tanstack/react-router";
-import { MOCK_VENUES } from "@/lib/mock-data";
+import { MOCK_VENUES, mapRoomToVenue } from "@/lib/mock-data";
 import { getAvailabilityText } from "@/lib/time";
 import { VenueHeroImage } from "@/components/venue/VenueHeroImage";
 import { UtilityStatus } from "@/components/venue/UtilityStatus";
@@ -7,10 +8,67 @@ import { CrowdsourceStatusButtons } from "@/components/venue/CrowdsourceStatusBu
 import { RoomAmenitiesList } from "@/components/venue/RoomAmenitiesList";
 import { DailyTimetable } from "@/components/venue/DailyTimetable";
 import { ArrowLeft } from "@solar-icons/react";
+import { api } from "@/lib/api";
+import { API_BASE_URL, ENDPOINTS } from "@/lib/ENDPOINTS";
+import type { Room } from "@/lib/api-types";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const USE_API = !!API_BASE_URL;
 
 export default function Venue() {
   const { id } = useParams({ from: "/public-layout/venue/$id" });
-  const venue = MOCK_VENUES.find((v) => v.id === id);
+
+  const { data: apiVenue, isPending: venueLoading } = useQuery({
+    queryKey: ["rooms", id],
+    queryFn: async () => {
+      const { data } = await api.get<Room>(ENDPOINTS.rooms.status(Number(id)));
+      return mapRoomToVenue(data);
+    },
+    enabled: USE_API && !isNaN(Number(id)),
+  });
+
+  const isLoading = USE_API && venueLoading;
+  const venue = USE_API ? apiVenue : MOCK_VENUES.find((v) => v.id === id);
+
+  if (isLoading) {
+    return (
+      <div className="bg-white min-h-screen">
+        <Skeleton className="h-[300px] w-full rounded-none" />
+        <div className="max-w-7xl mx-auto px-6 py-10 md:px-12 lg:px-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+            <div className="lg:col-span-7 space-y-12">
+              <div className="space-y-6">
+                <Skeleton className="h-4 w-16" />
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+                  <div className="space-y-3">
+                    <Skeleton className="h-14 w-64" />
+                    <Skeleton className="h-5 w-40" />
+                  </div>
+                  <Skeleton className="h-7 w-24 rounded-2xl" />
+                </div>
+                <div className="flex gap-4">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-32" />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <Skeleton className="h-16 w-full rounded-xl" />
+                <Skeleton className="h-16 w-full rounded-xl" />
+              </div>
+              <div className="space-y-3">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-10 w-full rounded-xl" />
+              </div>
+            </div>
+            <div className="hidden md:block lg:col-span-5">
+              <Skeleton className="h-[400px] w-full rounded-2xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!venue) {
     return (

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import type { DragEvent } from "react";
 import { CloudUpload, DocumentText, ArrowRight } from "@solar-icons/react";
 import { Badge } from "@/components/ui/badge";
@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 
 interface Step1UploadProps {
   facultyName: string;
+  file: File | null;
+  onFileChange: (file: File | null) => void;
   onNext: () => void;
 }
 
-export function Step1Upload({ facultyName, onNext }: Step1UploadProps) {
-  const [file, setFile] = useState<File | null>(null);
+export function Step1Upload({ facultyName, file, onFileChange, onNext }: Step1UploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
@@ -18,7 +19,7 @@ export function Step1Upload({ facultyName, onNext }: Step1UploadProps) {
     if (e.dataTransfer.files?.length > 0) {
       const droppedFile = e.dataTransfer.files[0];
       if (droppedFile.type === "application/pdf") {
-        setFile(droppedFile);
+        onFileChange(droppedFile);
       } else {
         alert("Please upload a PDF file.");
       }
@@ -56,7 +57,7 @@ export function Step1Upload({ facultyName, onNext }: Step1UploadProps) {
             className="hidden"
             ref={fileInputRef}
             onChange={(e) => {
-              if (e.target.files?.length) setFile(e.target.files[0]);
+              if (e.target.files?.length) onFileChange(e.target.files[0]);
             }}
           />
           {file ? (

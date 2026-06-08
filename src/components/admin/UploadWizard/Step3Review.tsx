@@ -18,14 +18,21 @@ import {
   ArrowLeft,
 } from "@solar-icons/react";
 import { MOCK_REVIEW_ENTRIES } from "@/lib/mock-data";
+import type { TimetableUploadResponse } from "@/lib/api-types";
 
 interface Step3ReviewProps {
+  uploadResult?: TimetableUploadResponse;
   onNext: () => void;
   onBack: () => void;
 }
 
-export function Step3Review({ onNext, onBack }: Step3ReviewProps) {
-  const stats = { new: 12, removed: 4, conflicts: 2 };
+export function Step3Review({ uploadResult, onNext, onBack }: Step3ReviewProps) {
+  const reviewEntries = uploadResult?.data ?? MOCK_REVIEW_ENTRIES;
+  const stats = {
+    new: uploadResult?.saved_count ?? 12,
+    removed: uploadResult?.skipped_count ?? 4,
+    conflicts: 2,
+  };
 
   return (
     <div className="space-y-8">
@@ -94,7 +101,7 @@ export function Step3Review({ onNext, onBack }: Step3ReviewProps) {
                 </TableRow>
               </TableHeader>
               <TableBody className="border-0">
-                {MOCK_REVIEW_ENTRIES.map((entry) => (
+                {reviewEntries.map((entry: any) => (
                   <TableRow
                     key={entry.id}
                     className={`border-b border-white ${
