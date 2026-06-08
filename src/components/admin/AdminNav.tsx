@@ -26,7 +26,7 @@ const BOTTOM_LINKS = [
 
 export function AdminNav({ showLogo = false }: AdminNavProps) {
   return (
-    <div className="flex flex-col h-full">
+    <a href="/" className="flex flex-col h-full">
       {showLogo && (
         <div className="flex items-center gap-3 p-4 border-b border-black/10">
           <img src="/favicon-dark-bg.png" className="w-10" alt="Availlo" />
@@ -89,6 +89,6 @@ export function AdminNav({ showLogo = false }: AdminNavProps) {
           ))}
         </div>
       </nav>
-    </div>
+    </a>
   );
 }
