@@ -40,10 +40,13 @@ export default function AdminUploadWizard() {
       setUploadResult(data);
       navigate({ search: { step: 3 } });
     },
-    onError: () => {
-      navigate({ search: { step: 3 } });
-    },
+    onError: () => {},
   });
+
+  const handleRetry = () => {
+    uploadMutation.reset();
+    if (file) uploadMutation.mutate(file);
+  };
 
   const handleUpload = (uploadFile: File) => {
     setFile(uploadFile);
@@ -128,7 +131,7 @@ export default function AdminUploadWizard() {
             <Step2Processing
               isUploading={uploadMutation.isPending}
               uploadError={uploadMutation.error?.message}
-              onNext={() => navigate({ search: { step: 3 } })}
+              onRetry={handleRetry}
             />
           )}
           {step === 3 && (
