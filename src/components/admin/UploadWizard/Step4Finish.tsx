@@ -38,7 +38,7 @@ export function Step4Finish({ facultyName, uploadResult }: Step4FinishProps) {
             <span className="text-slate-500 flex items-center gap-2">
               <DocumentText className="w-4 h-4" /> Total Entries
             </span>
-            <span className="font-bold text-slate-900">{uploadResult?.extracted_count ?? 342}</span>
+            <span className="font-bold text-slate-900">{uploadResult?.extracted_count ?? 0}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-slate-500 flex items-center gap-2">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { MOCK_VENUES } from "@/lib/mock-data";
-import { VenueCard } from "#/components/HomePageVenueCard";
+import { VenueCard } from "#/components/VenueCard"
 import {
   Select,
   SelectContent,
