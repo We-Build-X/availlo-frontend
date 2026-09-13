@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { MOCK_FACULTY_STATUSES } from "@/lib/mock-data";
 import { adminTimetableUploadRoute } from "@/router";
-import { api } from "@/lib/api";
+import { api, isApiConfigured } from "@/lib/api";
 import { ENDPOINTS } from "@/lib/ENDPOINTS";
 import type { TimetableUploadResponse } from "@/lib/api-types";
 
@@ -48,6 +48,11 @@ export default function AdminUploadWizard() {
 
   const handleUpload = (uploadFile: File) => {
     setFile(uploadFile);
+    if (!isApiConfigured()) {
+      setUploadResult(undefined);
+      navigate({ search: { step: 3 } });
+      return;
+    }
     uploadMutation.mutate(uploadFile);
     navigate({ search: { step: 2 } });
   };
