@@ -11,7 +11,6 @@
  * so the design language is consistent across the app.
  */
 
-import { Link } from "@tanstack/react-router"
 import { useState } from "react"
 import type { BuildingFeature } from "@/hooks/useBuildingStatus"
 import { getAvailabilityText } from "@/lib/time"
@@ -116,13 +115,12 @@ export function BuildingPopup({ building }: BuildingPopupProps) {
                         {getAvailabilityText(room.availability)}
                       </p>
                     </div>
-                    <Link
-                      to="/venue/$id"
-                      params={{ id: room.id }}
+                    <a
+                      href={`/venue/${room.id}`}
                       className={`shrink-0 rounded px-2 py-1 text-[10px] font-bold tracking-widest uppercase ${rc.bg} ${rc.text}`}
                     >
                       View
-                    </Link>
+                    </a>
                   </li>
                 )
               })}
