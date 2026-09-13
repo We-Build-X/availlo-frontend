@@ -27,13 +27,11 @@ export default function AdminUploadWizard() {
   const uploadMutation = useMutation({
     mutationFn: async (uploadFile: File) => {
       const formData = new FormData();
+      // Backend contract: POST /api/timetable/upload/ accepts ONLY the PDF
+      // file. The semester name is extracted verbatim from the timetable
+      // header and the Semester is auto-created server-side.
       formData.append("file", uploadFile);
-      formData.append("semester_id", "1");
-      const { data } = await api.post<TimetableUploadResponse>(
-        ENDPOINTS.timetable.upload,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } },
-      );
+      const { data } = await api.post<TimetableUploadResponse>(ENDPOINTS.timetable.upload, formData);
       return data;
     },
     onSuccess: (data) => {
@@ -130,7 +128,10 @@ export default function AdminUploadWizard() {
           {step === 2 && (
             <Step2Processing
               isUploading={uploadMutation.isPending}
-              uploadError={uploadMutation.error?.message}
+              uploadError={
+                (uploadMutation.error as unknown as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+                uploadMutation.error?.message
+              }
               onRetry={handleRetry}
             />
           )}

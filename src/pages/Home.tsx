@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
-import { MOCK_VENUES } from "@/lib/mock-data";
+import { MOCK_VENUES, mapRoomToVenue, type Venue } from "@/lib/mock-data";
 import { VenueCard } from "#/components/VenueCard"
+import { isApiConfigured } from "@/lib/api";
+import { useRooms } from "@/hooks/useRooms";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -9,10 +12,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const USE_API = isApiConfigured();
+
+// Faculties that can appear in live data (backend rooms list building codes,
+// mapped to faculties in mock-data). Sorted for stable dropdown ordering.
+const FACULTY_OPTIONS = [
+  "ADMINISTRATION",
+  "AGRICULTURE",
+  "ARTS",
+  "COMPUTING",
+  "ENGINEERING",
+  "SCIENCE",
+  "OTHER",
+];
+
 export default function Home() {
-  const [selectedFaculty, setSelectedFaculty] = useState("ENGINEERING");
+  const [selectedFaculty, setSelectedFaculty] = useState("ALL");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedHourOffset, setSelectedHourOffset] = useState(0);
+
+  const { data: rooms, isPending: roomsLoading } = useRooms(USE_API);
+
+  const baseVenues: Venue[] =
+    USE_API && rooms
+      ? rooms.map(mapRoomToVenue)
+      : USE_API
+        ? []
+        : MOCK_VENUES;
 
   // Helper function to determine the greeting
   function getGreeting(hour: number) {
@@ -45,7 +71,7 @@ export default function Home() {
 
   // --- FILTERING LOGIC ---
   // Filter by faculty
-  let filteredVenues = MOCK_VENUES.filter(
+  let filteredVenues = baseVenues.filter(
     (v) => selectedFaculty === "ALL" || v.faculty.toUpperCase() === selectedFaculty
   );
 
@@ -119,9 +145,11 @@ export default function Home() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">ALL FACULTIES</SelectItem>
-                <SelectItem value="ENGINEERING">ENGINEERING</SelectItem>
-                <SelectItem value="SCIENCE">SCIENCE</SelectItem>
-                <SelectItem value="ARTS">ARTS</SelectItem>
+                {FACULTY_OPTIONS.map((faculty) => (
+                  <SelectItem key={faculty} value={faculty}>
+                    {faculty}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -163,9 +191,25 @@ export default function Home() {
           </span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {freeVenues.map((venue) => (
-            <VenueCard key={`${venue.id}-${selectedHourOffset}`} venue={venue} />
-          ))}
+          {USE_API && roomsLoading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="border border-gray-200 rounded-2xl p-6 bg-white flex flex-col justify-between gap-8"
+              >
+                <Skeleton className="h-6 w-24" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+            ))
+          ) : freeVenues.length > 0 ? (
+            freeVenues.map((venue) => (
+              <VenueCard key={`${venue.id}-${selectedHourOffset}`} venue={venue} />
+            ))
+          ) : (
+            <p className="text-sm text-gray-400 font-medium col-span-full">
+              No free spaces {activeTimeLabel.toLowerCase()} — try another hour or faculty.
+            </p>
+          )}
         </div>
       </div>
 

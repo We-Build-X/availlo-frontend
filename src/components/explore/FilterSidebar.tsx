@@ -58,6 +58,10 @@ export function FilterSidebar({
             <SelectItem value="Engineering">Engineering</SelectItem>
             <SelectItem value="Science">Science</SelectItem>
             <SelectItem value="Arts">Arts</SelectItem>
+            <SelectItem value="Agriculture">Agriculture</SelectItem>
+            <SelectItem value="Computing">Computing</SelectItem>
+            <SelectItem value="Administration">Administration</SelectItem>
+            <SelectItem value="Other">Other</SelectItem>
           </SelectContent>
         </Select>
       </div>

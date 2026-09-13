@@ -18,7 +18,7 @@ export interface Venue {
   building: string;
   floor?: string;
   type: "Hall" | "Lecture Theatre" | "Classroom";
-  faculty: "Engineering" | "Science" | "Arts";
+  faculty: "Engineering" | "Science" | "Arts" | "Agriculture" | "Computing" | "Administration" | "Other";
   capacity: number;
   hasPower: boolean;
   image?: string;
@@ -290,31 +290,85 @@ export const MOCK_OVERRIDES: Override[] = [
     endTime: "12:00",
   },
 ];
-import type { Room } from "./api-types";
+import type { Room, RoomDetail } from "./api-types";
 
 const BUILDING_FACULTY_MAP: Record<string, Venue["faculty"]> = {
   ENG: "Engineering",
   SCI: "Science",
   ARTS: "Arts",
   NECB: "Engineering",
+  GD: "Engineering",
+  ELF: "Engineering",
+  PTDF: "Engineering",
+  AGRIC: "Agriculture",
+  AGRI: "Agriculture",
+  CMP: "Computing",
+  COMP: "Computing",
+  CSC: "Computing",
+  ADMIN: "Administration",
 };
 
 function inferFaculty(buildingCode: string): Venue["faculty"] {
   return BUILDING_FACULTY_MAP[buildingCode.toUpperCase()] ?? "Engineering";
 }
 
+function to24h(time: string | null | undefined): string | undefined {
+  if (!time) return undefined;
+  // backend gives HH:MM, frontend expects h:mm a for getAvailabilityText -> keep as-is for detail
+  // Convert HH:MM to h:mm AM/PM for display compatibility
+  const [h, m] = time.split(":").map(Number);
+  if (Number.isNaN(h)) return time;
+  const ampm = h >= 12 ? "PM" : "AM";
+  const hr = h % 12 || 12;
+  return `${hr}:${String(m).padStart(2, "0")} ${ampm}`;
+}
+
 export function mapRoomToVenue(room: Room): Venue {
+  // GET /api/rooms/ now returns the live status merged into each record:
+  // status ("FREE" | "OCCUPIED" | "ENDING_SOON"), free_until,
+  // next_available_time and the session payloads. Use those directly.
+  const status: Venue["availability"]["status"] =
+    room.status === "FREE" || room.status === "OCCUPIED" || room.status === "ENDING_SOON"
+      ? room.status
+      : "FREE";
   return {
-    id: String(room.id),
+    // Prefer slug so cards link to /venue/<slug> (detail + timetable work).
+    id: room.slug ?? String(room.id),
     name: room.name,
-    fullName: room.building.name,
-    building: room.building.code,
+    fullName: room.building?.name ?? room.building?.code ?? "—",
+    building: room.building?.code ?? "",
     type: "Classroom",
-    faculty: inferFaculty(room.building.code),
+    faculty: room.building?.code ? inferFaculty(room.building.code) : "Engineering",
     capacity: room.capacity ?? 0,
     hasPower: true,
     amenities: [],
-    availability: { status: "FREE" },
+    availability: {
+      status,
+      freeUntil: room.free_until ? to24h(room.free_until) : undefined,
+      nextAvailableTime: room.next_available_time ? to24h(room.next_available_time) : undefined,
+    },
+    schedule: [],
+  };
+}
+
+export function mapRoomDetailToVenue(detail: RoomDetail): Venue {
+  const status = detail.status ?? "FREE";
+  return {
+    id: detail.slug ?? String(detail.id),
+    name: detail.name,
+    fullName: detail.full_name || detail.building?.name || "",
+    building: detail.building?.code ?? "",
+    type: "Classroom",
+    faculty: (detail.faculty as Venue["faculty"]) || inferFaculty(detail.building?.code ?? ""),
+    capacity: detail.capacity ?? 0,
+    hasPower: detail.has_power,
+    image: detail.image ?? undefined,
+    amenities: [],
+    availability: {
+      status,
+      freeUntil: detail.free_until ? to24h(detail.free_until) : undefined,
+      nextAvailableTime: detail.next_available_time ? to24h(detail.next_available_time) : undefined,
+    },
     schedule: [],
   };
 }
