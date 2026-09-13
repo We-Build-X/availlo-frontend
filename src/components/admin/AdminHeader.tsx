@@ -14,8 +14,17 @@ import {
 import { AdminNav } from "./AdminNav";
 import Logo from "@/components/Logo";
 import { Logout } from "@solar-icons/react";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function AdminHeader() {
+  const navigate = useNavigate();
+  const username = localStorage.getItem("availlo_user") || "Admin User";
+  const initials = username.slice(0, 2).toUpperCase();
+  const handleLogout = () => {
+    localStorage.removeItem("availlo_token");
+    localStorage.removeItem("availlo_user");
+    navigate({ to: "/admin/login" });
+  };
   return (
     <header className="bg-white/90 border-b border-border/70 px-4 py-4 flex items-center justify-between">
       {/* Mobile View */}
@@ -44,14 +53,14 @@ export default function AdminHeader() {
               <button className="focus:outline-none">
                 <Avatar className="size-8 cursor-pointer">
                   <AvatarImage src="" />
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Admin User</DropdownMenuLabel>
+              <DropdownMenuLabel>{username}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
                 <Logout size={18} className="mr-2" />
                 Logout
               </DropdownMenuItem>
@@ -80,14 +89,14 @@ export default function AdminHeader() {
               <button className="focus:outline-none">
                 <Avatar className="size-8 cursor-pointer">
                   <AvatarImage src="" />
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Admin User</DropdownMenuLabel>
+              <DropdownMenuLabel>{username}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
                 <Logout size={18} className="mr-2" />
                 Logout
               </DropdownMenuItem>

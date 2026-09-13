@@ -4,9 +4,10 @@ import { Card } from "../ui/card";
 
 interface DailyTimetableProps {
   schedule: ScheduleItem[];
+  dateLabel?: string;
 }
 
-export function DailyTimetable({ schedule }: DailyTimetableProps) {
+export function DailyTimetable({ schedule, dateLabel }: DailyTimetableProps) {
   return (
     <Card className="space-y-8 bg-white p-0 md:p-8 rounded-none border-none md:border border-slate-200 ">
       <div className="flex justify-between items-start">
@@ -15,7 +16,7 @@ export function DailyTimetable({ schedule }: DailyTimetableProps) {
             Today's Timetable
           </p>
           <h2 className="text-2xl font-black capitalize tracking-tight text-slate-900 leading-none">
-            Thursday, Oct 24
+            {dateLabel ?? new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
           </h2>
         </div>
         <button

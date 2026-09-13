@@ -2,22 +2,43 @@ import {
   createRootRouteWithContext,
   createRoute,
   createRouter,
+  lazyRouteComponent,
   Outlet,
+  redirect,
 } from "@tanstack/react-router";
+import { Suspense } from "react";
 import { QueryClient } from "@tanstack/react-query";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./pages/Home";
-import ExplorePage from "./pages/Explore";
-import MapPage from "./pages/Map";
-import VenuePage from "./pages/Venue";
-import AdminDashboardPage from "./pages/admin/Dashboard";
-import AdminOverridesPage from "./pages/admin/Overrides";
 import NotFound from "./pages/NotFound";
-import AdminTimetablesPage from "./pages/admin/Timetables";
-import AdminVenuesPage from "./pages/admin/Venues";
-import AdminUploadWizardPage from "./pages/admin/UploadWizard";
 import MobileBottomMenu from "./components/MobileBottomMenu";
+import AdminHeader from "./components/admin/AdminHeader";
+import AdminSidebar from "./components/admin/AdminSidebar";
+
+// Lazy-loaded routes — keeps mapbox-gl and admin bundles out of the
+// Home entry chunk (PageSpeed: render-blocking requests / unused JS).
+const ExplorePage = lazyRouteComponent(() => import("./pages/Explore"));
+const MapPage = lazyRouteComponent(() => import("./pages/Map"));
+const VenuePage = lazyRouteComponent(() => import("./pages/Venue"));
+const AdminDashboardPage = lazyRouteComponent(
+  () => import("./pages/admin/Dashboard"),
+);
+const AdminOverridesPage = lazyRouteComponent(
+  () => import("./pages/admin/Overrides"),
+);
+const AdminTimetablesPage = lazyRouteComponent(
+  () => import("./pages/admin/Timetables"),
+);
+const AdminVenuesPage = lazyRouteComponent(
+  () => import("./pages/admin/Venues"),
+);
+const AdminUploadWizardPage = lazyRouteComponent(
+  () => import("./pages/admin/UploadWizard"),
+);
+const AdminLoginPage = lazyRouteComponent(
+  () => import("./pages/admin/Login"),
+);
 
 interface RouterContext {
   queryClient: QueryClient;
@@ -39,7 +60,9 @@ function PublicLayout() {
     <div className="flex flex-col min-h-screen mb-20">
       <Header />
       <main className="flex-1">
-        <Outlet />
+        <Suspense fallback={null}>
+          <Outlet />
+        </Suspense>
       </main>
       <MobileBottomMenu />
       <Footer />
@@ -59,8 +82,14 @@ const exploreRoute = createRoute({
   component: ExplorePage,
 });
 
+/**
+ * /map is intentionally NOT a child of publicLayoutRoute — a full-bleed
+ * map is useless under a sticky header. It lives directly under the
+ * root route, so it gets only the root layout (no Header, no
+ * MobileBottomMenu, no Footer).
+ */
 const mapRoute = createRoute({
-  getParentRoute: () => publicLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: "/map",
   component: MapPage,
 });
@@ -71,12 +100,22 @@ export const venueRoute = createRoute({
   component: VenuePage,
 });
 
-import AdminHeader from "./components/admin/AdminHeader";
-import AdminSidebar from "./components/admin/AdminSidebar";
+const adminLoginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/login",
+  component: AdminLoginPage,
+});
 
 const adminRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/admin",
+  beforeLoad: () => {
+    const hasToken = !!localStorage.getItem("availlo_token");
+    const apiConfigured = !!import.meta.env.VITE_API_BASE_URL;
+    if (apiConfigured && !hasToken && window.location.pathname !== "/admin/login") {
+      throw redirect({ to: "/admin/login" });
+    }
+  },
   component: function AdminLayout() {
     return (
       <div className="flex h-screen bg-neutral-100">
@@ -84,7 +123,9 @@ const adminRoute = createRoute({
         <div className="flex-1 flex flex-col min-w-0">
           <AdminHeader />
           <main className="flex-1 p-4 overflow-auto min-h-0 min-w-0">
-            <Outlet />
+            <Suspense fallback={null}>
+              <Outlet />
+            </Suspense>
           </main>
         </div>
       </div>
@@ -139,9 +180,9 @@ export const adminTimetableUploadRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
-
-  publicLayoutRoute.addChildren([indexRoute, exploreRoute, mapRoute, venueRoute]),
- 
+  publicLayoutRoute.addChildren([indexRoute, exploreRoute, venueRoute]),
+  mapRoute,
+  adminLoginRoute,
   adminRoute.addChildren([
     adminDashboardRoute,
     adminOverridesRoute,
@@ -149,7 +190,6 @@ const routeTree = rootRoute.addChildren([
     adminTimetablesRoute,
     adminTimetableUploadRoute,
   ]),
-
 ]);
 
 export const router = createRouter({

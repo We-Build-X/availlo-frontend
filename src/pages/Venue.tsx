@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "@tanstack/react-router";
-import { MOCK_VENUES, mapRoomToVenue } from "@/lib/mock-data";
+import { MOCK_VENUES, mapRoomDetailToVenue } from "@/lib/mock-data";
 import { getAvailabilityText } from "@/lib/time";
 import { VenueHeroImage } from "@/components/venue/VenueHeroImage";
 import { UtilityStatus } from "@/components/venue/UtilityStatus";
@@ -8,27 +7,124 @@ import { CrowdsourceStatusButtons } from "@/components/venue/CrowdsourceStatusBu
 import { RoomAmenitiesList } from "@/components/venue/RoomAmenitiesList";
 import { DailyTimetable } from "@/components/venue/DailyTimetable";
 import { ArrowLeft } from "@solar-icons/react";
+import { isApiConfigured } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import { API_BASE_URL, ENDPOINTS } from "@/lib/ENDPOINTS";
-import type { Room } from "@/lib/api-types";
+import { ENDPOINTS } from "@/lib/ENDPOINTS";
+import type { RoomDetail, TimetableEntry } from "@/lib/api-types";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { ScheduleItem } from "@/lib/mock-data";
 
-const USE_API = !!API_BASE_URL;
+function timetableToSchedule(entries: TimetableEntry[]): ScheduleItem[] {
+  return entries.map((e, i) => ({
+    id: `t-${i}-${e.start_time}`,
+    title: e.is_class ? (e.course_title ?? "Class") : "FREE",
+    startTime: e.start_time,
+    endTime: e.end_time,
+    isClass: e.is_class,
+  }));
+}
 
 export default function Venue() {
   const { id } = useParams({ from: "/public-layout/venue/$id" });
+  const slug = id;
+  const isNumericId = slug !== "" && !isNaN(Number(slug));
+  const useApi = isApiConfigured();
 
-  const { data: apiVenue, isPending: venueLoading } = useQuery({
-    queryKey: ["rooms", id],
+  const { data: detail, isPending: detailLoading } = useQuery({
+    queryKey: ["rooms", "detail", slug],
     queryFn: async () => {
-      const { data } = await api.get<Room>(ENDPOINTS.rooms.status(Number(id)));
-      return mapRoomToVenue(data);
+      const { data } = await api.get<RoomDetail>(ENDPOINTS.rooms.detail(slug));
+      return data;
     },
-    enabled: USE_API && !isNaN(Number(id)),
+    enabled: useApi && !!slug && !isNumericId,
+    staleTime: 15_000,
+    retry: false,
   });
 
-  const isLoading = USE_API && venueLoading;
-  const venue = USE_API ? apiVenue : MOCK_VENUES.find((v) => v.id === id);
+  // Numeric ids (from Explore cards, since public list has no slug):
+  // hit the status endpoint directly — NOT gated on detailError, otherwise
+  // neither query ever fires and the network tab stays empty.
+  const { data: statusData, isPending: statusLoading } = useQuery({
+    queryKey: ["rooms", "status", slug],
+    queryFn: async () => {
+      const { data } = await api.get(ENDPOINTS.rooms.status(Number(slug)));
+      return data;
+    },
+    enabled: useApi && isNumericId,
+    staleTime: 15_000,
+    retry: false,
+  });
+
+  const effectiveSlug = detail?.slug ?? (isNumericId ? undefined : slug);
+  const { data: timetableData } = useQuery({
+    queryKey: ["rooms", "timetable", effectiveSlug],
+    queryFn: async () => {
+      const { data } = await api.get<TimetableEntry[]>(ENDPOINTS.rooms.timetable(effectiveSlug!));
+      return data;
+    },
+    enabled: useApi && !!effectiveSlug,
+    staleTime: 15_000,
+  });
+
+  let apiVenue = detail ? mapRoomDetailToVenue(detail) : undefined;
+  // If numeric fallback succeeded, synthesize venue from statusData
+  if (!apiVenue && statusData && isNumericId) {
+    // Minimal synthesis; list fetch already cached in useRooms but use status room name
+    apiVenue = {
+      id: slug,
+      name: (statusData as { room?: string }).room ?? `Room ${slug}`,
+      fullName: "",
+      building: "",
+      faculty: "Engineering",
+      type: "Classroom",
+      capacity: 0,
+      hasPower: true,
+      amenities: [],
+      availability: {
+        status: (statusData as { status?: string }).status as never ?? "FREE",
+        freeUntil: (statusData as { free_until?: string }).free_until ?? undefined,
+        nextAvailableTime: (statusData as { next_available_time?: string }).next_available_time ?? undefined,
+      },
+      schedule: [],
+    } as never;
+  }
+  if (apiVenue && timetableData) {
+    apiVenue.schedule = timetableToSchedule(timetableData as TimetableEntry[]);
+  }
+
+  // NOTE: a disabled TanStack Query stays `isPending: true` (fetchStatus idle),
+  // so only read the loading flag of the query that is actually enabled.
+  const isLoading = useApi && (!isNumericId ? detailLoading : statusLoading);
+  const detailLoadFailed = useApi && (!isNumericId ? !detailLoading : !statusLoading) && !apiVenue;
+  const venue = useApi ? apiVenue : MOCK_VENUES.find((v) => v.id === id);
+
+  if (detailLoadFailed) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 text-center">
+        <h1 className="text-2xl font-black uppercase text-slate-900 mb-2">
+          Venue not found
+        </h1>
+        <p className="text-sm text-slate-500 mb-6 max-w-md">
+          This venue could not be loaded from the server. Check the link or try again.
+        </p>
+        <div className="flex gap-3">
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-white border border-slate-200 text-slate-700 font-bold uppercase tracking-wider rounded-xl text-sm hover:bg-slate-50"
+          >
+            Retry
+          </button>
+          <Link
+            to="/explore"
+            className="px-6 py-3 bg-primary text-white font-black uppercase tracking-wider rounded-xl transition-all hover:bg-slate-800 shadow-lg shadow-slate-200 text-sm"
+          >
+            Back to Explore
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

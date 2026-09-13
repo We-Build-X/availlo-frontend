@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
 import { MOCK_VENUES, mapRoomToVenue, type Venue } from "@/lib/mock-data";
 import { FilterSidebar } from "@/components/explore/FilterSidebar";
@@ -16,12 +15,11 @@ import Filter from "@solar-icons/react/ui/Filter";
 import { Input } from "@/components/ui/input";
 import { Search } from "@solar-icons/react/category";
 import { MapPointSchool } from "@solar-icons/react";
-import { api } from "@/lib/api";
-import { API_BASE_URL, ENDPOINTS } from "@/lib/ENDPOINTS";
-import type { Room } from "@/lib/api-types";
+import { isApiConfigured } from "@/lib/api";
+import { useRooms, useSearchRooms } from "@/hooks/useRooms";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const USE_API = !!API_BASE_URL;
+const USE_API = isApiConfigured();
 
 export default function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,36 +35,19 @@ export default function Explore() {
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-  const { data: apiRooms, isPending: roomsLoading } = useQuery({
-    queryKey: ["rooms"],
-    queryFn: async () => {
-      const { data } = await api.get<Room[]>(ENDPOINTS.rooms.list);
-      return data.map(mapRoomToVenue);
-    },
-    enabled: USE_API && !debouncedSearchQuery,
-    staleTime: 30_000,
-  });
+  const { data: roomsData, isPending: roomsLoading } = useRooms(USE_API && !debouncedSearchQuery);
+  const { data: searchData, isPending: searchLoading } = useSearchRooms(debouncedSearchQuery, 1, USE_API);
 
-  const { data: searchResults, isPending: searchLoading } = useQuery({
-    queryKey: ["rooms", "search", debouncedSearchQuery],
-    queryFn: async () => {
-      const { data } = await api.get<Room[]>(ENDPOINTS.search, {
-        params: { q: debouncedSearchQuery },
-      });
-      return data.map(mapRoomToVenue);
-    },
-    enabled: USE_API && debouncedSearchQuery.length > 0,
-    staleTime: 15_000,
-  });
+  const apiRooms = roomsData?.map(mapRoomToVenue) ?? [];
+  const searchResults = searchData?.results?.map(mapRoomToVenue) ?? [];
 
-  const isLoading =
-    USE_API && (debouncedSearchQuery ? searchLoading : roomsLoading);
+  const isLoading = USE_API && (debouncedSearchQuery ? searchLoading : roomsLoading);
 
   const rooms = !USE_API
     ? MOCK_VENUES
     : debouncedSearchQuery
-      ? (searchResults ?? [])
-      : (apiRooms ?? []);
+      ? searchResults
+      : apiRooms;
 
   const handleApplyFilters = () => {
     setAppliedFilters(filters);

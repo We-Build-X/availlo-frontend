@@ -1,0 +1,282 @@
+[
+  {
+    "name": "NEB — New Engineering Block",
+    "mapsUrl": "https://maps.app.goo.gl/BxXdpM1bc3hdMgtn9",
+    "lat": 5.040547,
+    "lng": 7.972965199999999,
+    "source": "geocode"
+  },
+  {
+    "name": "NECB — New Engineering Class Block",
+    "mapsUrl": "https://maps.app.goo.gl/Rv1BfsZtRc5KuJFg8",
+    "lat": 5.0379489,
+    "lng": 7.925857,
+    "source": "geocode"
+  },
+  {
+    "name": "ELT — Engineering Lecture Theatre (Link 1)",
+    "mapsUrl": "https://maps.app.goo.gl/Mn9h2jNxMRPSQ4WG6",
+    "lat": null,
+    "lng": null,
+    "source": "failed"
+  },
+  {
+    "name": "ELT — Engineering Lecture Theatre (Link 2)",
+    "mapsUrl": "https://maps.app.goo.gl/qoihQyH62eJKPb9h8",
+    "lat": 5.039877199999999,
+    "lng": 7.9736114,
+    "source": "geocode"
+  },
+  {
+    "name": "ELF Lecture Hall",
+    "mapsUrl": "https://maps.app.goo.gl/cFcvqfBv2Agh6W9b9",
+    "lat": 5.0401845,
+    "lng": 7.9753151,
+    "source": "geocode"
+  },
+  {
+    "name": "PTDF",
+    "mapsUrl": "https://maps.app.goo.gl/F5jDUc5PdwQ6fARG7",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Faculty of Engineering (Main)",
+    "mapsUrl": "https://maps.app.goo.gl/9ydWGyDodTX4kPov7",
+    "lat": 5.0413332,
+    "lng": 7.9745583,
+    "source": "geocode"
+  },
+  {
+    "name": "Agric Engineering Laboratory Block",
+    "mapsUrl": "https://maps.app.goo.gl/7u5Hj3wfXxePbq8f6",
+    "lat": 5.0379489,
+    "lng": 7.925857,
+    "source": "geocode"
+  },
+  {
+    "name": "Zinox Computer Lab",
+    "mapsUrl": "https://maps.app.goo.gl/uUEJ5ZpKm5w9ZnVs5",
+    "lat": 5.041125099999999,
+    "lng": 7.9749588,
+    "source": "geocode"
+  },
+  {
+    "name": "Engineering Market",
+    "mapsUrl": "https://goo.gl/maps/f4BqQFSwiws62jnD9?g_st=aw",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Faculty of Science",
+    "mapsUrl": "https://maps.app.goo.gl/61UMWRnWWFg3WuGA8",
+    "lat": null,
+    "lng": null,
+    "source": "failed"
+  },
+  {
+    "name": "Science Lecture Theatre",
+    "mapsUrl": "https://maps.app.goo.gl/4BpyEGX984rDwdod9",
+    "lat": 5.0363352,
+    "lng": 7.9243465,
+    "source": "geocode"
+  },
+  {
+    "name": "Geoscience",
+    "mapsUrl": "https://maps.app.goo.gl/RUVEbMwpL5CyRsAU8",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Department of Computer Science, Statistics & Mathematics",
+    "mapsUrl": "https://maps.app.goo.gl/o8VecEwAfSN1F4k58",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Faculty of Agriculture",
+    "mapsUrl": "https://maps.app.goo.gl/1FFRsdF7MJbMAn9U8",
+    "lat": 5.0449096,
+    "lng": 7.977696600000001,
+    "source": "geocode"
+  },
+  {
+    "name": "ALT — Agric Lecture Theatre (600 cap)",
+    "mapsUrl": "https://maps.app.goo.gl/CM91qpjYScfiL9V57",
+    "lat": 5.0463473,
+    "lng": 7.9776205,
+    "source": "geocode"
+  },
+  {
+    "name": "Agric Class Block",
+    "mapsUrl": "https://maps.app.goo.gl/RHnRyZsB91Hoa6AB8",
+    "lat": 5.0379489,
+    "lng": 7.925857,
+    "source": "geocode"
+  },
+  {
+    "name": "Faculty of Arts, Block 1",
+    "mapsUrl": "https://goo.gl/maps/pshPfpJqKs1ie5Nk7?g_st=aw",
+    "lat": 5.0410634,
+    "lng": 7.919402799999999,
+    "source": "geocode"
+  },
+  {
+    "name": "Faculty of Arts, Block 2",
+    "mapsUrl": "https://goo.gl/maps/Q2SLmf3bpJq17rWF9?g_st=aw",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Professor Stella Idiong Art Gallery",
+    "mapsUrl": "https://maps.app.goo.gl/mLJ9Xv75yJd15uy69",
+    "lat": null,
+    "lng": null,
+    "source": "failed"
+  },
+  {
+    "name": "Department of Theatre Arts and Film Studio",
+    "mapsUrl": "https://goo.gl/maps/16bz2jbgtNdLL5eJ7?g_st=aw",
+    "lat": 5.0434228,
+    "lng": 7.9214205,
+    "source": "geocode"
+  },
+  {
+    "name": "Department of Fine and Industrial Arts",
+    "mapsUrl": "https://maps.app.goo.gl/aB5JaPiYX4MVLrzW7",
+    "lat": 5.0398492,
+    "lng": 7.925203100000001,
+    "source": "geocode"
+  },
+  {
+    "name": "Faculty of Law",
+    "mapsUrl": "https://maps.app.goo.gl/svVAohSKg1d8ZnkaA",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Faculty of Environmental Science",
+    "mapsUrl": "https://maps.app.goo.gl/cKYoRQfpwHupjfSL6",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "1000 Capacity Building",
+    "mapsUrl": "https://maps.app.goo.gl/CEd8yhC2zewqMR27A",
+    "lat": 5.0379489,
+    "lng": 7.925857,
+    "source": "geocode"
+  },
+  {
+    "name": "Multipurpose Hall",
+    "mapsUrl": "https://maps.app.goo.gl/o5UGb1VrYbXBzYKe7",
+    "lat": 5.0379489,
+    "lng": 7.925857,
+    "source": "geocode"
+  },
+  {
+    "name": "Convocation Arena",
+    "mapsUrl": "https://maps.app.goo.gl/iN6p6fTk4WeuyVfe7",
+    "lat": 5.0391143,
+    "lng": 7.924474099999999,
+    "source": "geocode"
+  },
+  {
+    "name": "Admin Block",
+    "mapsUrl": "https://maps.app.goo.gl/mC1xzkScqKHwhojFA",
+    "lat": 5.0379489,
+    "lng": 7.925857,
+    "source": "geocode"
+  },
+  {
+    "name": "Postgraduate School",
+    "mapsUrl": "https://maps.app.goo.gl/WrUg4E5WxcQUNDAi7",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Uniuyo Library",
+    "mapsUrl": "https://maps.app.goo.gl/SZY2sPgoKXzieQdY6",
+    "lat": 5.0423729,
+    "lng": 7.9249422,
+    "source": "geocode"
+  },
+  {
+    "name": "Health Center",
+    "mapsUrl": "https://maps.app.goo.gl/ZSizd4CHuWQjuve37?g_st=aw",
+    "lat": 5.0394649,
+    "lng": 7.925136500000001,
+    "source": "geocode"
+  },
+  {
+    "name": "ICT 2 UniUyo",
+    "mapsUrl": "https://maps.app.goo.gl/YxpQBGfoZSLEZ5i76",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Window to America",
+    "mapsUrl": "https://maps.app.goo.gl/4ofqrznaoPBuSVe49",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Microfinance Bank",
+    "mapsUrl": "https://maps.app.goo.gl/hNH2KUMM7SMLbZ7f8?g_st=aw",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Science Market",
+    "mapsUrl": "https://maps.app.goo.gl/rw3UVonvPBbj3hWr7?g_st=aw",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "5 Arms",
+    "mapsUrl": "https://maps.app.goo.gl/YN4Bo7zj2gut9r8G9",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Uniuyo Table Water",
+    "mapsUrl": "https://maps.app.goo.gl/a8pM491xReFkzuih6?g_st=aw",
+    "lat": 4.9921295,
+    "lng": 7.9209845,
+    "source": "geocode"
+  },
+  {
+    "name": "Female Presidential Hostel",
+    "mapsUrl": "https://maps.app.goo.gl/iGLXyBvzNANSSCn78",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  },
+  {
+    "name": "Male Presidential Hostel",
+    "mapsUrl": "https://maps.app.goo.gl/FxJB3tPR74RgJs9J6",
+    "lat": 5.0431947,
+    "lng": 7.9737148,
+    "source": "geocode"
+  },
+  {
+    "name": "NDDC Hostel — Ultra Modern (Male & Female)",
+    "mapsUrl": "https://maps.app.goo.gl/zsRJ2bCU4DX8hoDv8",
+    "lat": 5.0410634,
+    "lng": 7.9194028,
+    "source": "geocode"
+  }
+]

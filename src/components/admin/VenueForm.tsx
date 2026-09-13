@@ -9,11 +9,12 @@ import { Upload } from "@solar-icons/react";
 
 interface VenueFormProps {
   initialData?: Venue;
-  onSubmit: (data: Omit<Venue, "id" | "amenities" | "availability" | "schedule">) => void;
+  onSubmit: (data: Omit<Venue, "id" | "amenities" | "availability" | "schedule">, file: File | null) => void;
   onCancel: () => void;
+  isSaving?: boolean;
 }
 
-export function VenueForm({ initialData, onSubmit, onCancel }: VenueFormProps) {
+export function VenueForm({ initialData, onSubmit, onCancel, isSaving = false }: VenueFormProps) {
   const [formData, setFormData] = React.useState({
     name: initialData?.name || "",
     fullName: initialData?.fullName || "",
@@ -49,17 +50,20 @@ export function VenueForm({ initialData, onSubmit, onCancel }: VenueFormProps) {
       return;
     }
 
-    onSubmit({
-      name: formData.name,
-      fullName: formData.fullName,
-      building: formData.building,
-      floor: formData.floor || undefined,
-      type: formData.type,
-      faculty: formData.faculty,
-      capacity: parseInt(formData.capacity),
-      hasPower: formData.hasPower,
-      image: formData.image || undefined,
-    });
+    onSubmit(
+      {
+        name: formData.name,
+        fullName: formData.fullName,
+        building: formData.building,
+        floor: formData.floor || undefined,
+        type: formData.type,
+        faculty: formData.faculty,
+        capacity: parseInt(formData.capacity),
+        hasPower: formData.hasPower,
+        image: previewUrl || undefined,
+      },
+      imageFile,
+    );
   };
 
   return (
@@ -174,6 +178,10 @@ export function VenueForm({ initialData, onSubmit, onCancel }: VenueFormProps) {
               <SelectItem value="Engineering">Engineering</SelectItem>
               <SelectItem value="Science">Science</SelectItem>
               <SelectItem value="Arts">Arts</SelectItem>
+              <SelectItem value="Agriculture">Agriculture</SelectItem>
+              <SelectItem value="Computing">Computing</SelectItem>
+              <SelectItem value="Administration">Administration</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -200,11 +208,11 @@ export function VenueForm({ initialData, onSubmit, onCancel }: VenueFormProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
-        <Button type="button" variant="ghost" onClick={onCancel} className="font-bold text-slate-600 hover:text-slate-900 px-4 sm:px-6 h-10 sm:h-11 order-2 sm:order-1 text-sm sm:text-base">
+        <Button type="button" variant="ghost" onClick={onCancel} disabled={isSaving} className="font-bold text-slate-600 hover:text-slate-900 px-4 sm:px-6 h-10 sm:h-11 order-2 sm:order-1 text-sm sm:text-base">
           Cancel
         </Button>
-        <Button type="submit" className="text-white font-bold px-4 sm:px-6 h-10 sm:h-11 order-1 sm:order-2 text-sm sm:text-base">
-          {initialData ? "Save" : "Add"}
+        <Button type="submit" disabled={isSaving} className="text-white font-bold px-4 sm:px-6 h-10 sm:h-11 order-1 sm:order-2 text-sm sm:text-base">
+          {isSaving ? "Saving..." : initialData ? "Save" : "Add"}
         </Button>
       </div>
     </form>
