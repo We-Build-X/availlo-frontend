@@ -33,7 +33,7 @@ export function useSearchRooms(q: string, page = 1, enabled = isApiConfigured())
   return useQuery({
     queryKey: ["rooms", "search", q, page],
     queryFn: async () => {
-      const { data } = await api.get<PaginatedResponse<SearchRoom>>(ENDPOINTS.search, {
+      const { data } = await api.get<SearchRoom[]>(ENDPOINTS.search, {
         params: { q, page },
       });
       return data;

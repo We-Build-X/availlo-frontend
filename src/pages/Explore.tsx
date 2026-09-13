@@ -39,7 +39,7 @@ export default function Explore() {
   const { data: searchData, isPending: searchLoading } = useSearchRooms(debouncedSearchQuery, 1, USE_API);
 
   const apiRooms = roomsData?.map(mapRoomToVenue) ?? [];
-  const searchResults = searchData?.results?.map(mapRoomToVenue) ?? [];
+  const searchResults = searchData?.map(mapRoomToVenue) ?? [];
 
   const isLoading = USE_API && (debouncedSearchQuery ? searchLoading : roomsLoading);
 
