@@ -1,7 +1,6 @@
 import type { Venue } from "@/lib/mock-data";
 import { getAvailabilityText } from "@/lib/time";
 import { Link } from "@tanstack/react-router";
-import { AltArrowRight } from "@solar-icons/react";
 
 interface VenueCardProps {
   venue: Venue;
