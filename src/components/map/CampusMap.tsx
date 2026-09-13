@@ -358,7 +358,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
         return
       }
     }
-  }, [ready, buildings])
+  }, [ready, buildings, styleLoaded])
 
   if (!hasToken) {
     return (
