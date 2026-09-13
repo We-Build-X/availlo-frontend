@@ -6,7 +6,7 @@
 
 ```
 GET https://api.mapbox.com/datasets/v1/shakzy/clly08aik5fwf2as9kzxvxjgm/features
-    ?access_token=pk.eyJ1Ijoic2hha3p5IiwiYSI6ImNsbHh3bmpkNDJrN3czcHA4eWlsbGo5cXgifQ.dI63IIgQ30AaQrmQLwBsaA
+    ?access_token=pk.eyJ1...
 ```
 
 ## What this is
