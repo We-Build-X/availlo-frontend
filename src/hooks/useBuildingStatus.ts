@@ -17,58 +17,58 @@
  * the rest of the app (see src/pages/Explore.tsx).
  */
 
-import { useMemo } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { api, isApiConfigured } from "@/lib/api"
-import { ENDPOINTS } from "@/lib/ENDPOINTS"
-import type { Room } from "@/lib/api-types"
-import { MOCK_VENUES, mapRoomToVenue } from "@/lib/mock-data"
-import type { Venue } from "@/lib/mock-data"
-import buildingsGeoJson from "@/data/campus-buildings.json"
-import { BUILDING_TO_ROOMS, slugify } from "@/data/building-room-join"
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { api, isApiConfigured } from "@/lib/api";
+import { ENDPOINTS } from "@/lib/ENDPOINTS";
+import type { Room } from "@/lib/api-types";
+import { MOCK_VENUES, mapRoomToVenue } from "@/lib/mock-data";
+import type { Venue } from "@/lib/mock-data";
+import buildingsGeoJson from "@/data/campus-buildings.json";
+import { BUILDING_TO_ROOMS, slugify } from "@/data/building-room-join";
 
 // Minimal GeoJSON types we need — keep them local to avoid pulling in
 // @types/geojson just for two shapes.
 type BuildingFeatureProps = {
-  title: string
-  description: string
-  image?: string
-}
+  title: string;
+  description: string;
+  image?: string;
+};
 type BuildingFeatureGeoJson = {
   features: Array<{
-    type: "Feature"
-    properties: BuildingFeatureProps
-    geometry: { type: "Point"; coordinates: [number, number] }
-  }>
-}
+    type: "Feature";
+    properties: BuildingFeatureProps;
+    geometry: { type: "Point"; coordinates: [number, number] };
+  }>;
+};
 
-export type BuildingStatus = "FREE" | "ENDING_SOON" | "OCCUPIED" | "UNKNOWN"
+export type BuildingStatus = "FREE" | "ENDING_SOON" | "OCCUPIED" | "UNKNOWN";
 
 export interface BuildingFeature {
   /** Stable slug (used for Mapbox feature-state tracking). */
-  slug: string
+  slug: string;
   /** Building name as it appears in the GeoJSON. */
-  title: string
+  title: string;
   /** Short blurb from the GeoJSON. */
-  description: string
+  description: string;
   /** [lng, lat]. */
-  coordinates: [number, number]
+  coordinates: [number, number];
   /** Optional per-building image (path under /public). */
-  image?: string
+  image?: string;
   /** Optional faculty hint from the join table. */
   faculty:
     | "Engineering"
     | "Science"
     | "Arts"
     | "Agriculture"
-    | "Administration"
-    | "Other"
+    | "Computing"
+    | "Other";
   /** Short building code (e.g. "NECB"). */
-  code: string
+  code: string;
   /** Worst-case status of the building's rooms. */
-  status: BuildingStatus
+  status: BuildingStatus;
   /** Per-room view for the popup. Empty if the backend has no rooms yet. */
-  rooms: Venue[]
+  rooms: Venue[];
 }
 
 const STATUS_PRIORITY: Record<BuildingStatus, number> = {
@@ -76,18 +76,18 @@ const STATUS_PRIORITY: Record<BuildingStatus, number> = {
   ENDING_SOON: 2,
   FREE: 1,
   UNKNOWN: 0,
-}
+};
 
 const worstStatus = (statuses: BuildingStatus[]): BuildingStatus => {
-  if (statuses.length === 0) return "UNKNOWN"
+  if (statuses.length === 0) return "UNKNOWN";
   return statuses.reduce<BuildingStatus>(
     (worst, current) =>
       STATUS_PRIORITY[current] > STATUS_PRIORITY[worst] ? current : worst,
     "UNKNOWN",
-  )
-}
+  );
+};
 
-const USE_API = isApiConfigured()
+const USE_API = isApiConfigured();
 
 /**
  * Hook to fetch the list of rooms. Returns either the API response
@@ -97,12 +97,12 @@ function useAllRooms() {
   return useQuery({
     queryKey: ["rooms", "all"],
     queryFn: async () => {
-      const { data } = await api.get<Room[]>(ENDPOINTS.rooms.list)
-      return data.map(mapRoomToVenue)
+      const { data } = await api.get<Room[]>(ENDPOINTS.rooms.list);
+      return data.map(mapRoomToVenue);
     },
     enabled: USE_API,
     staleTime: 30_000,
-  })
+  });
 }
 
 /**
@@ -110,60 +110,60 @@ function useAllRooms() {
  * The order matches the GeoJSON order.
  */
 export function useBuildingStatus(): {
-  data: BuildingFeature[]
-  isLoading: boolean
-  isMock: boolean
+  data: BuildingFeature[];
+  isLoading: boolean;
+  isMock: boolean;
 } {
-  const apiQuery = useAllRooms()
+  const apiQuery = useAllRooms();
 
   return useMemo(() => {
-    const rooms: Venue[] = USE_API ? (apiQuery.data ?? []) : MOCK_VENUES
+    const rooms: Venue[] = USE_API ? (apiQuery.data ?? []) : MOCK_VENUES;
 
     // Match rooms to buildings by building.code — real /api/rooms/ records
     // carry a Building object with a `code` (e.g. "NECB"), which
     // mapRoomToVenue() exposes as venue.building. The join table's `code`
     // field is the key that links them, not `rooms: number[]` (empty) or
     // building names (which differ between GeoJSON titles and room data).
-    const roomsByBuildingCode = new Map<string, Venue[]>()
+    const roomsByBuildingCode = new Map<string, Venue[]>();
     for (const r of rooms) {
-      const code = r.building.toUpperCase()
-      const list = roomsByBuildingCode.get(code) ?? []
-      list.push(r)
-      roomsByBuildingCode.set(code, list)
+      const code = r.building.toUpperCase();
+      const list = roomsByBuildingCode.get(code) ?? [];
+      list.push(r);
+      roomsByBuildingCode.set(code, list);
     }
 
     // Fallback index for buildings with no join entry: match by the
     // GeoJSON title against the building name from the API.
-    const roomsByBuildingName = new Map<string, Venue[]>()
+    const roomsByBuildingName = new Map<string, Venue[]>();
     for (const r of rooms) {
-      const list = roomsByBuildingName.get(r.fullName) ?? []
-      list.push(r)
-      roomsByBuildingName.set(r.fullName, list)
+      const list = roomsByBuildingName.get(r.fullName) ?? [];
+      list.push(r);
+      roomsByBuildingName.set(r.fullName, list);
     }
 
-    const features = (buildingsGeoJson as BuildingFeatureGeoJson).features
+    const features = (buildingsGeoJson as BuildingFeatureGeoJson).features;
 
     const buildings: BuildingFeature[] = features.map((f) => {
-      const title = f.properties.title
-      const join = BUILDING_TO_ROOMS[title]
-      const fallbackSlug = slugify(title)
+      const title = f.properties.title;
+      const join = BUILDING_TO_ROOMS[title];
+      const fallbackSlug = slugify(title);
 
       // Prefer the building-code match — the backend room records carry
       // a Building.code (e.g. "NECB") which mapRoomToVenue() exposes as
       // venue.building, and the join table's `code` field is the same
       // key. Fall back to a name match against the API response when a
       // building has no join entry (rooms: []).
-      let buildingRooms: Venue[] = []
+      let buildingRooms: Venue[] = [];
       if (join && join.code) {
-        buildingRooms = roomsByBuildingCode.get(join.code.toUpperCase()) ?? []
+        buildingRooms = roomsByBuildingCode.get(join.code.toUpperCase()) ?? [];
       }
       if (buildingRooms.length === 0) {
-        buildingRooms = roomsByBuildingName.get(title) ?? []
+        buildingRooms = roomsByBuildingName.get(title) ?? [];
       }
 
       const status = worstStatus(
         buildingRooms.map((r) => r.availability.status as BuildingStatus),
-      )
+      );
 
       return {
         slug: join?.slug ?? fallbackSlug,
@@ -175,13 +175,13 @@ export function useBuildingStatus(): {
         code: join?.code ?? "",
         status,
         rooms: buildingRooms,
-      }
-    })
+      };
+    });
 
     return {
       data: buildings,
       isLoading: USE_API && apiQuery.isPending,
       isMock: !USE_API,
-    }
-  }, [apiQuery.data, apiQuery.isPending])
+    };
+  }, [apiQuery.data, apiQuery.isPending]);
 }

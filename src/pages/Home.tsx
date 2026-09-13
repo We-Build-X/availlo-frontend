@@ -17,7 +17,6 @@ const USE_API = isApiConfigured();
 // Faculties that can appear in live data (backend rooms list building codes,
 // mapped to faculties in mock-data). Sorted for stable dropdown ordering.
 const FACULTY_OPTIONS = [
-  "ADMINISTRATION",
   "AGRICULTURE",
   "ARTS",
   "COMPUTING",

@@ -37,7 +37,6 @@ export interface BuildingRoomJoin {
     | "Science"
     | "Arts"
     | "Agriculture"
-    | "Administration"
     | "Other"
   /** Room ids (matching the backend Room.id) that live inside this building. */
   rooms: number[]
