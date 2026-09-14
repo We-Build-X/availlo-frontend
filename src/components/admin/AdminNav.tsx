@@ -29,7 +29,13 @@ export function AdminNav({ showLogo = false }: AdminNavProps) {
     <a href="/" className="flex flex-col h-full">
       {showLogo && (
         <div className="flex items-center gap-3 p-4 border-b border-black/10">
-          <img src="/favicon-dark-bg.png" className="w-10" alt="Availlo" />
+          <img
+            src="/favicon-dark-bg.png"
+            width={192}
+            height={192}
+            className="w-10"
+            alt="Availlo"
+          />
           <h2 className="font-bold text-2xl">Availlo</h2>
         </div>
       )}

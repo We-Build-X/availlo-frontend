@@ -270,8 +270,8 @@ paths:
   /api/timetable/upload/:
     post:
       operationId: timetable_upload_create
-      description: Upload a PDF file containing the timetable and specify the semester_id
-        to extract and save class sessions.
+      description: Upload a PDF file containing the timetable to extract and save
+        class sessions.
       summary: Upload timetable PDF
       tags:
       - timetable
@@ -364,11 +364,8 @@ components:
         file:
           type: string
           format: uri
-        semester_id:
-          type: integer
       required:
       - file
-      - semester_id
     TimetableUploadResponse:
       type: object
       properties:

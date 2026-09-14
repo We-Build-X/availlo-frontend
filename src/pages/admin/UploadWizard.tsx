@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { MOCK_FACULTY_STATUSES } from "@/lib/mock-data";
 import { adminTimetableUploadRoute } from "@/router";
-import { api } from "@/lib/api";
+import { api, isApiConfigured } from "@/lib/api";
 import { ENDPOINTS } from "@/lib/ENDPOINTS";
 import type { TimetableUploadResponse } from "@/lib/api-types";
 
@@ -27,26 +27,32 @@ export default function AdminUploadWizard() {
   const uploadMutation = useMutation({
     mutationFn: async (uploadFile: File) => {
       const formData = new FormData();
+      // Backend contract: POST /api/timetable/upload/ accepts ONLY the PDF
+      // file. The semester name is extracted verbatim from the timetable
+      // header and the Semester is auto-created server-side.
       formData.append("file", uploadFile);
-      formData.append("semester_id", "1");
-      const { data } = await api.post<TimetableUploadResponse>(
-        ENDPOINTS.timetable.upload,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } },
-      );
+      const { data } = await api.post<TimetableUploadResponse>(ENDPOINTS.timetable.upload, formData);
       return data;
     },
     onSuccess: (data) => {
       setUploadResult(data);
       navigate({ search: { step: 3 } });
     },
-    onError: () => {
-      navigate({ search: { step: 3 } });
-    },
+    onError: () => {},
   });
+
+  const handleRetry = () => {
+    uploadMutation.reset();
+    if (file) uploadMutation.mutate(file);
+  };
 
   const handleUpload = (uploadFile: File) => {
     setFile(uploadFile);
+    if (!isApiConfigured()) {
+      setUploadResult(undefined);
+      navigate({ search: { step: 3 } });
+      return;
+    }
     uploadMutation.mutate(uploadFile);
     navigate({ search: { step: 2 } });
   };
@@ -127,8 +133,11 @@ export default function AdminUploadWizard() {
           {step === 2 && (
             <Step2Processing
               isUploading={uploadMutation.isPending}
-              uploadError={uploadMutation.error?.message}
-              onNext={() => navigate({ search: { step: 3 } })}
+              uploadError={
+                (uploadMutation.error as unknown as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+                uploadMutation.error?.message
+              }
+              onRetry={handleRetry}
             />
           )}
           {step === 3 && (

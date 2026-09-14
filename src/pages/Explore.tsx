@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
 import { MOCK_VENUES, mapRoomToVenue, type Venue } from "@/lib/mock-data";
 import { FilterSidebar } from "@/components/explore/FilterSidebar";
-import { VenueCard } from "@/components/VenueCard";
+import { VenueCard } from "#/components/VenueCard";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -15,12 +14,12 @@ import {
 import Filter from "@solar-icons/react/ui/Filter";
 import { Input } from "@/components/ui/input";
 import { Search } from "@solar-icons/react/category";
-import { api } from "@/lib/api";
-import { API_BASE_URL, ENDPOINTS } from "@/lib/ENDPOINTS";
-import type { Room } from "@/lib/api-types";
+import { MapPointSchool } from "@solar-icons/react";
+import { isApiConfigured } from "@/lib/api";
+import { useRooms, useSearchRooms } from "@/hooks/useRooms";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const USE_API = !!API_BASE_URL;
+const USE_API = isApiConfigured();
 
 export default function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,35 +35,19 @@ export default function Explore() {
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-  const { data: apiRooms, isPending: roomsLoading } = useQuery({
-    queryKey: ["rooms"],
-    queryFn: async () => {
-      const { data } = await api.get<Room[]>(ENDPOINTS.rooms.list);
-      return data.map(mapRoomToVenue);
-    },
-    enabled: USE_API && !debouncedSearchQuery,
-    staleTime: 30_000,
-  });
+  const { data: roomsData, isPending: roomsLoading } = useRooms(USE_API && !debouncedSearchQuery);
+  const { data: searchData, isPending: searchLoading } = useSearchRooms(debouncedSearchQuery, 1, USE_API);
 
-  const { data: searchResults, isPending: searchLoading } = useQuery({
-    queryKey: ["rooms", "search", debouncedSearchQuery],
-    queryFn: async () => {
-      const { data } = await api.get<Room[]>(ENDPOINTS.search, {
-        params: { q: debouncedSearchQuery },
-      });
-      return data.map(mapRoomToVenue);
-    },
-    enabled: USE_API && debouncedSearchQuery.length > 0,
-    staleTime: 15_000,
-  });
+  const apiRooms = roomsData?.map(mapRoomToVenue) ?? [];
+  const searchResults = searchData?.map(mapRoomToVenue) ?? [];
 
   const isLoading = USE_API && (debouncedSearchQuery ? searchLoading : roomsLoading);
 
   const rooms = !USE_API
     ? MOCK_VENUES
     : debouncedSearchQuery
-      ? (searchResults ?? [])
-      : (apiRooms ?? []);
+      ? searchResults
+      : apiRooms;
 
   const handleApplyFilters = () => {
     setAppliedFilters(filters);
@@ -130,32 +113,46 @@ export default function Explore() {
           />
         </aside>
         <main className="md:col-span-3">
-          <p className="mb-4 text-neutral-500 flex flex-col">
-            <span className="text-sm">CLASSROOMS FOUND</span>
-            <span className="text-2xl font-semibold">
-              {filteredVenues.length} Available
-            </span>{" "}
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {isLoading
-              ? Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="border-2 border-border rounded-xl p-5 space-y-4">
-                    <div className="flex justify-between items-start">
-                      <Skeleton className="h-7 w-28" />
-                      <Skeleton className="h-6 w-20 rounded-full" />
-                    </div>
-                    <Skeleton className="h-4 w-40" />
-                    <div className="space-y-2 pt-2">
-                      <Skeleton className="h-5 w-36" />
-                      <Skeleton className="h-5 w-44" />
-                    </div>
-                    <Skeleton className="h-10 w-full rounded-lg" />
+          {!isLoading && (
+            <p className="mb-6 text-right text-neutral-500">
+              <span className="text-2xl font-semibold">
+                {filteredVenues.length}
+              </span>{" "}
+              <span className="text-sm">spaces available</span>
+            </p>
+          )}
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="border border-gray-200 rounded-2xl p-6 bg-white flex flex-col justify-between gap-8"
+                >
+                  <div className="flex justify-between items-start">
+                    <Skeleton className="h-7 w-28" />
+                    <Skeleton className="h-6 w-20 rounded-md" />
                   </div>
-                ))
-              : filteredVenues.map((venue) => (
-                  <VenueCard key={venue.id} venue={venue} />
-                ))}
-          </div>
+                  <div className="space-y-3">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-3 w-52" />
+                    <Skeleton className="h-3 w-36" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredVenues.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-neutral-400">
+              <MapPointSchool className="size-16 mb-4" />
+              <p className="text-lg font-medium">No spaces found</p>
+              <p className="text-sm">Try adjusting your filters or search query</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredVenues.map((venue) => (
+                <VenueCard key={venue.id} venue={venue} />
+              ))}
+            </div>
+          )}
         </main>
       </div>
     </div>
