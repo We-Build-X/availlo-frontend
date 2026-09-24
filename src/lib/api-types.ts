@@ -153,3 +153,26 @@ export interface TimetableUploadNotFoundResponse {
 export interface AuthTokenResponse {
   token: string;
 }
+
+// Crowdsourced room check-ins (live via WebSocket, mutations via REST)
+
+export type CheckinVote = "occupied" | "free";
+
+export interface CheckinCounts {
+  room: string;
+  occupied: number;
+  free: number;
+  total: number;
+}
+
+export interface CheckinSnapshot extends CheckinCounts {
+  live: boolean;
+}
+
+export interface CheckinVoteResponse extends CheckinCounts {
+  user_vote: CheckinVote;
+}
+
+export interface CheckinVotesResponse extends CheckinCounts {
+  user_vote?: CheckinVote | null;
+}
