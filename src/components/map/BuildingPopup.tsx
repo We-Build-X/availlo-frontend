@@ -40,15 +40,15 @@ export function BuildingPopup({ building }: BuildingPopupProps) {
   // volume. If the static image endpoint is rate-limited we drop back
   // to the NECB.jpeg placeholder.
   const [imageSrc, setImageSrc] = useState<string>(
-    building.image ?? "/NECB.jpeg",
+    building.image ?? "/buildings/NECB.jpeg",
   )
 
   const handleImageError = () => {
     // First fallback: NECB placeholder.
     // Second fallback: a simple Mapbox static satellite tile of the
     // building's coordinates. If even that fails, just hide the image.
-    if (imageSrc !== "/NECB.jpeg") {
-      setImageSrc("/NECB.jpeg")
+    if (imageSrc !== "/buildings/NECB.jpeg") {
+      setImageSrc("/buildings/NECB.jpeg")
     } else {
       setImageSrc("")
     }

@@ -28,18 +28,27 @@
 
 export interface BuildingRoomJoin {
   /** Stable slug used as the Mapbox feature id (and for the URL). */
-  slug: string
+  slug: string;
   /** Short code, e.g. "NECB". */
-  code: string
+  code: string;
   /** Faculty the building belongs to. */
   faculty:
     | "Engineering"
     | "Science"
     | "Arts"
     | "Agriculture"
-    | "Other"
+    | "Computing"
+    | "Administration"
+    | "Other";
   /** Room ids (matching the backend Room.id) that live inside this building. */
-  rooms: number[]
+  rooms: number[];
+  /**
+   * Extra backend spellings for the SAME venue. Room matching checks these
+   * when the primary code/name miss, e.g. ELT is also timetabled as
+   * "Tetfund 250C". Codes compare case-insensitively, names exactly.
+   */
+  aliasCodes?: string[];
+  aliasNames?: string[];
 }
 
 /** Slugified id of a GeoJSON title. */
@@ -48,7 +57,7 @@ export const slugify = (title: string): string =>
     .toLowerCase()
     .replace(/[—–]/g, "-")
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
+    .replace(/^-+|-+$/g, "");
 
 /**
  * Initial join table. Keys are the exact `feature.properties.title` values
@@ -80,6 +89,7 @@ export const BUILDING_TO_ROOMS: Partial<Record<string, BuildingRoomJoin>> = {
     code: "SLT",
     faculty: "Science",
     rooms: [],
+    aliasNames: ["1000C", "1000 C", "1k Cap"],
   },
   "Zinox Laboratories": {
     slug: "zinox-labs",
@@ -105,17 +115,13 @@ export const BUILDING_TO_ROOMS: Partial<Record<string, BuildingRoomJoin>> = {
     faculty: "Other",
     rooms: [],
   },
-  "Engineering Lecture Theater": {
-    slug: "engineering-lecture-theater",
-    code: "ELT",
-    faculty: "Engineering",
-    rooms: [],
-  },
   "The Prestigious Faculty of Science": {
     slug: "faculty-of-science",
     code: "FSC",
     faculty: "Science",
     rooms: [],
+    aliasCodes: ["NEW PHY", "PHY", "PHYLAB", "NEW CHM LAB", "CHM", "CHMLAB"],
+    aliasNames: ["NEW PHY LAB", "NEW CHM LAB"],
   },
   "University of Uyo, Main Campus Library": {
     slug: "main-library",
@@ -128,18 +134,24 @@ export const BUILDING_TO_ROOMS: Partial<Record<string, BuildingRoomJoin>> = {
     code: "YBLD",
     faculty: "Other",
     rooms: [],
+    aliasCodes: ["Y-BLD"],
+    aliasNames: ["PTDF", "Y-BLD", "Y-BLD (CHEM)"],
   },
   "Engineering Laboratories": {
     slug: "engineering-labs",
     code: "ELB",
     faculty: "Engineering",
     rooms: [],
+    aliasCodes: ["LAB"],
+    aliasNames: ["Lab"],
   },
   "Agric Lecture Theater": {
     slug: "agric-lecture-theater",
     code: "ALT",
     faculty: "Agriculture",
     rooms: [],
+    aliasNames: ["ALH", "Agric Lecture Hall"],
+    aliasCodes: ["AGRIC LT"],
   },
   "Engineering Offices": {
     slug: "engineering-offices",
@@ -158,11 +170,20 @@ export const BUILDING_TO_ROOMS: Partial<Record<string, BuildingRoomJoin>> = {
     code: "ELF",
     faculty: "Engineering",
     rooms: [],
+    aliasNames: ["ELF Hall", "ELF HALL"],
+  },
+  "Engineering Lecture Theater": {
+    slug: "engineering-lecture-theater",
+    code: "ELT",
+    faculty: "Engineering",
+    rooms: [],
+    aliasCodes: ["250C", "TETFUND", "ELF"],
+    aliasNames: ["ELF LT", "Tetfund 250C", "Engineering Lecture Theater"],
   },
   "Faculty of Computing Science": {
     slug: "faculty-of-computing",
     code: "FCO",
-    faculty: "Science",
+    faculty: "Computing",
     rooms: [],
   },
   "Entry point": {
@@ -201,11 +222,28 @@ export const BUILDING_TO_ROOMS: Partial<Record<string, BuildingRoomJoin>> = {
     faculty: "Engineering",
     rooms: [],
   },
+  "Engineering Classroom Block": {
+    slug: "engineering-classroom-block",
+    code: "ECB",
+    faculty: "Engineering",
+    rooms: [],
+    aliasCodes: ["FL", "GD"],
+    aliasNames: ["FL", "GD"],
+  },
+  "Engineering Studio and Workshop": {
+    slug: "engineering-studio-and-workshop",
+    code: "WORKSHOP",
+    faculty: "Engineering",
+    rooms: [],
+    aliasCodes: ["DRAWING STUDIO", "STUDIO"],
+    aliasNames: ["Workshop", "Drawing Studio", "Engineering Studio"],
+  },
   "New Engineering Block (NEB)": {
     slug: "neb",
     code: "NEB",
     faculty: "Engineering",
     rooms: [],
+    aliasNames: ["CRFE", "NEB"],
   },
   "Multi-purpose hall": {
     slug: "multi-purpose-hall",
@@ -213,4 +251,32 @@ export const BUILDING_TO_ROOMS: Partial<Record<string, BuildingRoomJoin>> = {
     faculty: "Other",
     rooms: [],
   },
-}
+  "ICT I (600C)": {
+    slug: "ict-i-600c",
+    code: "600C",
+    faculty: "Computing",
+    rooms: [],
+    aliasCodes: ["600 C", "ICT I", "ICT"],
+  },
+  "ICT II (300C)": {
+    slug: "ict-ii-300c",
+    code: "300C",
+    faculty: "Computing",
+    rooms: [],
+    aliasCodes: ["ICT II", "ICT", "300 C"],
+  },
+  "GeoScience Building": {
+    slug: "geoscience-building",
+    code: "GEO",
+    faculty: "Science",
+    rooms: [],
+    aliasCodes: ["GEO SC", "GEO SC1", "GEOSCIENCE"],
+  },
+  "5 ARMS": {
+    slug: "5-arms",
+    code: "5ARMS",
+    faculty: "Other",
+    rooms: [],
+    aliasNames: ["FIVE Arms", "5-ARMS"],
+  },
+};
