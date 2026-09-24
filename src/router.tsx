@@ -162,7 +162,7 @@ const ADMIN_UPLOAD_WIZARD_MAX_STEP = 3;
 
 export const adminTimetableUploadRoute = createRoute({
   getParentRoute: () => adminRoute,
-  path: "timetables/upload/$id",
+  path: "timetables/upload",
   validateSearch: (search: Record<string, unknown>): { step: number } => {
     const parsedStep = Number.parseInt(String(search?.step ?? ""), 10);
     const step = Number.isFinite(parsedStep)

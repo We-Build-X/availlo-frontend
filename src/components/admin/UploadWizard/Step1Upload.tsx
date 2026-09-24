@@ -1,39 +1,36 @@
-import { useRef } from "react";
-import type { DragEvent } from "react";
-import { CloudUpload, DocumentText, ArrowRight } from "@solar-icons/react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useRef } from "react"
+import type { DragEvent } from "react"
+import { CloudUpload, DocumentText, ArrowRight } from "@solar-icons/react"
+import { Button } from "@/components/ui/button"
 
 interface Step1UploadProps {
-  facultyName: string;
-  file: File | null;
-  onFileChange: (file: File | null) => void;
-  onNext: () => void;
+  file: File | null
+  onFileChange: (file: File | null) => void
+  onNext: () => void
 }
 
-export function Step1Upload({ facultyName, file, onFileChange, onNext }: Step1UploadProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export function Step1Upload({ file, onFileChange, onNext }: Step1UploadProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     if (e.dataTransfer.files?.length > 0) {
-      const droppedFile = e.dataTransfer.files[0];
+      const droppedFile = e.dataTransfer.files[0]
       if (droppedFile.type === "application/pdf") {
-        onFileChange(droppedFile);
+        onFileChange(droppedFile)
       } else {
-        alert("Please upload a PDF file.");
+        alert("Please upload a PDF file.")
       }
     }
-  };
+  }
 
   return (
     <div className="space-y-8">
       <div>
-        <Badge className="bg-primary text-white hover:bg-primary/90 text-sm px-3 py-1 font-bold">
-          {facultyName}
-        </Badge>
         <p className="text-slate-500 text-sm mt-3 font-medium">
-          Configure parameters for the incoming timetable data.
+          Upload any timetable PDF. The semester is detected automatically from
+          the timetable header — re-uploading the same semester replaces its
+          sessions.
         </p>
       </div>
 
@@ -57,7 +54,7 @@ export function Step1Upload({ facultyName, file, onFileChange, onNext }: Step1Up
             className="hidden"
             ref={fileInputRef}
             onChange={(e) => {
-              if (e.target.files?.length) onFileChange(e.target.files[0]);
+              if (e.target.files?.length) onFileChange(e.target.files[0])
             }}
           />
           {file ? (
@@ -99,5 +96,5 @@ export function Step1Upload({ facultyName, file, onFileChange, onNext }: Step1Up
         </Button>
       </div>
     </div>
-  );
+  )
 }
