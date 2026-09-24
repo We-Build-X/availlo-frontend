@@ -192,7 +192,11 @@ export function CampusMap({ buildings }: CampusMapProps) {
             geometry: { type: "Point", coordinates: b.coordinates },
             properties: {
               slug: b.slug,
-              title: b.title,
+              // Short label keeps the map readable at low zoom; full title
+              // stays in the popup.
+              title:
+                b.title.length > 26 ? b.code || b.title : b.title,
+              fullTitle: b.title,
               description: b.description,
               image: b.image ?? null,
               code: b.code,
@@ -272,6 +276,29 @@ export function CampusMap({ buildings }: CampusMapProps) {
             lastDataJson = json
           }
         }
+        // Text labels from our own titles (Mapbox base-map names come from
+        // its tiles and can't be edited — these sit under each marker).
+        if (!map.getLayer("campus-buildings-labels")) {
+          map.addLayer({
+            id: "campus-buildings-labels",
+            type: "symbol",
+            source: "campus-buildings",
+            layout: {
+              "text-field": ["get", "title"],
+              "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+              "text-size": ["interpolate", ["linear"], ["zoom"], 13, 10, 17, 13],
+              "text-anchor": "top",
+              "text-offset": [0, 0.9],
+              "text-max-width": 9,
+              "text-optional": true,
+            },
+            paint: {
+              "text-color": "#1e293b",
+              "text-halo-color": "#ffffff",
+              "text-halo-width": 1.5,
+            },
+          })
+        }
         if (!map.getLayer("campus-buildings-circle")) {
           map.addLayer({
             id: "campus-buildings-circle",
@@ -303,6 +330,16 @@ export function CampusMap({ buildings }: CampusMapProps) {
               "circle-opacity": 0.95,
             },
           })
+        }
+        if (
+          map.getLayer("campus-buildings-circle") &&
+          map.getLayer("campus-buildings-labels")
+        ) {
+          try {
+            map.moveLayer("campus-buildings-labels")
+          } catch {
+            // already on top
+          }
         }
         bindHandlers()
         setLayerInfo(`layer: ok (${buildingsNow.length} markers)`)
@@ -456,7 +493,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
             type="button"
             onClick={goBack}
             aria-label="Go back"
-            className="absolute top-3 left-3 z-10 flex items-center gap-2 rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-slate-700 shadow-lg ring-1 ring-slate-200 hover:bg-slate-50"
+            className="absolute top-3 left-3 z-10 flex items-center gap-2 rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
           >
             <ArrowLeft size={16} /> Back
           </button>
@@ -464,7 +501,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
         </>
       )}
       {import.meta.env.DEV && pick && (
-        <div className="absolute bottom-32 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full bg-slate-900/85 py-1 pr-1 pl-3 shadow-lg">
+        <div className="absolute bottom-48 left-1/2 z-10 flex max-w-[calc(100%-1rem)] -translate-x-1/2 items-center gap-1 rounded-full bg-slate-900/85 py-1 pr-1 pl-3 shadow-lg sm:bottom-32">
           <button
             type="button"
             onClick={copyPick}
@@ -488,7 +525,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
       <button
         type="button"
         onClick={() => setShowAll((v) => !v)}
-        className="absolute bottom-24 left-1/2 z-10 -translate-x-1/2 rounded-full bg-slate-900/80 px-3 py-1.5 text-[11px] font-bold whitespace-nowrap text-white shadow-lg"
+        className="absolute bottom-36 left-1/2 z-10 -translate-x-1/2 rounded-full bg-slate-900/80 px-3 py-1.5 text-[11px] font-bold whitespace-nowrap text-white shadow-lg sm:bottom-24"
       >
         {showAll
           ? "Show class venues only"
@@ -511,7 +548,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
             { padding: 80, duration: 800 },
           )
         }}
-        className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-lg ring-1 ring-slate-200 hover:bg-slate-50"
+        className="absolute bottom-24 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white px-4 py-2 text-xs font-bold whitespace-nowrap text-slate-700 shadow-lg ring-1 ring-slate-200 hover:bg-slate-50 sm:bottom-12"
       >
         Zoom to markers ({visibleBuildings.length})
       </button>

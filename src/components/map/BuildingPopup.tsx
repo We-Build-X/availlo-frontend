@@ -34,24 +34,13 @@ interface BuildingPopupProps {
 }
 
 export function BuildingPopup({ building }: BuildingPopupProps) {
-  // Per-building image, with a satellite tile as the onError fallback.
-  // 320x180 keeps the popup compact; the satellite tile is served by
-  // Mapbox's Static Images API and is free up to a generous monthly
-  // volume. If the static image endpoint is rate-limited we drop back
-  // to the NECB.jpeg placeholder.
-  const [imageSrc, setImageSrc] = useState<string>(
-    building.image ?? "/buildings/NECB.jpeg",
-  )
+  // Per-building photo only: buildings without their own `image` show no
+  // picture at all (backend room images, when present, appear on venue
+  // pages via mapRoomDetailToVenue, not here). A broken URL hides itself.
+  const [imageSrc, setImageSrc] = useState<string>(building.image ?? "")
 
   const handleImageError = () => {
-    // First fallback: NECB placeholder.
-    // Second fallback: a simple Mapbox static satellite tile of the
-    // building's coordinates. If even that fails, just hide the image.
-    if (imageSrc !== "/buildings/NECB.jpeg") {
-      setImageSrc("/buildings/NECB.jpeg")
-    } else {
-      setImageSrc("")
-    }
+    setImageSrc("")
   }
 
   const status = building.status
@@ -126,11 +115,11 @@ export function BuildingPopup({ building }: BuildingPopupProps) {
               })}
             </ul>
           </div>
-        ) : (
+        ) : import.meta.env.DEV ? (
           <p className="mt-3 text-[10px] text-neutral-400 italic">
-            Room list will appear here once the backend is connected.
+            No rooms resolved for this building (dev only — hidden in prod).
           </p>
-        )}
+        ) : null}
       </div>
     </div>
   )

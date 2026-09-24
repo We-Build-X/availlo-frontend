@@ -279,4 +279,10 @@ export const BUILDING_TO_ROOMS: Partial<Record<string, BuildingRoomJoin>> = {
     rooms: [],
     aliasNames: ["FIVE Arms", "5-ARMS"],
   },
+  "Uniuyo Microfinance Bank": {
+    slug: "uniuyo-microfinance-bank",
+    code: "UMB",
+    faculty: "Other",
+    rooms: [],
+  },
 };
