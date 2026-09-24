@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Search } from "@solar-icons/react/category";
-import { Bell } from "@solar-icons/react";
 import { Link } from "@tanstack/react-router";
 import Logo from "./Logo";
 
@@ -68,10 +67,6 @@ export default function Header() {
         <span className="text-gray-500 md:hidden">
           {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         </span>
-        <div className="ml-3 p-0.5 relative cursor-pointer">
-          <Bell size={28} />
-          <span className="absolute top-0 right-1 size-3 rounded-full bg-red-500"></span>
-        </div>
       </div>
     </header>
   );

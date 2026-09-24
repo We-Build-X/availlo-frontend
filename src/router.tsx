@@ -19,6 +19,7 @@ import AdminSidebar from "./components/admin/AdminSidebar";
 // Lazy-loaded routes — keeps mapbox-gl and admin bundles out of the
 // Home entry chunk (PageSpeed: render-blocking requests / unused JS).
 const ExplorePage = lazyRouteComponent(() => import("./pages/Explore"));
+const AboutPage = lazyRouteComponent(() => import("./pages/About"));
 const MapPage = lazyRouteComponent(() => import("./pages/Map"));
 const VenuePage = lazyRouteComponent(() => import("./pages/Venue"));
 const AdminDashboardPage = lazyRouteComponent(
@@ -86,6 +87,12 @@ const exploreRoute = createRoute({
   getParentRoute: () => publicLayoutRoute,
   path: "/explore",
   component: ExplorePage,
+});
+
+const aboutRoute = createRoute({
+  getParentRoute: () => publicLayoutRoute,
+  path: "/about",
+  component: AboutPage,
 });
 
 /**
@@ -198,7 +205,7 @@ const adminSupportRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
-  publicLayoutRoute.addChildren([indexRoute, exploreRoute, venueRoute]),
+  publicLayoutRoute.addChildren([indexRoute, exploreRoute, venueRoute, aboutRoute]),
   mapRoute,
   adminLoginRoute,
   adminRoute.addChildren([

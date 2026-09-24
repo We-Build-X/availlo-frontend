@@ -11,8 +11,8 @@
       },
       "geometry": {
         "coordinates": [
-          7.97581,
-          5.03924
+          7.9757,
+          5.03925
         ],
         "type": "Point"
       },
@@ -61,8 +61,8 @@
       },
       "geometry": {
         "coordinates": [
-          7.974948,
-          5.041136
+          7.97507,
+          5.04116
         ],
         "type": "Point"
       },
@@ -137,7 +137,7 @@
       "properties": {
         "title": "University of Uyo, Main Campus Library",
         "description": "The main library",
-        "category": "library"
+        "category": "other"
       },
       "geometry": {
         "coordinates": [
@@ -239,8 +239,8 @@
       },
       "geometry": {
         "coordinates": [
-          7.975285,
-          5.040205
+          7.97536,
+          5.04015
         ],
         "type": "Point"
       },
@@ -382,7 +382,7 @@
       "properties": {
         "title": "Multi-purpose hall",
         "description": "Here is a hall used for different purposes. This is most likely where you'll spend most of your time in year one",
-        "category": "teaching"
+        "category": "other"
       },
       "geometry": {
         "coordinates": [
@@ -463,7 +463,8 @@
       "properties": {
         "title": "Engineering Classroom Block",
         "description": "Engineering Classroom Block (FL and GD lecture venues).",
-        "category": "teaching"
+        "category": "teaching",
+        "image": "/buildings/FL, GD, Faculty of Engineering Building.png"
       },
       "geometry": {
         "type": "Point",
@@ -479,7 +480,8 @@
       "properties": {
         "title": "Engineering Studio and Workshop",
         "description": "Engineering studio and workshop.",
-        "category": "teaching"
+        "category": "teaching",
+        "image": "/buildings/FL, GD, Faculty of Engineering Building.png"
       },
       "geometry": {
         "type": "Point",
@@ -501,11 +503,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          7.973051,
-          5.03977
+          7.97325,
+          5.03971
         ]
       },
       "id": "9a8dc99303ddf16254745599c8e800a1"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Uniuyo Microfinance Bank",
+        "description": "Uniuyo Microfinance Bank.",
+        "category": "other"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.97528,
+          5.039
+        ]
+      },
+      "id": "5fd6dfc7989d365e9fc01ef742b9d507"
     }
   ]
 }
