@@ -3,7 +3,7 @@ import { formatDistanceToNow, parseISO } from "date-fns"
 import { Link } from "@tanstack/react-router"
 import { CloudUpload, DocumentText } from "@solar-icons/react"
 import { Button } from "@/components/ui/button"
-import { readLastTimetableUpload } from "@/pages/admin/UploadWizard"
+import { readLastTimetableUpload } from "@/lib/last-timetable-upload"
 
 export default function AdminTimetables() {
   const [lastUpload] = useState(readLastTimetableUpload)

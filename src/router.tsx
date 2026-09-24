@@ -36,6 +36,12 @@ const AdminVenuesPage = lazyRouteComponent(
 const AdminUploadWizardPage = lazyRouteComponent(
   () => import("./pages/admin/UploadWizard"),
 );
+const AdminSettingsPage = lazyRouteComponent(
+  () => import("./pages/admin/Settings"),
+);
+const AdminSupportPage = lazyRouteComponent(
+  () => import("./pages/admin/Support"),
+);
 const AdminLoginPage = lazyRouteComponent(
   () => import("./pages/admin/Login"),
 );
@@ -179,6 +185,18 @@ export const adminTimetableUploadRoute = createRoute({
   component: AdminUploadWizardPage,
 });
 
+const adminSettingsRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "settings",
+  component: AdminSettingsPage,
+});
+
+const adminSupportRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "support",
+  component: AdminSupportPage,
+});
+
 const routeTree = rootRoute.addChildren([
   publicLayoutRoute.addChildren([indexRoute, exploreRoute, venueRoute]),
   mapRoute,
@@ -189,6 +207,8 @@ const routeTree = rootRoute.addChildren([
     adminVenuesRoute,
     adminTimetablesRoute,
     adminTimetableUploadRoute,
+    adminSettingsRoute,
+    adminSupportRoute,
   ]),
 ]);
 
