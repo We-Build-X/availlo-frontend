@@ -14,7 +14,7 @@ export default function Map() {
   const { data: buildings, isLoading, isMock } = useBuildingStatus()
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden">
+    <div className="relative h-dvh min-h-screen w-screen overflow-hidden" style={{ height: "100dvh", minHeight: "100vh" }}>
       {isLoading && buildings.length === 0 ? (
         <div className="flex h-full w-full items-center justify-center bg-neutral-50">
           <p className="text-sm text-neutral-500">Loading buildings…</p>

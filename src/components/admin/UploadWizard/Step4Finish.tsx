@@ -1,19 +1,13 @@
-import { Link } from "@tanstack/react-router";
-import {
-  CheckCircle,
-  DocumentText,
-  DangerCircle,
-   ArrowLeft,
-} from "@solar-icons/react";
-import { Button } from "@/components/ui/button";
-import type { TimetableUploadResponse } from "@/lib/api-types";
+import { Link } from "@tanstack/react-router"
+import { CheckCircle, DocumentText, ArrowLeft } from "@solar-icons/react"
+import { Button } from "@/components/ui/button"
+import type { TimetableUploadResponse } from "@/lib/api-types"
 
 interface Step4FinishProps {
-  facultyName: string;
-  uploadResult?: TimetableUploadResponse;
+  uploadResult?: TimetableUploadResponse
 }
 
-export function Step4Finish({ facultyName, uploadResult }: Step4FinishProps) {
+export function Step4Finish({ uploadResult }: Step4FinishProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center space-y-6">
       <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-2">
@@ -36,15 +30,27 @@ export function Step4Finish({ facultyName, uploadResult }: Step4FinishProps) {
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
             <span className="text-slate-500 flex items-center gap-2">
-              <DocumentText className="w-4 h-4" /> Total Entries
+              <DocumentText className="w-4 h-4" /> Extracted Entries
             </span>
-            <span className="font-bold text-slate-900">{uploadResult?.extracted_count ?? 0}</span>
+            <span className="font-bold text-slate-900">
+              {uploadResult?.extracted_count ?? 0}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-slate-500 flex items-center gap-2">
-              <DangerCircle className="w-4 h-4" /> Faculty
+              <CheckCircle className="w-4 h-4" /> Saved Sessions
             </span>
-            <span className="font-bold text-slate-900">{facultyName}</span>
+            <span className="font-bold text-slate-900">
+              {uploadResult?.saved_count ?? 0}
+            </span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-slate-500 flex items-center gap-2">
+              <DocumentText className="w-4 h-4" /> Skipped
+            </span>
+            <span className="font-bold text-slate-900">
+              {uploadResult?.skipped_count ?? 0}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-slate-500 flex items-center gap-2">
@@ -59,9 +65,9 @@ export function Step4Finish({ facultyName, uploadResult }: Step4FinishProps) {
 
       <Button asChild size="lg" className="w-full sm:w-auto mt-4">
         <Link to="/admin/timetables">
-           <ArrowLeft className="size-5" /> Return to Dashboard
+          <ArrowLeft className="size-5" /> Return to Dashboard
         </Link>
       </Button>
     </div>
-  );
+  )
 }

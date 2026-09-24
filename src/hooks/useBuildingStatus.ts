@@ -33,6 +33,7 @@ type BuildingFeatureProps = {
   title: string;
   description: string;
   image?: string;
+  category?: string;
 };
 type BuildingFeatureGeoJson = {
   features: Array<{
@@ -62,7 +63,10 @@ export interface BuildingFeature {
     | "Arts"
     | "Agriculture"
     | "Computing"
+    | "Administration"
     | "Other";
+  /** Category from the GeoJSON (teaching, library, hostel, admin, ...). */
+  category: string;
   /** Short building code (e.g. "NECB"). */
   code: string;
   /** Worst-case status of the building's rooms. */
@@ -119,47 +123,39 @@ export function useBuildingStatus(): {
   return useMemo(() => {
     const rooms: Venue[] = USE_API ? (apiQuery.data ?? []) : MOCK_VENUES;
 
-    // Match rooms to buildings by building.code — real /api/rooms/ records
-    // carry a Building object with a `code` (e.g. "NECB"), which
-    // mapRoomToVenue() exposes as venue.building. The join table's `code`
-    // field is the key that links them, not `rooms: number[]` (empty) or
-    // building names (which differ between GeoJSON titles and room data).
-    const roomsByBuildingCode = new Map<string, Venue[]>();
+    // Resolve every room to a join-table key (the GeoJSON title).
+    // Primary: backend building.code vs join code/aliasCodes (A-Z compare).
+    // Fallback: backend building.name vs GeoJSON title/aliasNames (exact).
+    // This is what absorbs variant spellings like ELT <-> "Tetfund 250C".
+    const codeToKey = new Map<string, string>();
+    const nameToKey = new Map<string, string>();
+    for (const [title, j] of Object.entries(BUILDING_TO_ROOMS)) {
+      if (!j) continue;
+      codeToKey.set(j.code.toUpperCase(), title);
+      for (const c of j.aliasCodes ?? []) codeToKey.set(c.toUpperCase(), title);
+      nameToKey.set(title, title);
+      for (const n of j.aliasNames ?? []) nameToKey.set(n, title);
+    }
+    const roomsByKey = new Map<string, Venue[]>();
     for (const r of rooms) {
-      const code = r.building.toUpperCase();
-      const list = roomsByBuildingCode.get(code) ?? [];
+      const key =
+        codeToKey.get(r.building.toUpperCase()) ?? nameToKey.get(r.fullName);
+      if (!key) continue;
+      const list = roomsByKey.get(key) ?? [];
       list.push(r);
-      roomsByBuildingCode.set(code, list);
+      roomsByKey.set(key, list);
     }
 
-    // Fallback index for buildings with no join entry: match by the
-    // GeoJSON title against the building name from the API.
-    const roomsByBuildingName = new Map<string, Venue[]>();
-    for (const r of rooms) {
-      const list = roomsByBuildingName.get(r.fullName) ?? [];
-      list.push(r);
-      roomsByBuildingName.set(r.fullName, list);
-    }
-
-    const features = (buildingsGeoJson as BuildingFeatureGeoJson).features;
+    const features = (buildingsGeoJson as unknown as BuildingFeatureGeoJson).features;
 
     const buildings: BuildingFeature[] = features.map((f) => {
       const title = f.properties.title;
       const join = BUILDING_TO_ROOMS[title];
       const fallbackSlug = slugify(title);
 
-      // Prefer the building-code match — the backend room records carry
-      // a Building.code (e.g. "NECB") which mapRoomToVenue() exposes as
-      // venue.building, and the join table's `code` field is the same
-      // key. Fall back to a name match against the API response when a
-      // building has no join entry (rooms: []).
-      let buildingRooms: Venue[] = [];
-      if (join && join.code) {
-        buildingRooms = roomsByBuildingCode.get(join.code.toUpperCase()) ?? [];
-      }
-      if (buildingRooms.length === 0) {
-        buildingRooms = roomsByBuildingName.get(title) ?? [];
-      }
+      // Rooms already resolved to this building's key above (code,
+      // alias codes, title and alias names all land here).
+      const buildingRooms: Venue[] = roomsByKey.get(title) ?? [];
 
       const status = worstStatus(
         buildingRooms.map((r) => r.availability.status as BuildingStatus),
@@ -167,6 +163,7 @@ export function useBuildingStatus(): {
 
       return {
         slug: join?.slug ?? fallbackSlug,
+        category: f.properties.category ?? "other",
         title,
         description: f.properties.description,
         coordinates: f.geometry.coordinates,

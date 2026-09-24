@@ -13,6 +13,8 @@
  */
 
 import { useEffect, useRef, useState } from "react"
+import { useNavigate } from "@tanstack/react-router"
+import { ArrowLeft } from "@solar-icons/react"
 import { createRoot } from "react-dom/client"
 import type { Root } from "react-dom/client"
 import {
@@ -41,8 +43,32 @@ export function CampusMap({ buildings }: CampusMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const popupRef = useRef<mapboxgl.Popup | null>(null)
-  const buildingsRef = useRef(buildings)
-  buildingsRef.current = buildings
+  const [showAll, setShowAll] = useState(false)
+  // Default to teaching + library venues so hostels, markets, bus stops,
+  // admin blocks and parks don't clutter the class-finding map. Toggle below.
+  const visibleBuildings = showAll
+    ? buildings
+    : buildings.filter(
+        (b) => b.category === "teaching" || b.category === "library",
+      )
+  const buildingsRef = useRef(visibleBuildings)
+  buildingsRef.current = visibleBuildings
+  const navigate = useNavigate()
+  const [pick, setPick] = useState<{ lng: number; lat: number } | null>(null)
+  const [copied, setCopied] = useState(false)
+  const goBack = () => {
+    if (window.history.length > 1) window.history.back()
+    else navigate({ to: "/" })
+  }
+  const copyPick = async () => {
+    if (!pick) return
+    try {
+      await navigator.clipboard.writeText(`${pick.lng}, ${pick.lat}`)
+      setCopied(true)
+    } catch {
+      setCopied(false)
+    }
+  }
   const [ready, setReady] = useState(false)
   const [mapError, setMapError] = useState<string | null>(null)
   const [styleLoaded, setStyleLoaded] = useState(false)
@@ -62,7 +88,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
         container: containerRef.current,
         style: MAPBOX_STYLE,
         center: CAMPUS_CENTER,
-        zoom: 15,
+        zoom: 15.5,
         bounds: CAMPUS_BOUNDS,
         fitBoundsOptions: { padding: 48 },
         attributionControl: true,
@@ -84,6 +110,15 @@ export function CampusMap({ buildings }: CampusMapProps) {
       setMapError(`${msg}`)
     })
     map.on("load", () => setStyleLoaded(true))
+    // Dev-only coordinate picker: tap anywhere to read exact lng/lat for
+    // pinning new buildings. Stripped from production (see chip below).
+    if (import.meta.env.DEV) map.on("click", (e) => {
+      setPick({
+        lng: Number(e.lngLat.lng.toFixed(5)),
+        lat: Number(e.lngLat.lat.toFixed(5)),
+      })
+      setCopied(false)
+    })
 
     map.addControl(new mapboxgl.NavigationControl(), "top-right")
     map.addControl(
@@ -108,11 +143,21 @@ export function CampusMap({ buildings }: CampusMapProps) {
     }
     map.once("load", doResize)
     window.addEventListener("resize", doResize)
+    // The pill showed view 503x0 while canvas kept a stale 425x253 buffer:
+    // layout/fonts settling collapsed the container after init and nothing
+    // re-triggered resize. Observe the container itself (see
+    // https://docs.mapbox.com/mapbox-gl-js/api/map/#map-resize).
+    let ro: ResizeObserver | null = null
+    if (typeof ResizeObserver !== "undefined" && containerRef.current) {
+      ro = new ResizeObserver(() => doResize())
+      ro.observe(containerRef.current)
+    }
 
     mapRef.current = map
     setReady(true)
 
     return () => {
+      ro?.disconnect()
       window.removeEventListener("resize", doResize)
       popupRef.current?.remove()
       popupRef.current = null
@@ -279,7 +324,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
       cancelled = true
       window.clearInterval(t)
     }
-  }, [ready, buildings])
+  }, [ready, buildings, showAll])
 
   // ---- Live viewport diagnostics (temporary — remove once map confirmed) ----
   useEffect(() => {
@@ -347,7 +392,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
     if (!map.getSource("campus-buildings")) return
     if (!map.getLayer("campus-buildings-circle")) return
 
-    for (const b of buildings) {
+    for (const b of visibleBuildings) {
       try {
         map.setFeatureState(
           { source: "campus-buildings", id: b.slug },
@@ -358,7 +403,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
         return
       }
     }
-  }, [ready, buildings, styleLoaded])
+  }, [ready, buildings, showAll, styleLoaded])
 
   if (!hasToken) {
     return (
@@ -390,10 +435,13 @@ export function CampusMap({ buildings }: CampusMapProps) {
   }
 
   return (
-    <div className="relative h-full w-full">
+    <div
+      className="relative h-full w-full"
+      style={{ height: "100%", minHeight: "100dvh" }}
+    >
       <div
         ref={containerRef}
-        className="absolute inset-0"
+        className="relative h-full w-full"
         data-testid="campus-map"
       />
       {mapError && (
@@ -402,7 +450,50 @@ export function CampusMap({ buildings }: CampusMapProps) {
           <p className="mt-1 break-words text-xs text-neutral-500">{mapError}</p>
         </div>
       )}
-      {ready && !mapError && <AvailabilityLegend />}
+      {ready && !mapError && (
+        <>
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label="Go back"
+            className="absolute top-3 left-3 z-10 flex items-center gap-2 rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-slate-700 shadow-lg ring-1 ring-slate-200 hover:bg-slate-50"
+          >
+            <ArrowLeft size={16} /> Back
+          </button>
+          <AvailabilityLegend className="absolute top-[4.75rem] left-3 z-10 rounded-xl border border-neutral-200 bg-white/90 p-2.5 shadow-sm backdrop-blur" />
+        </>
+      )}
+      {import.meta.env.DEV && pick && (
+        <div className="absolute bottom-32 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full bg-slate-900/85 py-1 pr-1 pl-3 shadow-lg">
+          <button
+            type="button"
+            onClick={copyPick}
+            title="Tap to copy coordinates"
+            className="font-mono text-[11px] text-white"
+          >
+            {copied
+              ? "Copied!"
+              : `${pick.lng.toFixed(5)}, ${pick.lat.toFixed(5)} \u2014 tap to copy`}
+          </button>
+          <button
+            type="button"
+            onClick={() => setPick(null)}
+            aria-label="Dismiss coordinates"
+            className="rounded-full px-2 py-0.5 text-xs text-white/70 hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+      <button
+        type="button"
+        onClick={() => setShowAll((v) => !v)}
+        className="absolute bottom-24 left-1/2 z-10 -translate-x-1/2 rounded-full bg-slate-900/80 px-3 py-1.5 text-[11px] font-bold whitespace-nowrap text-white shadow-lg"
+      >
+        {showAll
+          ? "Show class venues only"
+          : `Show all places (${buildings.length})`}
+      </button>
       <button
         type="button"
         onClick={() => {
@@ -422,12 +513,15 @@ export function CampusMap({ buildings }: CampusMapProps) {
         }}
         className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-lg ring-1 ring-slate-200 hover:bg-slate-50"
       >
-        Zoom to markers ({buildings.length})
+        Zoom to markers ({visibleBuildings.length})
       </button>
-      {/* Diagnostic status line — remove once map is confirmed working */}
-      <div className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/70 px-3 py-1 font-mono text-[10px] text-white">
-        {`map: ${ready ? "ready" : "init"} • style: ${styleLoaded ? "loaded" : "loading…"} • buildings: ${buildings.length} • ${layerInfo}`}
+      {/* Dev-only diagnostics (hidden in production builds) */}
+      {import.meta.env.DEV && (
+      <div className="absolute bottom-2 left-1/2 z-10 flex max-w-[calc(100%-1rem)] -translate-x-1/2 flex-col items-center gap-0.5 rounded-2xl bg-black/70 px-3 py-1 text-center font-mono text-[10px] text-white">
+        <span>{`map: ${ready ? "ready" : "init"} • style: ${styleLoaded ? "loaded" : "loading…"} • buildings: ${visibleBuildings.length} • ${layerInfo}`}</span>
+        <span className="opacity-80">{viewInfo}</span>
       </div>
+      )}
     </div>
   )
 }

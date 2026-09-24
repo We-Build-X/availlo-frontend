@@ -36,6 +36,12 @@ const AdminVenuesPage = lazyRouteComponent(
 const AdminUploadWizardPage = lazyRouteComponent(
   () => import("./pages/admin/UploadWizard"),
 );
+const AdminSettingsPage = lazyRouteComponent(
+  () => import("./pages/admin/Settings"),
+);
+const AdminSupportPage = lazyRouteComponent(
+  () => import("./pages/admin/Support"),
+);
 const AdminLoginPage = lazyRouteComponent(
   () => import("./pages/admin/Login"),
 );
@@ -162,7 +168,7 @@ const ADMIN_UPLOAD_WIZARD_MAX_STEP = 3;
 
 export const adminTimetableUploadRoute = createRoute({
   getParentRoute: () => adminRoute,
-  path: "timetables/upload/$id",
+  path: "timetables/upload",
   validateSearch: (search: Record<string, unknown>): { step: number } => {
     const parsedStep = Number.parseInt(String(search?.step ?? ""), 10);
     const step = Number.isFinite(parsedStep)
@@ -179,6 +185,18 @@ export const adminTimetableUploadRoute = createRoute({
   component: AdminUploadWizardPage,
 });
 
+const adminSettingsRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "settings",
+  component: AdminSettingsPage,
+});
+
+const adminSupportRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "support",
+  component: AdminSupportPage,
+});
+
 const routeTree = rootRoute.addChildren([
   publicLayoutRoute.addChildren([indexRoute, exploreRoute, venueRoute]),
   mapRoute,
@@ -189,6 +207,8 @@ const routeTree = rootRoute.addChildren([
     adminVenuesRoute,
     adminTimetablesRoute,
     adminTimetableUploadRoute,
+    adminSettingsRoute,
+    adminSupportRoute,
   ]),
 ]);
 

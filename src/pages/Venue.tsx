@@ -3,7 +3,7 @@ import { MOCK_VENUES, mapRoomDetailToVenue } from "@/lib/mock-data";
 import { getAvailabilityText } from "@/lib/time";
 import { VenueHeroImage } from "@/components/venue/VenueHeroImage";
 import { UtilityStatus } from "@/components/venue/UtilityStatus";
-import { CrowdsourceStatusButtons } from "@/components/venue/CrowdsourceStatusButtons";
+import { CheckinStatusButtons } from "@/components/venue/CheckinStatusButtons";
 import { RoomAmenitiesList } from "@/components/venue/RoomAmenitiesList";
 import { DailyTimetable } from "@/components/venue/DailyTimetable";
 import { ArrowLeft } from "@solar-icons/react";
@@ -256,9 +256,9 @@ export default function Venue() {
                 <DailyTimetable schedule={venue.schedule} />
               </div>
 
-              {/* Voting Section */}
+              {/* Check-ins Section */}
               <div className="space-y-6">
-                <CrowdsourceStatusButtons />
+                <CheckinStatusButtons slug={effectiveSlug} />
               </div>
             </div>
 

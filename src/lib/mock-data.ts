@@ -31,62 +31,6 @@ export interface Venue {
   schedule: ScheduleItem[];
 }
 
-export type TimetableStatus =
-  | "ACTIVE"
-  | "OUTDATED"
-  | "NO_TIMETABLE"
-  | "PENDING_REVIEW";
-
-export interface FacultyTimetableStatus {
-  id: string;
-  facultyName: string;
-  currentSemester: string;
-  lastUploadedAt: string | null;
-  status: TimetableStatus;
-}
-
-const now = new Date();
-
-export const MOCK_FACULTY_STATUSES: FacultyTimetableStatus[] = [
-  {
-    id: "eng",
-    facultyName: "Engineering",
-    currentSemester: "2nd - 2025/2026",
-    lastUploadedAt: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
-    status: "ACTIVE",
-  },
-  {
-    id: "comp",
-    facultyName: "Computing",
-    currentSemester: "2nd - 2025/2026",
-    lastUploadedAt: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
-    status: "OUTDATED",
-  },
-  {
-    id: "sci",
-    facultyName: "Sciences",
-    currentSemester: "2nd - 2025/2026",
-    lastUploadedAt: null,
-    status: "NO_TIMETABLE",
-  },
-  {
-    id: "agri",
-    facultyName: "Agriculture",
-    currentSemester: "2nd - 2025/2026",
-    lastUploadedAt: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString(),
-    status: "PENDING_REVIEW",
-  },
-  {
-    id: "arts",
-    facultyName: "Arts",
-    currentSemester: "2nd - 2025/2026",
-    lastUploadedAt: new Date(
-      now.getTime() - 7 * 24 * 60 * 60 * 1000,
-    ).toISOString(),
-    status: "ACTIVE",
-  },
-];
-
 const DEFAULT_SCHEDULE: ScheduleItem[] = [
   {
     id: "s1",
@@ -143,7 +87,7 @@ export const MOCK_VENUES: Venue[] = [
     faculty: "Engineering",
     capacity: 50,
     hasPower: true,
-    image: "/NECB.jpeg",
+    image: "/buildings/NECB.jpeg",
     amenities: [
       { id: "a1", name: "Projector" },
       { id: "a2", name: "Whiteboard" },
@@ -164,7 +108,7 @@ export const MOCK_VENUES: Venue[] = [
     faculty: "Engineering",
     capacity: 30,
     hasPower: true,
-    image: "/NECB.jpeg",
+    image: "/buildings/NECB.jpeg",
     amenities: [{ id: "a2", name: "Whiteboard" }],
     availability: {
       status: "ENDING_SOON",
@@ -183,7 +127,7 @@ export const MOCK_VENUES: Venue[] = [
     faculty: "Science",
     capacity: 100,
     hasPower: true,
-    image: "/NECB.jpeg",
+    image: "/buildings/NECB.jpeg",
     amenities: [
       { id: "a1", name: "Projector" },
       { id: "a3", name: "Lab Equipment" },
@@ -204,7 +148,7 @@ export const MOCK_VENUES: Venue[] = [
     faculty: "Arts",
     capacity: 25,
     hasPower: false,
-    image: "/NECB.jpeg",
+    image: "/buildings/NECB.jpeg",
     amenities: [{ id: "a4", name: "Piano" }],
     availability: {
       status: "FREE",
@@ -222,7 +166,7 @@ export const MOCK_VENUES: Venue[] = [
     faculty: "Engineering",
     capacity: 40,
     hasPower: true,
-    image: "/NECB.jpeg",
+    image: "/buildings/NECB.jpeg",
     amenities: [{ id: "a1", name: "Projector" }],
     availability: {
       status: "FREE",

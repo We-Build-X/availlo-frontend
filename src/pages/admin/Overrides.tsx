@@ -1,32 +1,33 @@
-import * as React from "react";
-import { useState } from "react";
-import { format, isToday } from "date-fns";
-import { MOCK_OVERRIDES, type Override } from "@/lib/mock-data";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { Button } from "@/components/ui/button";
+import * as React from "react"
+import { useState } from "react"
+import { format, isToday } from "date-fns"
+import { InfoCircle } from "@solar-icons/react"
+import { MOCK_OVERRIDES, type Override } from "@/lib/mock-data"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/drawer"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -34,47 +35,47 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { OverrideForm } from "@/components/admin/OverrideForm";
+} from "@/components/ui/table"
+import { OverrideForm } from "@/components/admin/OverrideForm"
 
 function isOverrideActive(override: Override) {
   try {
-    const endDateTime = new Date(`${override.date}T${override.endTime}:00`);
-    return endDateTime > new Date();
+    const endDateTime = new Date(`${override.date}T${override.endTime}:00`)
+    return endDateTime > new Date()
   } catch (e) {
-    return true;
+    return true
   }
 }
 
 function getDisplayDate(dateStr: string) {
   try {
-    const d = new Date(dateStr);
-    if (isToday(d)) return "Today";
-    return format(d, "MMM d");
+    const d = new Date(dateStr)
+    if (isToday(d)) return "Today"
+    return format(d, "MMM d")
   } catch (e) {
-    return dateStr;
+    return dateStr
   }
 }
 
 export default function AdminOverrides() {
-  const [overrides, setOverrides] = useState<Override[]>(MOCK_OVERRIDES);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [open, setOpen] = useState(false);
+  const [overrides, setOverrides] = useState<Override[]>(MOCK_OVERRIDES)
+  const isDesktop = useMediaQuery("(min-width: 768px)")
+  const [open, setOpen] = useState(false)
 
-  const activeOverrides = overrides.filter(isOverrideActive);
+  const activeOverrides = overrides.filter(isOverrideActive)
 
   const handleRemove = (id: string) => {
-    setOverrides(overrides.filter((o) => o.id !== id));
-  };
+    setOverrides(overrides.filter((o) => o.id !== id))
+  }
 
   const handleAdd = (newOverride: Omit<Override, "id">) => {
     const override: Override = {
       ...newOverride,
       id: Math.random().toString(36).substr(2, 9),
-    };
-    setOverrides([...overrides, override]);
-    setOpen(false);
-  };
+    }
+    setOverrides([...overrides, override])
+    setOpen(false)
+  }
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6 sm:space-y-8 pt-4 sm:pt-8 animate-in fade-in slide-in-from-bottom-2">
@@ -88,7 +89,7 @@ export default function AdminOverrides() {
             Manage manual scheduling adjustments and temporary room blocks.
           </p>
         </div>
-        
+
         {isDesktop ? (
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -128,6 +129,16 @@ export default function AdminOverrides() {
             </DrawerContent>
           </Drawer>
         )}
+      </div>
+
+      {/* Coming soon notice: overrides are not backed by the API yet */}
+      <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+        <InfoCircle className="size-5 shrink-0 text-amber-600 mt-0.5" />
+        <p className="text-sm font-medium text-amber-800">
+          <span className="font-bold">Coming soon.</span> Manual overrides
+          aren't connected to the server yet — anything added here is a preview
+          and won't be saved or affect live room status.
+        </p>
       </div>
 
       {/* Table Container matching Timetables style */}
@@ -200,7 +211,7 @@ export default function AdminOverrides() {
             </TableBody>
           </Table>
         </div>
-        
+
         {activeOverrides.length > 0 && (
           <div className="py-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-t border-slate-100">
             SHOWING {activeOverrides.length} ACTIVE RECORDS
@@ -208,5 +219,5 @@ export default function AdminOverrides() {
         )}
       </div>
     </div>
-  );
+  )
 }

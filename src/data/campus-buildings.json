@@ -1,1 +1,511 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"title":"New Engineering Classroom Block","description":"The New Engi neering Classroom Block, commissoned bla bla bla bla"},"geometry":{"coordinates":[7.976075,5.039019],"type":"Point"},"id":"00a7b3ca40de2efb31eea14fd700cfd0"},{"type":"Feature","properties":{"title":"UNIUYO-Magvoile Center for Skills Acquisition","description":"Center for Skills Acquisition"},"geometry":{"coordinates":[7.975184,5.043995],"type":"Point"},"id":"13cb011cd378a93754c9143eb97e7496"},{"type":"Feature","properties":{"title":"Science Lecture Theatre (1k Cap)","description":"The UNIUYO Science Lecture theatre"},"geometry":{"coordinates":[7.978286,5.042444],"type":"Point"},"id":"211c23e98e3ef548dcadfd0016abc08d"},{"type":"Feature","properties":{"title":"Zinox Laboratories","description":"The official computer Engineering laboratory"},"geometry":{"coordinates":[7.974948,5.041136],"type":"Point"},"id":"239f37b3dae120f6d87ab1602857cb02"},{"type":"Feature","properties":{"title":"Engine Market","description":"Get all you need here"},"geometry":{"coordinates":[7.972894,5.042854],"type":"Point"},"id":"2673207ff1ed1fb899ce76aa84c0e927"},{"type":"Feature","properties":{"title":"Bus Stop (Engineering)","description":"Get a ride out of school"},"geometry":{"coordinates":[7.974235,5.042067],"type":"Point"},"id":"2d9cd1dc3ad725da20affb2075c661cd"},{"type":"Feature","properties":{"title":"Male Presidential Hostel","description":"Boarding Facility for Male Students"},"geometry":{"coordinates":[7.973651,5.043323],"type":"Point"},"id":"3042518aa844cca0e028ef00e9a1a022"},{"type":"Feature","properties":{"title":"Engineering Lecture Theater","description":"Official Engineering Theater"},"geometry":{"coordinates":[7.973051,5.03977],"type":"Point"},"id":"375808ed51a4e593dbc6b8c3ecc93229"},{"type":"Feature","properties":{"title":"The Prestigious Faculty of Science","description":"This is the Prestigious Faculty of Science. Departmental offices, laboratories will be found here"},"geometry":{"coordinates":[7.979327,5.040165],"type":"Point"},"id":"49308f85a5cd60b89a6c0ebf59e8d514"},{"type":"Feature","properties":{"title":"University of Uyo, Main Campus Library","description":"The main library"},"geometry":{"coordinates":[7.977073,5.040237],"type":"Point"},"id":"665dba093e8455adc6255f90a4626636"},{"type":"Feature","properties":{"title":"Y-Building","description":"PTD building "},"geometry":{"coordinates":[7.975883,5.041162],"type":"Point"},"id":"6d303fb6cc38affec7a7efdb7f4934cd"},{"type":"Feature","properties":{"title":"Engineering Laboratories","description":"Here you'll find all the engineering laboratories"},"geometry":{"coordinates":[7.975215,5.041758],"type":"Point"},"id":"76d1ae10f3e9dc69163d526567c17d24"},{"type":"Feature","properties":{"title":"Agric Lecture Theater","description":"Agric Lecture Theater"},"geometry":{"coordinates":[7.977581,5.046234],"type":"Point"},"id":"83495200e649f376c41bbb2b20758c36"},{"type":"Feature","properties":{"title":"Engineering Offices","description":"Engineering workshops"},"geometry":{"coordinates":[7.975904,5.0422],"type":"Point"},"id":"8887d7cadad8bdfb43b907d2dbc3fd99"},{"type":"Feature","properties":{"title":"New Hostel","description":"Boarding Facility"},"geometry":{"coordinates":[7.981215,5.042947],"type":"Point"},"id":"8a445dcc894fea40dcb43ed6cf900f06"},{"type":"Feature","properties":{"title":"ELF Lecture Theater","description":"ELF Lecture Theater"},"geometry":{"coordinates":[7.975285,5.040205],"type":"Point"},"id":"8f764b4306701bc0a51640b6300c4824"},{"type":"Feature","properties":{"title":"Faculty of Computing Science","description":"The Prestigious Faculty of Computing"},"geometry":{"coordinates":[7.97857,5.041648],"type":"Point"},"id":"9955233e1ee7a2eb70cf2c7dd93668cc"},{"type":"Feature","properties":{"title":"Entry point","description":"Go from here"},"geometry":{"coordinates":[7.977964,5.037636],"type":"Point"},"id":"9ff891a9c13082e270eb20fb5bc7b9e7"},{"type":"Feature","properties":{"title":"Female Presidential Hostel","description":"Boarding Facility for Female Students"},"geometry":{"coordinates":[7.972786,5.041858],"type":"Point"},"id":"b243adfdcceba5892af386308b309eef"},{"type":"Feature","properties":{"title":"Science Market","description":"Get all you need here"},"geometry":{"coordinates":[7.980185,5.039066],"type":"Point"},"id":"b7a73e1ddcbe75f3986905fa8385d70e"},{"type":"Feature","properties":{"title":"Central Administrative Block, UNIUYO Main Campus","description":"This is where the administrative offices are. The Vice Chancellor's office, the Finance Unit etc."},"geometry":{"coordinates":[7.976751,5.038256],"type":"Point"},"id":"cfb70d077546faafec1023bdef5b1ad1"},{"type":"Feature","properties":{"title":"Convocation Park","description":"Convocation Park"},"geometry":{"coordinates":[7.977667,5.039107],"type":"Point"},"id":"d13d384f5fc56dda20dc74e3730cd815"},{"type":"Feature","properties":{"title":"Faculty of Engineering","description":"The Prestigious Faculty of Engineering. Home to the Departments of Computer Engineering, Food Engineering etc."},"geometry":{"coordinates":[7.974607,5.042029],"type":"Point"},"id":"d38d6835b6e6e6c9f3ae98eb2c2e5234"},{"type":"Feature","properties":{"title":"New Engineering Block (NEB)","description":"New Engineering Block (NEB)"},"geometry":{"coordinates":[7.972924,5.040471],"type":"Point"},"id":"d69ad4a470a290de3d87457a2a7f2c90"},{"type":"Feature","properties":{"title":"Multi-purpose hall","description":"Here is a hall used for different purposes. This is most likely where you'll spend most of your time in year one"},"geometry":{"coordinates":[7.978863,5.039405],"type":"Point"},"id":"e60eab21656c30f9bf10898c9d4f274d"}]}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "New Engineering Classroom Block",
+        "description": "The New Engineering Classroom Block (NECB), the main lecture block for the Faculty of Engineering.",
+        "category": "teaching",
+        "image": "/buildings/NECB.jpeg"
+      },
+      "geometry": {
+        "coordinates": [
+          7.97581,
+          5.03924
+        ],
+        "type": "Point"
+      },
+      "id": "00a7b3ca40de2efb31eea14fd700cfd0"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UNIUYO-Magvoile Center for Skills Acquisition",
+        "description": "Center for Skills Acquisition",
+        "category": "other"
+      },
+      "geometry": {
+        "coordinates": [
+          7.975184,
+          5.043995
+        ],
+        "type": "Point"
+      },
+      "id": "13cb011cd378a93754c9143eb97e7496"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Science Lecture Theatre (1k Cap)",
+        "description": "The UNIUYO Science Lecture theatre",
+        "category": "teaching",
+        "image": "/buildings/1000 Cap.jpeg"
+      },
+      "geometry": {
+        "coordinates": [
+          7.978286,
+          5.042444
+        ],
+        "type": "Point"
+      },
+      "id": "211c23e98e3ef548dcadfd0016abc08d"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Zinox Laboratories",
+        "description": "The official computer Engineering laboratory",
+        "category": "teaching",
+        "image": "/buildings/Zinox Lab.jpeg"
+      },
+      "geometry": {
+        "coordinates": [
+          7.974948,
+          5.041136
+        ],
+        "type": "Point"
+      },
+      "id": "239f37b3dae120f6d87ab1602857cb02"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Engine Market",
+        "description": "Get all you need here",
+        "category": "market"
+      },
+      "geometry": {
+        "coordinates": [
+          7.972894,
+          5.042854
+        ],
+        "type": "Point"
+      },
+      "id": "2673207ff1ed1fb899ce76aa84c0e927"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Bus Stop (Engineering)",
+        "description": "Get a ride out of school",
+        "category": "transport"
+      },
+      "geometry": {
+        "coordinates": [
+          7.974235,
+          5.042067
+        ],
+        "type": "Point"
+      },
+      "id": "2d9cd1dc3ad725da20affb2075c661cd"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Male Presidential Hostel",
+        "description": "Boarding Facility for Male Students",
+        "category": "hostel"
+      },
+      "geometry": {
+        "coordinates": [
+          7.973651,
+          5.043323
+        ],
+        "type": "Point"
+      },
+      "id": "3042518aa844cca0e028ef00e9a1a022"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "The Prestigious Faculty of Science",
+        "description": "This is the Prestigious Faculty of Science. Departmental offices, laboratories will be found here",
+        "category": "teaching"
+      },
+      "geometry": {
+        "coordinates": [
+          7.979327,
+          5.040165
+        ],
+        "type": "Point"
+      },
+      "id": "49308f85a5cd60b89a6c0ebf59e8d514"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "University of Uyo, Main Campus Library",
+        "description": "The main library",
+        "category": "library"
+      },
+      "geometry": {
+        "coordinates": [
+          7.977073,
+          5.040237
+        ],
+        "type": "Point"
+      },
+      "id": "665dba093e8455adc6255f90a4626636"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Y-Building",
+        "description": "PTD building ",
+        "category": "teaching",
+        "image": "/buildings/PTDF.jpeg"
+      },
+      "geometry": {
+        "coordinates": [
+          7.975883,
+          5.041162
+        ],
+        "type": "Point"
+      },
+      "id": "6d303fb6cc38affec7a7efdb7f4934cd"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Engineering Laboratories",
+        "description": "Here you'll find all the engineering laboratories",
+        "category": "teaching"
+      },
+      "geometry": {
+        "coordinates": [
+          7.975215,
+          5.041758
+        ],
+        "type": "Point"
+      },
+      "id": "76d1ae10f3e9dc69163d526567c17d24"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Agric Lecture Theater",
+        "description": "Agric Lecture Theater",
+        "category": "teaching",
+        "image": "/buildings/Agric LEcture Theatre.jpeg"
+      },
+      "geometry": {
+        "coordinates": [
+          7.977581,
+          5.046234
+        ],
+        "type": "Point"
+      },
+      "id": "83495200e649f376c41bbb2b20758c36"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Engineering Offices",
+        "description": "Engineering workshops",
+        "category": "admin"
+      },
+      "geometry": {
+        "coordinates": [
+          7.975904,
+          5.0422
+        ],
+        "type": "Point"
+      },
+      "id": "8887d7cadad8bdfb43b907d2dbc3fd99"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "New Hostel",
+        "description": "Boarding Facility",
+        "category": "hostel"
+      },
+      "geometry": {
+        "coordinates": [
+          7.981215,
+          5.042947
+        ],
+        "type": "Point"
+      },
+      "id": "8a445dcc894fea40dcb43ed6cf900f06"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "ELF Lecture Theater",
+        "description": "ELF Lecture Theater",
+        "category": "teaching"
+      },
+      "geometry": {
+        "coordinates": [
+          7.975285,
+          5.040205
+        ],
+        "type": "Point"
+      },
+      "id": "8f764b4306701bc0a51640b6300c4824"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Faculty of Computing Science",
+        "description": "The Prestigious Faculty of Computing",
+        "category": "teaching",
+        "image": "/buildings/Faculty of Computing.png"
+      },
+      "geometry": {
+        "coordinates": [
+          7.97857,
+          5.041648
+        ],
+        "type": "Point"
+      },
+      "id": "9955233e1ee7a2eb70cf2c7dd93668cc"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Entry point",
+        "description": "Go from here",
+        "category": "landmark"
+      },
+      "geometry": {
+        "coordinates": [
+          7.977964,
+          5.037636
+        ],
+        "type": "Point"
+      },
+      "id": "9ff891a9c13082e270eb20fb5bc7b9e7"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Female Presidential Hostel",
+        "description": "Boarding Facility for Female Students",
+        "category": "hostel"
+      },
+      "geometry": {
+        "coordinates": [
+          7.972786,
+          5.041858
+        ],
+        "type": "Point"
+      },
+      "id": "b243adfdcceba5892af386308b309eef"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Science Market",
+        "description": "Get all you need here",
+        "category": "market"
+      },
+      "geometry": {
+        "coordinates": [
+          7.980185,
+          5.039066
+        ],
+        "type": "Point"
+      },
+      "id": "b7a73e1ddcbe75f3986905fa8385d70e"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Central Administrative Block, UNIUYO Main Campus",
+        "description": "This is where the administrative offices are. The Vice Chancellor's office, the Finance Unit etc.",
+        "category": "admin"
+      },
+      "geometry": {
+        "coordinates": [
+          7.976751,
+          5.038256
+        ],
+        "type": "Point"
+      },
+      "id": "cfb70d077546faafec1023bdef5b1ad1"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Convocation Park",
+        "description": "Convocation Park",
+        "category": "landmark"
+      },
+      "geometry": {
+        "coordinates": [
+          7.977667,
+          5.039107
+        ],
+        "type": "Point"
+      },
+      "id": "d13d384f5fc56dda20dc74e3730cd815"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Faculty of Engineering",
+        "description": "The Prestigious Faculty of Engineering. Home to the Departments of Computer Engineering, Food Engineering etc.",
+        "category": "teaching",
+        "image": "/buildings/Faculty of Engineering Building.png"
+      },
+      "geometry": {
+        "coordinates": [
+          7.974607,
+          5.042029
+        ],
+        "type": "Point"
+      },
+      "id": "d38d6835b6e6e6c9f3ae98eb2c2e5234"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "New Engineering Block (NEB)",
+        "description": "New Engineering Block (NEB)",
+        "category": "teaching",
+        "image": "/buildings/NEB.jpeg"
+      },
+      "geometry": {
+        "coordinates": [
+          7.972924,
+          5.040471
+        ],
+        "type": "Point"
+      },
+      "id": "d69ad4a470a290de3d87457a2a7f2c90"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Multi-purpose hall",
+        "description": "Here is a hall used for different purposes. This is most likely where you'll spend most of your time in year one",
+        "category": "teaching"
+      },
+      "geometry": {
+        "coordinates": [
+          7.978863,
+          5.039405
+        ],
+        "type": "Point"
+      },
+      "id": "e60eab21656c30f9bf10898c9d4f274d"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "ICT I (600C)",
+        "description": "ICT I (600C) lecture block, west of the Faculty of Computing. Pin is approximate \u2014 refine with GPS.",
+        "category": "teaching"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.9776,
+          5.04155
+        ]
+      },
+      "id": "850a37be607312de19da6c253a60f6d0"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "ICT II (300C)",
+        "description": "ICT II (300C) lecture block in the central academic cluster.",
+        "category": "teaching"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.97701,
+          5.0425
+        ]
+      },
+      "id": "da5c544e2dbbe0dc2a8f3350137842a7"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "GeoScience Building",
+        "description": "GeoScience Building lecture block.",
+        "category": "teaching"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.98092,
+          5.03892
+        ]
+      },
+      "id": "4b6ad4a9297b3f217d0d9e935a2f98a8"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "5 ARMS",
+        "description": "5 Arms lecture venue.",
+        "category": "teaching",
+        "image": "/buildings/5 Arms.jpeg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.97749,
+          5.04279
+        ]
+      },
+      "id": "8be32f0a4d80df88f06bd9978ea06360"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Engineering Classroom Block",
+        "description": "Engineering Classroom Block (FL and GD lecture venues).",
+        "category": "teaching"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.97451,
+          5.04158
+        ]
+      },
+      "id": "9413c5979f385cacacc12ffd7bd3f8aa"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Engineering Studio and Workshop",
+        "description": "Engineering studio and workshop.",
+        "category": "teaching"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.9746,
+          5.04134
+        ]
+      },
+      "id": "e7d07963adb73f54cb91c8feb1a7aade"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Engineering Lecture Theater",
+        "description": "Official Engineering Theater",
+        "category": "teaching",
+        "image": "/buildings/ELT Tetfund 250C.jpeg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.973051,
+          5.03977
+        ]
+      },
+      "id": "9a8dc99303ddf16254745599c8e800a1"
+    }
+  ]
+}

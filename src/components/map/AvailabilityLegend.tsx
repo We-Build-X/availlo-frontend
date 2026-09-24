@@ -14,9 +14,18 @@ const ITEMS: { label: string; color: string }[] = [
   { label: "No data", color: "#9ca3af" },
 ]
 
-export function AvailabilityLegend() {
+export function AvailabilityLegend({
+  className,
+}: {
+  className?: string
+}) {
   return (
-    <div className="absolute top-3 left-3 z-10 rounded-xl border border-neutral-200 bg-white/90 p-2.5 shadow-sm backdrop-blur">
+    <div
+      className={
+        className ??
+        "absolute top-3 left-3 z-10 rounded-xl border border-neutral-200 bg-white/90 p-2.5 shadow-sm backdrop-blur"
+      }
+    >
       <p className="mb-1.5 text-[10px] font-bold tracking-widest text-neutral-500 uppercase">
         Availability
       </p>
