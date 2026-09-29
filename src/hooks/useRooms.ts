@@ -3,12 +3,20 @@ import { api, isApiConfigured } from "@/lib/api";
 import { ENDPOINTS } from "@/lib/ENDPOINTS";
 import type { Room, PaginatedResponse, SearchRoom, FreeRoom, OccupiedRoom, EndingSoonRoom } from "@/lib/api-types";
 
+// DRF paginates some endpoints ({count, results}) — unwrap so callers
+// always get an array (calling .map on the envelope throws).
+function asList<T>(data: T[] | PaginatedResponse<T>): T[] {
+  return Array.isArray(data) ? data : (data.results ?? []);
+}
+
 export function useRooms(enabled = isApiConfigured()) {
   return useQuery({
     queryKey: ["rooms", "list"],
     queryFn: async () => {
-      const { data } = await api.get<Room[]>(ENDPOINTS.rooms.list);
-      return data;
+      const { data } = await api.get<Room[] | PaginatedResponse<Room>>(
+        ENDPOINTS.rooms.list,
+      );
+      return asList(data);
     },
     enabled,
     staleTime: 30_000,
@@ -33,10 +41,12 @@ export function useSearchRooms(q: string, page = 1, enabled = isApiConfigured())
   return useQuery({
     queryKey: ["rooms", "search", q, page],
     queryFn: async () => {
-      const { data } = await api.get<SearchRoom[]>(ENDPOINTS.search, {
+      const { data } = await api.get<
+        SearchRoom[] | PaginatedResponse<SearchRoom>
+      >(ENDPOINTS.search, {
         params: { q, page },
       });
-      return data;
+      return asList(data);
     },
     enabled: enabled && q.length > 0,
     staleTime: 15_000,
