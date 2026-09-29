@@ -11,7 +11,8 @@ import { isApiConfigured } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { ENDPOINTS } from "@/lib/ENDPOINTS";
-import type { RoomDetail, TimetableEntry } from "@/lib/api-types";
+import { roomDetailOptions, roomTimetableOptions } from "@/hooks/useRooms";
+import type { TimetableEntry } from "@/lib/api-types";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { ScheduleItem } from "@/lib/mock-data";
 
@@ -32,13 +33,8 @@ export default function Venue() {
   const useApi = isApiConfigured();
 
   const { data: detail, isPending: detailLoading } = useQuery({
-    queryKey: ["rooms", "detail", slug],
-    queryFn: async () => {
-      const { data } = await api.get<RoomDetail>(ENDPOINTS.rooms.detail(slug));
-      return data;
-    },
+    ...roomDetailOptions(slug),
     enabled: useApi && !!slug && !isNumericId,
-    staleTime: 15_000,
     retry: false,
   });
 
@@ -57,14 +53,10 @@ export default function Venue() {
   });
 
   const effectiveSlug = detail?.slug ?? (isNumericId ? undefined : slug);
+  // Fires in parallel with detail (same param slug) instead of waiting for it.
   const { data: timetableData } = useQuery({
-    queryKey: ["rooms", "timetable", effectiveSlug],
-    queryFn: async () => {
-      const { data } = await api.get<TimetableEntry[]>(ENDPOINTS.rooms.timetable(effectiveSlug!));
-      return data;
-    },
-    enabled: useApi && !!effectiveSlug,
-    staleTime: 15_000,
+    ...roomTimetableOptions(slug),
+    enabled: useApi && !!slug && !isNumericId,
   });
 
   let apiVenue = detail ? mapRoomDetailToVenue(detail) : undefined;

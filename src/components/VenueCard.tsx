@@ -1,12 +1,23 @@
 import type { Venue } from "@/lib/mock-data";
 import { getAvailabilityText } from "@/lib/time";
 import { Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { roomDetailOptions, roomTimetableOptions } from "@/hooks/useRooms";
+import { isApiConfigured } from "@/lib/api";
 
 interface VenueCardProps {
   venue: Venue;
 }
 
 export function VenueCard({ venue }: VenueCardProps) {
+  // Warm the detail + timetable cache on hover/focus so the venue page
+  // usually renders from cache instead of two cold round trips.
+  const queryClient = useQueryClient();
+  const prefetchVenue = () => {
+    if (!isApiConfigured() || /^\d+$/.test(venue.id)) return;
+    queryClient.prefetchQuery(roomDetailOptions(venue.id));
+    queryClient.prefetchQuery(roomTimetableOptions(venue.id));
+  };
   // Matching Figma's exact soft badge colors
   const statusColors = {
     FREE: "bg-green-50 text-green-500",
@@ -28,7 +39,7 @@ export function VenueCard({ venue }: VenueCardProps) {
   };
 
   return (
-    <Link to="/venue/$id" params={{ id: venue.id }} className="group border border-gray-200 rounded-2xl p-6 bg-white hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col h-fit justify-between gap-8">
+    <Link to="/venue/$id" params={{ id: venue.id }} onMouseEnter={prefetchVenue} onFocus={prefetchVenue} className="group border border-gray-200 rounded-2xl p-6 bg-white hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col h-fit justify-between gap-8">
         {/* Top Half: Name & Status */}
         <div className="flex justify-between items-start gap-2">
           <h3 className="text-xl font-bold text-gray-900 tracking-tight group-hover:underline decoration-gray-400 decoration-1 underline-offset-4 transition-all">

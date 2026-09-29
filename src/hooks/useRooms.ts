@@ -1,14 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { api, isApiConfigured } from "@/lib/api";
 import { ENDPOINTS } from "@/lib/ENDPOINTS";
-import type { Room, PaginatedResponse, SearchRoom, FreeRoom, OccupiedRoom, EndingSoonRoom } from "@/lib/api-types";
+import type { Room, PaginatedResponse, SearchRoom, FreeRoom, OccupiedRoom, EndingSoonRoom, RoomDetail, TimetableEntry } from "@/lib/api-types";
+
+// DRF paginates some endpoints ({count, results}) — unwrap so callers
+// always get an array (calling .map on the envelope throws).
+function asList<T>(data: T[] | PaginatedResponse<T>): T[] {
+  return Array.isArray(data) ? data : (data.results ?? []);
+}
 
 export function useRooms(enabled = isApiConfigured()) {
   return useQuery({
     queryKey: ["rooms", "list"],
     queryFn: async () => {
-      const { data } = await api.get<Room[]>(ENDPOINTS.rooms.list);
-      return data;
+      const { data } = await api.get<Room[] | PaginatedResponse<Room>>(
+        ENDPOINTS.rooms.list,
+      );
+      return asList(data);
     },
     enabled,
     staleTime: 30_000,
@@ -33,25 +41,48 @@ export function useSearchRooms(q: string, page = 1, enabled = isApiConfigured())
   return useQuery({
     queryKey: ["rooms", "search", q, page],
     queryFn: async () => {
-      const { data } = await api.get<SearchRoom[]>(ENDPOINTS.search, {
+      const { data } = await api.get<
+        SearchRoom[] | PaginatedResponse<SearchRoom>
+      >(ENDPOINTS.search, {
         params: { q, page },
       });
-      return data;
+      return asList(data);
     },
     enabled: enabled && q.length > 0,
     staleTime: 15_000,
   });
 }
 
-export function useRoomDetail(slug: string, enabled = isApiConfigured()) {
-  return useQuery({
+// Shared fetch specs so venue cards can prefetch on hover and the Venue
+// page reuses identical keys (one network round trip, instant transitions).
+export function roomDetailOptions(slug: string) {
+  return queryOptions({
     queryKey: ["rooms", "detail", slug],
     queryFn: async () => {
-      const { data } = await api.get(ENDPOINTS.rooms.detail(slug));
+      const { data } = await api.get<RoomDetail>(ENDPOINTS.rooms.detail(slug));
       return data;
     },
+    staleTime: 60_000,
+  });
+}
+
+export function roomTimetableOptions(slug: string) {
+  return queryOptions({
+    queryKey: ["rooms", "timetable", slug],
+    queryFn: async () => {
+      const { data } = await api.get<TimetableEntry[]>(
+        ENDPOINTS.rooms.timetable(slug),
+      );
+      return data;
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useRoomDetail(slug: string, enabled = isApiConfigured()) {
+  return useQuery({
+    ...roomDetailOptions(slug),
     enabled: enabled && !!slug,
-    staleTime: 15_000,
   });
 }
 

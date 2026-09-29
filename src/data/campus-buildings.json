@@ -252,7 +252,7 @@
         "title": "Faculty of Computing Science",
         "description": "The Prestigious Faculty of Computing",
         "category": "teaching",
-        "image": "/buildings/Faculty of Computing.png"
+        "image": "/buildings/Faculty of Computing.jpg"
       },
       "geometry": {
         "coordinates": [
@@ -349,7 +349,7 @@
         "title": "Faculty of Engineering",
         "description": "The Prestigious Faculty of Engineering. Home to the Departments of Computer Engineering, Food Engineering etc.",
         "category": "teaching",
-        "image": "/buildings/Faculty of Engineering Building.png"
+        "image": "/buildings/Faculty of Engineering Building.jpg"
       },
       "geometry": {
         "coordinates": [
@@ -464,7 +464,7 @@
         "title": "Engineering Classroom Block",
         "description": "Engineering Classroom Block (FL and GD lecture venues).",
         "category": "teaching",
-        "image": "/buildings/FL, GD, Faculty of Engineering Building.png"
+        "image": "/buildings/FL, GD, Faculty of Engineering Building.jpg"
       },
       "geometry": {
         "type": "Point",
@@ -481,7 +481,7 @@
         "title": "Engineering Studio and Workshop",
         "description": "Engineering studio and workshop.",
         "category": "teaching",
-        "image": "/buildings/FL, GD, Faculty of Engineering Building.png"
+        "image": "/buildings/FL, GD, Faculty of Engineering Building.jpg"
       },
       "geometry": {
         "type": "Point",

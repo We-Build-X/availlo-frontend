@@ -234,22 +234,61 @@ export const MOCK_OVERRIDES: Override[] = [
     endTime: "12:00",
   },
 ];
-import type { Room, RoomDetail } from "./api-types";
+import type { Room, RoomDetail, SearchRoom } from "./api-types";
 
+// Must cover every building.code the backend can return — anything missing
+// here silently becomes "Engineering" and breaks faculty filtering.
 const BUILDING_FACULTY_MAP: Record<string, Venue["faculty"]> = {
   ENG: "Engineering",
-  SCI: "Science",
-  ARTS: "Arts",
   NECB: "Engineering",
-  GD: "Engineering",
+  NEB: "Engineering",
+  CRFE: "Engineering",
+  ELB: "Engineering",
+  ELT: "Engineering",
   ELF: "Engineering",
+  FL: "Engineering",
+  ECB: "Engineering",
   PTDF: "Engineering",
+  YBLD: "Engineering",
+  WORKSHOP: "Engineering",
+  "DRAWING STUDIO": "Engineering",
+  LAB: "Engineering",
+  "2 LABS": "Engineering",
+  TED: "Engineering",
+  "TED BLK UP": "Engineering",
+  SCI: "Science",
+  SLT: "Science",
+  FSC: "Science",
+  GEO: "Science",
+  "GEO SC": "Science",
+  "GEO SC1": "Science",
+  GEOSCIENCE: "Science",
+  PHYLAB: "Science",
+  PHY: "Science",
+  "NEW PHY": "Science",
+  CHMLAB: "Science",
+  CHM: "Science",
+  "NEW CHM LAB": "Science",
+  "MAT LAB": "Science",
+  ARTS: "Arts",
   AGRIC: "Agriculture",
   AGRI: "Agriculture",
+  ALT: "Agriculture",
+  "AGRIC LT": "Agriculture",
+  "AGRIC LT ICT II": "Agriculture",
   CMP: "Computing",
   COMP: "Computing",
   CSC: "Computing",
+  ICT: "Computing",
+  "ICT I": "Computing",
+  "ICT II": "Computing",
+  "600 C": "Computing",
+  "600C": "Computing",
+  "300 C": "Computing",
+  "300C": "Computing",
   ADMIN: "Administration",
+  ADM: "Administration",
+  LIB: "Administration",
 };
 
 function inferFaculty(buildingCode: string): Venue["faculty"] {
@@ -267,14 +306,18 @@ function to24h(time: string | null | undefined): string | undefined {
   return `${hr}:${String(m).padStart(2, "0")} ${ampm}`;
 }
 
-export function mapRoomToVenue(room: Room): Venue {
+export function mapRoomToVenue(room: Room | SearchRoom): Venue {
   // GET /api/rooms/ now returns the live status merged into each record:
   // status ("FREE" | "OCCUPIED" | "ENDING_SOON"), free_until,
   // next_available_time and the session payloads. Use those directly.
+  // Search results carry no status, only is_free — never default those to
+  // FREE or users get sent to occupied rooms.
   const status: Venue["availability"]["status"] =
     room.status === "FREE" || room.status === "OCCUPIED" || room.status === "ENDING_SOON"
       ? room.status
-      : "FREE";
+      : room.is_free === false
+        ? "OCCUPIED"
+        : "FREE";
   return {
     // Prefer slug so cards link to /venue/<slug> (detail + timetable work).
     id: room.slug ?? String(room.id),
