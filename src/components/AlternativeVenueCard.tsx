@@ -16,12 +16,23 @@ import {
 import { ArrowRight } from "@solar-icons/react";
 import { getAvailabilityText } from "@/lib/time";
 import { Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { roomDetailOptions, roomTimetableOptions } from "@/hooks/useRooms";
+import { isApiConfigured } from "@/lib/api";
 
 interface VenueCardProps {
   venue: Venue;
 }
 
 export function AlternativeVenueCard({ venue }: VenueCardProps) {
+  // Warm the detail + timetable cache on hover/focus so the venue page
+  // usually renders from cache instead of two cold round trips.
+  const queryClient = useQueryClient();
+  const prefetchVenue = () => {
+    if (!isApiConfigured() || /^\d+$/.test(venue.id)) return;
+    queryClient.prefetchQuery(roomDetailOptions(venue.id));
+    queryClient.prefetchQuery(roomTimetableOptions(venue.id));
+  };
   const statusColors = {
     FREE: "bg-green-100 text-green-800",
     OCCUPIED: "bg-red-100 text-red-800",
@@ -71,7 +82,7 @@ export function AlternativeVenueCard({ venue }: VenueCardProps) {
         </div>
       </CardContent>
       <CardFooter className="p-0">
-        <Link to="/venue/$id" params={{ id: venue.id }} className="w-full">
+        <Link to="/venue/$id" params={{ id: venue.id }} onMouseEnter={prefetchVenue} onFocus={prefetchVenue} className="w-full">
           <Button
             variant="outline"
             className="w-full cursor-pointer hover:bg-primary/10"

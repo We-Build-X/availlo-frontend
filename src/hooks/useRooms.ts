@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { api, isApiConfigured } from "@/lib/api";
 import { ENDPOINTS } from "@/lib/ENDPOINTS";
-import type { Room, PaginatedResponse, SearchRoom, FreeRoom, OccupiedRoom, EndingSoonRoom } from "@/lib/api-types";
+import type { Room, PaginatedResponse, SearchRoom, FreeRoom, OccupiedRoom, EndingSoonRoom, RoomDetail, TimetableEntry } from "@/lib/api-types";
 
 // DRF paginates some endpoints ({count, results}) — unwrap so callers
 // always get an array (calling .map on the envelope throws).
@@ -53,15 +53,36 @@ export function useSearchRooms(q: string, page = 1, enabled = isApiConfigured())
   });
 }
 
-export function useRoomDetail(slug: string, enabled = isApiConfigured()) {
-  return useQuery({
+// Shared fetch specs so venue cards can prefetch on hover and the Venue
+// page reuses identical keys (one network round trip, instant transitions).
+export function roomDetailOptions(slug: string) {
+  return queryOptions({
     queryKey: ["rooms", "detail", slug],
     queryFn: async () => {
-      const { data } = await api.get(ENDPOINTS.rooms.detail(slug));
+      const { data } = await api.get<RoomDetail>(ENDPOINTS.rooms.detail(slug));
       return data;
     },
+    staleTime: 60_000,
+  });
+}
+
+export function roomTimetableOptions(slug: string) {
+  return queryOptions({
+    queryKey: ["rooms", "timetable", slug],
+    queryFn: async () => {
+      const { data } = await api.get<TimetableEntry[]>(
+        ENDPOINTS.rooms.timetable(slug),
+      );
+      return data;
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useRoomDetail(slug: string, enabled = isApiConfigured()) {
+  return useQuery({
+    ...roomDetailOptions(slug),
     enabled: enabled && !!slug,
-    staleTime: 15_000,
   });
 }
 
