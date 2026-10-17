@@ -291,6 +291,11 @@ export function CampusMap({ buildings }: CampusMapProps) {
         return
       }
       const { buildingsNow, data } = buildData()
+      // Layer reorder is only performed on ticks where a layer was newly
+      // created. Unconditional moveLayer calls (the previous behavior)
+      // re-sorted the stack every 2 s, forcing full repaints that made
+      // stacked translucent extrusions visibly blink.
+      let created = false
       try {
         const source = map.getSource("campus-buildings") as
           | mapboxgl.GeoJSONSource
@@ -312,6 +317,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
         // Text labels from our own titles (Mapbox base-map names come from
         // its tiles and can't be edited — these sit under each marker).
         if (!map.getLayer("campus-buildings-labels")) {
+          created = true
           map.addLayer({
             id: "campus-buildings-labels",
             type: "symbol",
@@ -333,6 +339,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
           })
         }
         if (!map.getLayer("campus-buildings-circle")) {
+          created = true
           map.addLayer({
             id: "campus-buildings-circle",
             type: "circle",
@@ -364,63 +371,28 @@ export function CampusMap({ buildings }: CampusMapProps) {
             },
           })
         }
-        if (
-          map.getLayer("campus-buildings-circle") &&
-          map.getLayer("campus-buildings-labels")
-        ) {
+        // ---- Phase 1 3D ghost extrusions: REMOVED.
+        // The joined `campus-polygons` layer already draws every real OSM
+        // footprint with proper heights + status colors. A 0.3-opacity
+        // copy underneath (same footprints, flat 12 m) caused double-tops
+        // above shorter venues, z-fighting shimmer, and inconsistent
+        // color depth across buildings.
+        try {
+          if (map.getLayer("campus-3d-buildings")) {
+            created = true
+            map.removeLayer("campus-3d-buildings")
+          }
+        } catch {
+          // not present
+        }
+        // Reorder markers + labels above volumes — but only when the
+        // stack actually changed this tick (existing deps: always correct
+        // otherwise, and every moveLayer forces a full repaint).
+        if (created && map.getLayer("campus-buildings-labels")) {
           try {
             map.moveLayer("campus-buildings-labels")
           } catch {
             // already on top
-          }
-        }
-        // ---- Phase 1 3D: extrude real OSM footprints from vector tiles ----
-        // Neutral color here — status colors stay on our point markers on top.
-        // Phase 2 will swap this for `campus-polygons.geojson` with per-slug status.
-        if (!map.getLayer("campus-3d-buildings")) {
-          try {
-            const beforeId = map.getLayer("campus-buildings-circle")
-              ? "campus-buildings-circle"
-              : undefined
-            map.addLayer(
-              {
-                id: "campus-3d-buildings",
-                type: "fill-extrusion",
-                source: "composite",
-                "source-layer": "building",
-                minzoom: 15,
-                filter: ["==", ["get", "underground"], "false"],
-                paint: {
-                  "fill-extrusion-color": "#cbd5e1",
-                  "fill-extrusion-height": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    15,
-                    0,
-                    16,
-                    12,
-                  ],
-                  "fill-extrusion-base": 0,
-                  // Ghost context only: the joined campus-polygons layer is
-                  // authoritative. Full opacity caused double-walls wherever
-                  // our volumes and vector tiles overlap.
-                  "fill-extrusion-opacity": 0.3,
-                },
-              },
-              beforeId,
-            )
-          } catch (err) {
-            // Custom styles may lack the `building` source-layer — stay 2D.
-            console.warn("[mapbox] 3D extrusions unavailable:", err)
-          }
-        } else {
-          // Keep markers + labels above extrusions so they stay clickable.
-          try {
-            map.moveLayer("campus-3d-buildings", "campus-buildings-circle")
-            map.moveLayer("campus-buildings-labels")
-          } catch {
-            // ordering already correct
           }
         }
         bindHandlers()
@@ -516,6 +488,8 @@ export function CampusMap({ buildings }: CampusMapProps) {
 
     const ensurePolygons = (data: GeoJSON.FeatureCollection) => {
       if (cancelled || !map.isStyleLoaded()) return
+      // Reorder only on creation ticks — see note in the marker ensure loop.
+      let created = false
       try {
         const source = map.getSource("campus-polygons") as
           | mapboxgl.GeoJSONSource
@@ -533,6 +507,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
           })
         }
         if (!map.getLayer("campus-polygons-extrusion")) {
+          created = true
           const beforeId = map.getLayer("campus-buildings-circle")
             ? "campus-buildings-circle"
             : undefined
@@ -567,32 +542,37 @@ export function CampusMap({ buildings }: CampusMapProps) {
             beforeId,
           )
         }
-        // Keep markers + labels clickable above volumes.
-        try {
-          if (map.getLayer("campus-buildings-circle"))
-            map.moveLayer("campus-polygons-extrusion", "campus-buildings-circle")
-          if (map.getLayer("campus-buildings-labels"))
-            map.moveLayer("campus-buildings-labels")
-        } catch {
-          // ordering already correct
+        // Keep markers + labels clickable above volumes — only after a
+        // creation tick; repeating it every 5 s forced repaints (blink).
+        if (created) {
+          try {
+            if (map.getLayer("campus-buildings-circle"))
+              map.moveLayer("campus-polygons-extrusion", "campus-buildings-circle")
+            if (map.getLayer("campus-buildings-labels"))
+              map.moveLayer("campus-buildings-labels")
+          } catch {
+            // ordering already correct
+          }
         }
       } catch (err) {
         console.warn("[mapbox] polygons layer failed:", err)
       }
     }
 
+    let tick: number | null = null
     fetch(`${import.meta.env.BASE_URL}data/campus-polygons.geojson`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((data) => {
+        if (cancelled) return
         ensurePolygons(data)
         map.once("load", () => ensurePolygons(data))
-        const t = window.setInterval(() => ensurePolygons(data), 5000)
-        return () => window.clearInterval(t)
+        tick = window.setInterval(() => ensurePolygons(data), 5000)
       })
       .catch((err) => console.warn("[mapbox] campus-polygons fetch failed:", err))
 
     return () => {
       cancelled = true
+      if (tick !== null) window.clearInterval(tick)
     }
   }, [ready])
   // Push per-building status into the map via setFeatureState.
