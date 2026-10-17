@@ -21,6 +21,7 @@ import AdminSidebar from "./components/admin/AdminSidebar";
 const ExplorePage = lazyRouteComponent(() => import("./pages/Explore"));
 const AboutPage = lazyRouteComponent(() => import("./pages/About"));
 const MapPage = lazyRouteComponent(() => import("./pages/Map"));
+const Campus3DPage = lazyRouteComponent(() => import("./pages/Campus3D"));
 const VenuePage = lazyRouteComponent(() => import("./pages/Venue"));
 const AdminDashboardPage = lazyRouteComponent(
   () => import("./pages/admin/Dashboard"),
@@ -96,15 +97,21 @@ const aboutRoute = createRoute({
 });
 
 /**
- * /map is intentionally NOT a child of publicLayoutRoute — a full-bleed
- * map is useless under a sticky header. It lives directly under the
- * root route, so it gets only the root layout (no Header, no
- * MobileBottomMenu, no Footer).
+ * /map and /3d are intentionally NOT children of publicLayoutRoute —
+ * full-bleed surfaces are useless under a sticky header. Both live
+ * directly under the root route, so they get only the root layout (no
+ * Header, no MobileBottomMenu, no Footer).
  */
 const mapRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/map",
   component: MapPage,
+});
+
+const campus3dRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/3d",
+  component: Campus3DPage,
 });
 
 export const venueRoute = createRoute({
@@ -207,6 +214,7 @@ const adminSupportRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   publicLayoutRoute.addChildren([indexRoute, exploreRoute, venueRoute, aboutRoute]),
   mapRoute,
+  campus3dRoute,
   adminLoginRoute,
   adminRoute.addChildren([
     adminDashboardRoute,
