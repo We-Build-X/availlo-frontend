@@ -1,0 +1,2478 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "necb",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.975501604695843,
+              5.0391233490139316
+            ],
+            [
+              7.9758983953041565,
+              5.0391233490139316
+            ],
+            [
+              7.9758983953041565,
+              5.0393766509860685
+            ],
+            [
+              7.975501604695843,
+              5.0393766509860685
+            ],
+            [
+              7.975501604695843,
+              5.0391233490139316
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "necb",
+        "title": "New Engineering Classroom Block",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.9757,
+          5.03925
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "magvoile-center",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9751284,
+              5.0440476
+            ],
+            [
+              7.9750181,
+              5.0442236
+            ],
+            [
+              7.9751024,
+              5.044276
+            ],
+            [
+              7.9751836,
+              5.0441463
+            ],
+            [
+              7.9752859,
+              5.0442099
+            ],
+            [
+              7.9752051,
+              5.0443388
+            ],
+            [
+              7.9752906,
+              5.044392
+            ],
+            [
+              7.9754014,
+              5.0442152
+            ],
+            [
+              7.9756004,
+              5.0443389
+            ],
+            [
+              7.9756598,
+              5.0442442
+            ],
+            [
+              7.9754607,
+              5.0441205
+            ],
+            [
+              7.9754102,
+              5.0442012
+            ],
+            [
+              7.9752956,
+              5.04413
+            ],
+            [
+              7.9753803,
+              5.0439876
+            ],
+            [
+              7.9754347,
+              5.0440935
+            ],
+            [
+              7.9755684,
+              5.0440253
+            ],
+            [
+              7.9755016,
+              5.0438955
+            ],
+            [
+              7.9755324,
+              5.043855
+            ],
+            [
+              7.9753983,
+              5.0437668
+            ],
+            [
+              7.9753722,
+              5.0438159
+            ],
+            [
+              7.975232,
+              5.0438103
+            ],
+            [
+              7.975226,
+              5.043961
+            ],
+            [
+              7.9753421,
+              5.0439632
+            ],
+            [
+              7.975261,
+              5.0441085
+            ],
+            [
+              7.9751381,
+              5.0440321
+            ],
+            [
+              7.9751844,
+              5.0439581
+            ],
+            [
+              7.9749848,
+              5.043834
+            ],
+            [
+              7.9749288,
+              5.0439235
+            ],
+            [
+              7.9751284,
+              5.0440476
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "magvoile-center",
+        "title": "UNIUYO-Magvoile Center for Skills Acquisition",
+        "category": "other",
+        "height_est": 9,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.975184,
+          5.043995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "science-lecture-theatre",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9780311,
+              5.0426315
+            ],
+            [
+              7.9780596,
+              5.0426054
+            ],
+            [
+              7.9782461,
+              5.0428067
+            ],
+            [
+              7.9783252,
+              5.0427339
+            ],
+            [
+              7.9782881,
+              5.0426939
+            ],
+            [
+              7.9783981,
+              5.0425928
+            ],
+            [
+              7.9785284,
+              5.0425912
+            ],
+            [
+              7.9785327,
+              5.0424327
+            ],
+            [
+              7.9783872,
+              5.0424247
+            ],
+            [
+              7.9782724,
+              5.0423008
+            ],
+            [
+              7.9783167,
+              5.0422601
+            ],
+            [
+              7.9782558,
+              5.0421944
+            ],
+            [
+              7.978058,
+              5.0423762
+            ],
+            [
+              7.978036,
+              5.0423524
+            ],
+            [
+              7.9778937,
+              5.0424832
+            ],
+            [
+              7.9780311,
+              5.0426315
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "science-lecture-theatre",
+        "title": "Science Lecture Theatre (1k Cap)",
+        "category": "teaching",
+        "height_est": 8,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.978286,
+          5.042444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zinox-labs",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9749262,
+              5.0409588
+            ],
+            [
+              7.9750818,
+              5.0413355
+            ],
+            [
+              7.97521,
+              5.041283
+            ],
+            [
+              7.9750544,
+              5.0409062
+            ],
+            [
+              7.9749262,
+              5.0409588
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "zinox-labs",
+        "title": "Zinox Laboratories",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.97507,
+          5.04116
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "engine-market",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.973097,
+              5.0434489
+            ],
+            [
+              7.9731908,
+              5.0436065
+            ],
+            [
+              7.9732636,
+              5.0435635
+            ],
+            [
+              7.9731697,
+              5.0434059
+            ],
+            [
+              7.973097,
+              5.0434489
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "engine-market",
+        "title": "Engine Market",
+        "category": "market",
+        "height_est": 6,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "medium",
+        "center": [
+          7.972894,
+          5.042854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "bus-stop-engineering",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9744247,
+              5.0416935
+            ],
+            [
+              7.9745399,
+              5.0417313
+            ],
+            [
+              7.9746123,
+              5.0415122
+            ],
+            [
+              7.9744971,
+              5.0414744
+            ],
+            [
+              7.9744247,
+              5.0416935
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "bus-stop-engineering",
+        "title": "Bus Stop (Engineering)",
+        "category": "transport",
+        "height_est": 4,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "medium",
+        "center": [
+          7.974235,
+          5.042067
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "male-presidential-hostel",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9733485,
+              5.0433745
+            ],
+            [
+              7.9737312,
+              5.0431633
+            ],
+            [
+              7.9738703,
+              5.0434134
+            ],
+            [
+              7.9735026,
+              5.0436164
+            ],
+            [
+              7.9735548,
+              5.0437104
+            ],
+            [
+              7.9739939,
+              5.0434681
+            ],
+            [
+              7.9737644,
+              5.0430555
+            ],
+            [
+              7.9733104,
+              5.043306
+            ],
+            [
+              7.9733485,
+              5.0433745
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "male-presidential-hostel",
+        "title": "Male Presidential Hostel",
+        "category": "hostel",
+        "height_est": 15,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.973651,
+          5.043323
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "faculty-of-science",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.979128604416438,
+              5.0400383490139316
+            ],
+            [
+              7.979525395583561,
+              5.0400383490139316
+            ],
+            [
+              7.979525395583561,
+              5.0402916509860685
+            ],
+            [
+              7.979128604416438,
+              5.0402916509860685
+            ],
+            [
+              7.979128604416438,
+              5.0400383490139316
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "faculty-of-science",
+        "title": "The Prestigious Faculty of Science",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.979327,
+          5.040165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "main-library",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.976946748251013,
+              5.040146535009951
+            ],
+            [
+              7.977199251748987,
+              5.040146535009951
+            ],
+            [
+              7.977199251748987,
+              5.04032746499005
+            ],
+            [
+              7.976946748251013,
+              5.04032746499005
+            ],
+            [
+              7.976946748251013,
+              5.040146535009951
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "main-library",
+        "title": "University of Uyo, Main Campus Library",
+        "category": "other",
+        "height_est": 9,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.977073,
+          5.040237
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "y-building",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9754144,
+              5.040892
+            ],
+            [
+              7.9757282,
+              5.0410469
+            ],
+            [
+              7.9758811,
+              5.0409775
+            ],
+            [
+              7.9760206,
+              5.0406141
+            ],
+            [
+              7.9761896,
+              5.0406889
+            ],
+            [
+              7.9760179,
+              5.0411271
+            ],
+            [
+              7.976262,
+              5.0418057
+            ],
+            [
+              7.9759723,
+              5.0418992
+            ],
+            [
+              7.9757336,
+              5.0412179
+            ],
+            [
+              7.975342,
+              5.0410309
+            ],
+            [
+              7.9754144,
+              5.040892
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "y-building",
+        "title": "Y-Building",
+        "category": "teaching",
+        "height_est": 15,
+        "height_tagged": true,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.975883,
+          5.041162
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "engineering-labs",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9750577,
+              5.0413916
+            ],
+            [
+              7.9753768,
+              5.0422573
+            ],
+            [
+              7.9755385,
+              5.0421981
+            ],
+            [
+              7.9752193,
+              5.0413325
+            ],
+            [
+              7.9750577,
+              5.0413916
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "engineering-labs",
+        "title": "Engineering Laboratories",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.975215,
+          5.041758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "agric-lecture-theater",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9774415,
+              5.0463003
+            ],
+            [
+              7.977587,
+              5.04646
+            ],
+            [
+              7.9775653,
+              5.046486
+            ],
+            [
+              7.9775647,
+              5.0465545
+            ],
+            [
+              7.9776364,
+              5.0465544
+            ],
+            [
+              7.9776361,
+              5.0465147
+            ],
+            [
+              7.9776771,
+              5.0465157
+            ],
+            [
+              7.9776763,
+              5.0465542
+            ],
+            [
+              7.9777489,
+              5.0465563
+            ],
+            [
+              7.9777519,
+              5.0464847
+            ],
+            [
+              7.9777412,
+              5.0464615
+            ],
+            [
+              7.977882,
+              5.0463342
+            ],
+            [
+              7.9778348,
+              5.0462824
+            ],
+            [
+              7.9778685,
+              5.0462519
+            ],
+            [
+              7.9778087,
+              5.0461863
+            ],
+            [
+              7.9777738,
+              5.0462182
+            ],
+            [
+              7.9777119,
+              5.046201
+            ],
+            [
+              7.9777127,
+              5.0461539
+            ],
+            [
+              7.9776193,
+              5.0461523
+            ],
+            [
+              7.9776205,
+              5.0461994
+            ],
+            [
+              7.9775596,
+              5.0462064
+            ],
+            [
+              7.9775239,
+              5.0461671
+            ],
+            [
+              7.9774444,
+              5.046239
+            ],
+            [
+              7.9774737,
+              5.0462712
+            ],
+            [
+              7.9774415,
+              5.0463003
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "agric-lecture-theater",
+        "title": "Agric Lecture Theater",
+        "category": "teaching",
+        "height_est": 8,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.977581,
+          5.046234
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "engineering-offices",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9755512,
+              5.0422733
+            ],
+            [
+              7.9756219,
+              5.0424569
+            ],
+            [
+              7.9764883,
+              5.0421256
+            ],
+            [
+              7.9764175,
+              5.041942
+            ],
+            [
+              7.9755512,
+              5.0422733
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "engineering-offices",
+        "title": "Engineering Offices",
+        "category": "admin",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.975904,
+          5.0422
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "new-hostel",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.981034639606007,
+              5.042838442011941
+            ],
+            [
+              7.981395360393993,
+              5.042838442011941
+            ],
+            [
+              7.981395360393993,
+              5.043055557988058
+            ],
+            [
+              7.981034639606007,
+              5.043055557988058
+            ],
+            [
+              7.981034639606007,
+              5.042838442011941
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "new-hostel",
+        "title": "New Hostel",
+        "category": "hostel",
+        "height_est": 15,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.981215,
+          5.042947
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elf-lecture-theater",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9752211,
+              5.0401808
+            ],
+            [
+              7.9753277,
+              5.0402891
+            ],
+            [
+              7.9754751,
+              5.0402513
+            ],
+            [
+              7.975516,
+              5.0401052
+            ],
+            [
+              7.9754094,
+              5.0399969
+            ],
+            [
+              7.9752619,
+              5.0400347
+            ],
+            [
+              7.9752211,
+              5.0401808
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "elf-lecture-theater",
+        "title": "ELF Lecture Theater",
+        "category": "teaching",
+        "height_est": 8,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.97536,
+          5.04015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "faculty-of-computing",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.978371603963478,
+              5.041521349013932
+            ],
+            [
+              7.978768396036522,
+              5.041521349013932
+            ],
+            [
+              7.978768396036522,
+              5.041774650986069
+            ],
+            [
+              7.978371603963478,
+              5.041774650986069
+            ],
+            [
+              7.978371603963478,
+              5.041521349013932
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "faculty-of-computing",
+        "title": "Faculty of Computing Science",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.97857,
+          5.041648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "entry-point",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.977819712864416,
+              5.037527442011942
+            ],
+            [
+              7.978108287135584,
+              5.037527442011942
+            ],
+            [
+              7.978108287135584,
+              5.037744557988058
+            ],
+            [
+              7.977819712864416,
+              5.037744557988058
+            ],
+            [
+              7.977819712864416,
+              5.037527442011942
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "entry-point",
+        "title": "Entry point",
+        "category": "landmark",
+        "height_est": 4,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.977964,
+          5.037636
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "female-presidential-hostel",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.972675,
+              5.0420717
+            ],
+            [
+              7.9730723,
+              5.0418892
+            ],
+            [
+              7.9731925,
+              5.0421489
+            ],
+            [
+              7.9728107,
+              5.0423242
+            ],
+            [
+              7.9728559,
+              5.0424218
+            ],
+            [
+              7.9733116,
+              5.0422125
+            ],
+            [
+              7.9731134,
+              5.0417841
+            ],
+            [
+              7.972642,
+              5.0420006
+            ],
+            [
+              7.972675,
+              5.0420717
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "female-presidential-hostel",
+        "title": "Female Presidential Hostel",
+        "category": "hostel",
+        "height_est": 15,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "medium",
+        "center": [
+          7.972786,
+          5.041858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "science-market",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9799149,
+              5.0387089
+            ],
+            [
+              7.9801283,
+              5.0384783
+            ],
+            [
+              7.9802389,
+              5.0385799
+            ],
+            [
+              7.9801355,
+              5.0386917
+            ],
+            [
+              7.9800958,
+              5.0386553
+            ],
+            [
+              7.979986,
+              5.0387741
+            ],
+            [
+              7.9799149,
+              5.0387089
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "science-market",
+        "title": "Science Market",
+        "category": "market",
+        "height_est": 6,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "medium",
+        "center": [
+          7.980185,
+          5.039066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "admin-block",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9766367,
+              5.0381642
+            ],
+            [
+              7.9767691,
+              5.0382922
+            ],
+            [
+              7.9769119,
+              5.0381456
+            ],
+            [
+              7.9767796,
+              5.0380176
+            ],
+            [
+              7.9766367,
+              5.0381642
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "admin-block",
+        "title": "Central Administrative Block, UNIUYO Main Campus",
+        "category": "admin",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.976751,
+          5.038256
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "convocation-park",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9772946,
+              5.0392514
+            ],
+            [
+              7.9777157,
+              5.039377
+            ],
+            [
+              7.9777429,
+              5.0392865
+            ],
+            [
+              7.9773218,
+              5.0391609
+            ],
+            [
+              7.9772946,
+              5.0392514
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "convocation-park",
+        "title": "Convocation Park",
+        "category": "landmark",
+        "height_est": 6,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.977667,
+          5.039107
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "faculty-of-engineering",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9749423,
+              5.0421638
+            ],
+            [
+              7.97493,
+              5.0422033
+            ],
+            [
+              7.9749058,
+              5.0422728
+            ],
+            [
+              7.9748948,
+              5.0423056
+            ],
+            [
+              7.9750477,
+              5.0423564
+            ],
+            [
+              7.9750952,
+              5.0422145
+            ],
+            [
+              7.9749423,
+              5.0421638
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "faculty-of-engineering",
+        "title": "Faculty of Engineering",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "medium",
+        "center": [
+          7.974607,
+          5.042029
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "neb",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.972725604322986,
+              5.040344349013932
+            ],
+            [
+              7.973122395677014,
+              5.040344349013932
+            ],
+            [
+              7.973122395677014,
+              5.040597650986069
+            ],
+            [
+              7.972725604322986,
+              5.040597650986069
+            ],
+            [
+              7.972725604322986,
+              5.040344349013932
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "neb",
+        "title": "New Engineering Block (NEB)",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.972924,
+          5.040471
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "multi-purpose-hall",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9786116,
+              5.0392461
+            ],
+            [
+              7.9787117,
+              5.0394373
+            ],
+            [
+              7.9790202,
+              5.039277
+            ],
+            [
+              7.97892,
+              5.0390858
+            ],
+            [
+              7.9786116,
+              5.0392461
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "multi-purpose-hall",
+        "title": "Multi-purpose hall",
+        "category": "other",
+        "height_est": 7,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.978863,
+          5.039405
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ict-i-600c",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9776335,
+              5.0416039
+            ],
+            [
+              7.9778894,
+              5.0417509
+            ],
+            [
+              7.9778722,
+              5.0417807
+            ],
+            [
+              7.9779402,
+              5.0418197
+            ],
+            [
+              7.9780966,
+              5.0415494
+            ],
+            [
+              7.9780301,
+              5.0415112
+            ],
+            [
+              7.9780005,
+              5.0415622
+            ],
+            [
+              7.9777348,
+              5.0414096
+            ],
+            [
+              7.9777533,
+              5.0413776
+            ],
+            [
+              7.9776987,
+              5.0413462
+            ],
+            [
+              7.9775592,
+              5.0415873
+            ],
+            [
+              7.9776222,
+              5.0416234
+            ],
+            [
+              7.9776335,
+              5.0416039
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "ict-i-600c",
+        "title": "ICT I (600C)",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.9776,
+          5.04155
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ict-ii-300c",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.976811603703187,
+              5.042373349013932
+            ],
+            [
+              7.977208396296813,
+              5.042373349013932
+            ],
+            [
+              7.977208396296813,
+              5.042626650986069
+            ],
+            [
+              7.976811603703187,
+              5.042626650986069
+            ],
+            [
+              7.976811603703187,
+              5.042373349013932
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "ict-ii-300c",
+        "title": "ICT II (300C)",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.97701,
+          5.0425
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "geoscience-building",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9807216047966,
+              5.038793349013932
+            ],
+            [
+              7.9811183952034,
+              5.038793349013932
+            ],
+            [
+              7.9811183952034,
+              5.0390466509860685
+            ],
+            [
+              7.9807216047966,
+              5.0390466509860685
+            ],
+            [
+              7.9807216047966,
+              5.038793349013932
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "geoscience-building",
+        "title": "GeoScience Building",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.98092,
+          5.03892
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "5-arms",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.977291603614581,
+              5.042663349013932
+            ],
+            [
+              7.97768839638542,
+              5.042663349013932
+            ],
+            [
+              7.97768839638542,
+              5.042916650986069
+            ],
+            [
+              7.977291603614581,
+              5.042916650986069
+            ],
+            [
+              7.977291603614581,
+              5.042663349013932
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "5-arms",
+        "title": "5 ARMS",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.97749,
+          5.04279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "engineering-classroom-block",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9744837,
+              5.0413969
+            ],
+            [
+              7.9746517,
+              5.0414609
+            ],
+            [
+              7.9747214,
+              5.0412792
+            ],
+            [
+              7.9745534,
+              5.0412152
+            ],
+            [
+              7.9744837,
+              5.0413969
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "engineering-classroom-block",
+        "title": "Engineering Classroom Block",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.97451,
+          5.04158
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "engineering-studio-and-workshop",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.974401604057563,
+              5.0412133490139315
+            ],
+            [
+              7.974798395942436,
+              5.0412133490139315
+            ],
+            [
+              7.974798395942436,
+              5.041466650986068
+            ],
+            [
+              7.974401604057563,
+              5.041466650986068
+            ],
+            [
+              7.974401604057563,
+              5.0412133490139315
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "engineering-studio-and-workshop",
+        "title": "Engineering Studio and Workshop",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.9746,
+          5.04134
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "engineering-lecture-theater",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9733705,
+              5.0395694
+            ],
+            [
+              7.9734349,
+              5.0396896
+            ],
+            [
+              7.9734108,
+              5.0397698
+            ],
+            [
+              7.9732981,
+              5.0398206
+            ],
+            [
+              7.9732203,
+              5.0398045
+            ],
+            [
+              7.9731882,
+              5.0397324
+            ],
+            [
+              7.9731265,
+              5.039719
+            ],
+            [
+              7.9730701,
+              5.0396469
+            ],
+            [
+              7.9730782,
+              5.0396068
+            ],
+            [
+              7.9731801,
+              5.0395534
+            ],
+            [
+              7.9732445,
+              5.0395801
+            ],
+            [
+              7.9732954,
+              5.039548
+            ],
+            [
+              7.9733705,
+              5.0395694
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "engineering-lecture-theater",
+        "title": "Engineering Lecture Theater",
+        "category": "teaching",
+        "height_est": 9,
+        "height_tagged": false,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.97325,
+          5.03971
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "uniuyo-microfinance-bank",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.975153748491384,
+              5.03890953500995
+            ],
+            [
+              7.975406251508615,
+              5.03890953500995
+            ],
+            [
+              7.975406251508615,
+              5.039090464990049
+            ],
+            [
+              7.975153748491384,
+              5.039090464990049
+            ],
+            [
+              7.975153748491384,
+              5.03890953500995
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "uniuyo-microfinance-bank",
+        "title": "Uniuyo Microfinance Bank",
+        "category": "other",
+        "height_est": 9,
+        "height_tagged": false,
+        "source": "hand-box",
+        "confidence": "low",
+        "center": [
+          7.97528,
+          5.039
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-1",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9802021,
+              5.0383911
+            ],
+            [
+              7.9803684,
+              5.0385434
+            ],
+            [
+              7.9804357,
+              5.0384706
+            ],
+            [
+              7.9802694,
+              5.0383183
+            ],
+            [
+              7.9802021,
+              5.0383911
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-1",
+        "title": "Unnamed building 1",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.98029554,
+          5.0384229000000005
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-2",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9813155,
+              5.0363176
+            ],
+            [
+              7.9812586,
+              5.0364331
+            ],
+            [
+              7.9813877,
+              5.0364963
+            ],
+            [
+              7.9814454,
+              5.0363794
+            ],
+            [
+              7.9814938,
+              5.0364031
+            ],
+            [
+              7.9815735,
+              5.0362414
+            ],
+            [
+              7.9814313,
+              5.0361718
+            ],
+            [
+              7.9814087,
+              5.0362176
+            ],
+            [
+              7.9813047,
+              5.0361667
+            ],
+            [
+              7.9812469,
+              5.036284
+            ],
+            [
+              7.9813155,
+              5.0363176
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-2",
+        "title": "Unnamed building 2",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.981380145454545,
+          5.036311690909091
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-3",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9754868,
+              5.0357834
+            ],
+            [
+              7.9756144,
+              5.0357165
+            ],
+            [
+              7.9754493,
+              5.035404
+            ],
+            [
+              7.9753217,
+              5.0354709
+            ],
+            [
+              7.9754868,
+              5.0357834
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-3",
+        "title": "Unnamed building 3",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.975471799999999,
+          5.03563164
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-4",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9765517,
+              5.0383914
+            ],
+            [
+              7.976678,
+              5.0385086
+            ],
+            [
+              7.9767945,
+              5.038384
+            ],
+            [
+              7.9766682,
+              5.0382668
+            ],
+            [
+              7.9765517,
+              5.0383914
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-4",
+        "title": "Unnamed building 4",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.976648819999999,
+          5.03838844
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-5",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9768708,
+              5.0383377
+            ],
+            [
+              7.9770157,
+              5.0384766
+            ],
+            [
+              7.9771018,
+              5.0383875
+            ],
+            [
+              7.976957,
+              5.0382485
+            ],
+            [
+              7.9768708,
+              5.0383377
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-5",
+        "title": "Unnamed building 5",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.976963219999999,
+          5.038357599999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-6",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9777586,
+              5.0392702
+            ],
+            [
+              7.9779974,
+              5.0390965
+            ],
+            [
+              7.9780617,
+              5.0389843
+            ],
+            [
+              7.978228,
+              5.0390965
+            ],
+            [
+              7.9781449,
+              5.0392167
+            ],
+            [
+              7.9778713,
+              5.0394171
+            ],
+            [
+              7.9777586,
+              5.0392702
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-6",
+        "title": "Unnamed building 6",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.977974357142857,
+          5.039193071428571
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-7",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9732445,
+              5.0436707
+            ],
+            [
+              7.9734108,
+              5.0439378
+            ],
+            [
+              7.9734853,
+              5.0438918
+            ],
+            [
+              7.973319,
+              5.0436246
+            ],
+            [
+              7.9732445,
+              5.0436707
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-7",
+        "title": "Unnamed building 7",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.97334082,
+          5.04375912
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-8",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9757336,
+              5.0426661
+            ],
+            [
+              7.9758571,
+              5.0426211
+            ],
+            [
+              7.9758062,
+              5.0424822
+            ],
+            [
+              7.9756826,
+              5.0425271
+            ],
+            [
+              7.9757336,
+              5.0426661
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-8",
+        "title": "Unnamed building 8",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.97576262,
+          5.0425925199999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-9",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9756156,
+              5.0427035
+            ],
+            [
+              7.9756995,
+              5.0426715
+            ],
+            [
+              7.9756647,
+              5.0425806
+            ],
+            [
+              7.9755807,
+              5.0426126
+            ],
+            [
+              7.9756156,
+              5.0427035
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-9",
+        "title": "Unnamed building 9",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.975635219999999,
+          5.04265434
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-10",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9754654,
+              5.0425699
+            ],
+            [
+              7.9755619,
+              5.042479
+            ],
+            [
+              7.9755005,
+              5.0424142
+            ],
+            [
+              7.9754039,
+              5.0425051
+            ],
+            [
+              7.9754654,
+              5.0425699
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-10",
+        "title": "Unnamed building 10",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.975479419999999,
+          5.04250762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-11",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.975401,
+              5.0429172
+            ],
+            [
+              7.9755163,
+              5.0430348
+            ],
+            [
+              7.9756081,
+              5.0429454
+            ],
+            [
+              7.9754928,
+              5.0428278
+            ],
+            [
+              7.975401,
+              5.0429172
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-11",
+        "title": "Unnamed building 11",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.97548384,
+          5.0429284800000005
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-12",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9751489,
+              5.0425057
+            ],
+            [
+              7.9753178,
+              5.0427863
+            ],
+            [
+              7.9753829,
+              5.0427474
+            ],
+            [
+              7.9752139,
+              5.0424668
+            ],
+            [
+              7.9751489,
+              5.0425057
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-12",
+        "title": "Unnamed building 12",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.97524248,
+          5.04260238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-13",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9747868,
+              5.0426153
+            ],
+            [
+              7.9750818,
+              5.0428183
+            ],
+            [
+              7.9751333,
+              5.0427441
+            ],
+            [
+              7.9748383,
+              5.042541
+            ],
+            [
+              7.9747868,
+              5.0426153
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-13",
+        "title": "Unnamed building 13",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.974925400000001,
+          5.042666800000001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-14",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9764883,
+              5.0421256
+            ],
+            [
+              7.9764175,
+              5.041942
+            ],
+            [
+              7.9755512,
+              5.0422733
+            ],
+            [
+              7.9756219,
+              5.0424569
+            ],
+            [
+              7.9764883,
+              5.0421256
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-14",
+        "title": "Unnamed building 14",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.976113440000001,
+          5.04218468
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "unnamed-15",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.9706493,
+              5.0376193
+            ],
+            [
+              7.9707095,
+              5.0376828
+            ],
+            [
+              7.9706881,
+              5.0376823
+            ],
+            [
+              7.9706621,
+              5.0376816
+            ],
+            [
+              7.9706413,
+              5.0376811
+            ],
+            [
+              7.970583,
+              5.0376796
+            ],
+            [
+              7.9705791,
+              5.0376795
+            ],
+            [
+              7.9705779,
+              5.0376795
+            ],
+            [
+              7.9705714,
+              5.0376793
+            ],
+            [
+              7.9705714,
+              5.0375946
+            ],
+            [
+              7.9706493,
+              5.0376193
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "unnamed-15",
+        "title": "Unnamed building 15",
+        "category": "other",
+        "height_est": 8,
+        "source": "osm",
+        "confidence": "unmatched",
+        "center": [
+          7.970625672727272,
+          5.037661718181819
+        ]
+      }
+    }
+  ]
+}

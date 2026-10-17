@@ -38,6 +38,7 @@ export function BuildingPopup({ building }: BuildingPopupProps) {
   // picture at all (backend room images, when present, appear on venue
   // pages via mapRoomDetailToVenue, not here). A broken URL hides itself.
   const [imageSrc, setImageSrc] = useState<string>(building.image ?? "")
+  const [zoomed, setZoomed] = useState(false)
 
   const handleImageError = () => {
     setImageSrc("")
@@ -49,12 +50,22 @@ export function BuildingPopup({ building }: BuildingPopupProps) {
   return (
     <div className="font-poppins">
       {imageSrc && (
-        <img
-          src={imageSrc}
-          alt={building.title}
-          onError={handleImageError}
-          className="h-32 w-full rounded-t-lg object-cover"
-        />
+        <button
+          type="button"
+          onClick={() => setZoomed((v) => !v)}
+          aria-expanded={zoomed}
+          className="block w-full cursor-zoom-in text-left"
+          title={zoomed ? "Tap to shrink" : "Tap to enlarge"}
+        >
+          <img
+            src={imageSrc}
+            alt={building.title}
+            onError={handleImageError}
+            className={`w-full rounded-t-lg object-cover transition-[height] duration-200 ${
+              zoomed ? "h-56" : "h-32"
+            }`}
+          />
+        </button>
       )}
 
       <div className="p-3">
