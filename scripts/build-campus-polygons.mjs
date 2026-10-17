@@ -172,34 +172,49 @@ function main() {
 
   const usedOsm = new Set();
   let matched = 0;
-  const features = buildings.features.map((f, i) => {
-    const title = f.properties.title;
-    const category = f.properties.category ?? "other";
-    const pt = f.geometry.coordinates;
-    const slug = joinSlugs.get(title) ?? slugify(title);
 
-    // Nearest raw polygon within radius, with point-in-polygon priority
-    // (a pin inside an L-shaped building can sit far from its centroid).
-    let best = null, bestD = Infinity;
+  // Global greedy assignment across ALL (pin, polygon) pairs:
+  // point-inside costs 0 and is claimed first (fixes first-come-first-serve
+  // mis-assignment where a nearby pin stole a polygon another pin was
+  // literally inside of), then by centroid distance, radius-capped.
+  const pairs = [];
+  buildings.features.forEach((f, pi) => {
+    const pt = f.geometry.coordinates;
     for (let k = 0; k < osmPolys.length; k++) {
-      if (usedOsm.has(k)) continue;
       const g = osmPolys[k].geometry;
       const polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
       for (const poly of polys) {
         const inside = pointInPolygon(pt, poly[0]);
         const d = inside ? 0 : haversineM(pt, centroidOf(poly));
-        if (d < bestD) { bestD = d; best = { k, poly }; }
+        if (d <= MATCH_RADIUS_M) pairs.push({ pin: pi, poly: k, cost: d });
       }
     }
+  });
+  pairs.sort((a, b) => a.cost - b.cost);
+
+  const pinMatch = new Map();
+  for (const { pin, poly, cost } of pairs) {
+    if (pinMatch.has(pin) || usedOsm.has(poly)) continue;
+    pinMatch.set(pin, { poly, cost });
+    usedOsm.add(poly);
+  }
+
+  const features = buildings.features.map((f, i) => {
+    const title = f.properties.title;
+    const category = f.properties.category ?? "other";
+    const pt = f.geometry.coordinates;
+    const slug = joinSlugs.get(title) ?? slugify(title);
+    const m = pinMatch.get(i);
 
     let geometry, source, confidence, height_tagged = false;
-    const rawProps = best ? (osmPolys[best.k].properties ?? {}) : {};
+    const rawProps = m ? (osmPolys[m.poly].properties ?? {}) : {};
     const realHeight = Number(rawProps.height_m);
-    if (best && bestD <= MATCH_RADIUS_M) {
-      usedOsm.add(best.k);
-      geometry = { type: "Polygon", coordinates: best.poly };
-      source = usedSource?.includes("open-buildings") ? "open-buildings-v3" : "osm";
-      confidence = bestD === 0 ? "high" : bestD <= 30 ? "high" : "medium";
+    if (m) {
+      const g = osmPolys[m.poly].geometry;
+      const polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
+      geometry = { type: "Polygon", coordinates: m.cost === 0 ? polys[0] : polys[0] };
+      source = (usedSource?.includes("open-buildings")) ? "open-buildings-v3" : "osm";
+      confidence = m.cost === 0 ? "high" : m.cost <= 30 ? "high" : "medium";
       matched++;
       if (Number.isFinite(realHeight) && realHeight > 0) height_tagged = true;
     } else {
@@ -212,7 +227,7 @@ function main() {
     // Tagged heights (OSM height/levels) beat category estimates.
     const height_est = height_tagged
       ? realHeight
-      : (HEIGHT_OVERRIDES[title] ?? HEIGHT_BY_CATEGORY[category] ?? 9);
+      : (HEIGHT_OVERRIDES[title] ? Number(HEIGHT_OVERRIDES[title]) : HEIGHT_BY_CATEGORY[category] ?? 9);
     return {
       type: "Feature",
       id: slug,
@@ -226,6 +241,7 @@ function main() {
         ...(Number.isFinite(Number(rawProps.area_m2)) && Number(rawProps.area_m2) > 0
           ? { area_m2: Number(rawProps.area_m2) }
           : {}),
+        ...(m ? { match_distance_m: Math.round(m.cost) } : {}),
         source,
         confidence,
         center: pt,

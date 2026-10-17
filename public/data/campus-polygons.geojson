@@ -177,6 +177,7 @@
         "category": "other",
         "height_est": 9,
         "height_tagged": false,
+        "match_distance_m": 15,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -265,6 +266,7 @@
         "category": "teaching",
         "height_est": 8,
         "height_tagged": false,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -309,6 +311,7 @@
         "category": "teaching",
         "height_est": 12,
         "height_tagged": false,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -353,6 +356,7 @@
         "category": "market",
         "height_est": 6,
         "height_tagged": false,
+        "match_distance_m": 77,
         "source": "osm",
         "confidence": "medium",
         "center": [
@@ -369,24 +373,24 @@
         "coordinates": [
           [
             [
-              7.9744247,
-              5.0416935
+              7.974162855940174,
+              5.042012721005971
             ],
             [
-              7.9745399,
-              5.0417313
+              7.974307144059827,
+              5.042012721005971
             ],
             [
-              7.9746123,
-              5.0415122
+              7.974307144059827,
+              5.0421212789940295
             ],
             [
-              7.9744971,
-              5.0414744
+              7.974162855940174,
+              5.0421212789940295
             ],
             [
-              7.9744247,
-              5.0416935
+              7.974162855940174,
+              5.042012721005971
             ]
           ]
         ]
@@ -397,8 +401,8 @@
         "category": "transport",
         "height_est": 4,
         "height_tagged": false,
-        "source": "osm",
-        "confidence": "medium",
+        "source": "hand-box",
+        "confidence": "low",
         "center": [
           7.974235,
           5.042067
@@ -457,6 +461,7 @@
         "category": "hostel",
         "height_est": 15,
         "height_tagged": false,
+        "match_distance_m": 9,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -613,6 +618,7 @@
         "category": "teaching",
         "height_est": 15,
         "height_tagged": true,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -657,6 +663,7 @@
         "category": "teaching",
         "height_est": 12,
         "height_tagged": false,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -781,6 +788,7 @@
         "category": "teaching",
         "height_est": 8,
         "height_tagged": false,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -825,6 +833,7 @@
         "category": "admin",
         "height_est": 12,
         "height_tagged": false,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -921,6 +930,7 @@
         "category": "teaching",
         "height_est": 8,
         "height_tagged": false,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -1069,6 +1079,7 @@
         "category": "hostel",
         "height_est": 15,
         "height_tagged": false,
+        "match_distance_m": 31,
         "source": "osm",
         "confidence": "medium",
         "center": [
@@ -1121,6 +1132,7 @@
         "category": "market",
         "height_est": 6,
         "height_tagged": false,
+        "match_distance_m": 48,
         "source": "osm",
         "confidence": "medium",
         "center": [
@@ -1165,6 +1177,7 @@
         "category": "admin",
         "height_est": 12,
         "height_tagged": false,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -1209,6 +1222,7 @@
         "category": "landmark",
         "height_est": 6,
         "height_tagged": false,
+        "match_distance_m": 28,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -1261,6 +1275,7 @@
         "category": "teaching",
         "height_est": 12,
         "height_tagged": false,
+        "match_distance_m": 46,
         "source": "osm",
         "confidence": "medium",
         "center": [
@@ -1349,6 +1364,7 @@
         "category": "other",
         "height_est": 7,
         "height_tagged": false,
+        "match_distance_m": 19,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -1425,6 +1441,7 @@
         "category": "teaching",
         "height_est": 12,
         "height_tagged": false,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
@@ -1573,6 +1590,51 @@
         "coordinates": [
           [
             [
+              7.9744247,
+              5.0416935
+            ],
+            [
+              7.9745399,
+              5.0417313
+            ],
+            [
+              7.9746123,
+              5.0415122
+            ],
+            [
+              7.9744971,
+              5.0414744
+            ],
+            [
+              7.9744247,
+              5.0416935
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "engineering-classroom-block",
+        "title": "Engineering Classroom Block",
+        "category": "teaching",
+        "height_est": 12,
+        "height_tagged": false,
+        "match_distance_m": 0,
+        "source": "osm",
+        "confidence": "high",
+        "center": [
+          7.97451,
+          5.04158
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "engineering-studio-and-workshop",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
               7.9744837,
               5.0413969
             ],
@@ -1596,57 +1658,14 @@
         ]
       },
       "properties": {
-        "slug": "engineering-classroom-block",
-        "title": "Engineering Classroom Block",
-        "category": "teaching",
-        "height_est": 12,
-        "height_tagged": false,
-        "source": "osm",
-        "confidence": "high",
-        "center": [
-          7.97451,
-          5.04158
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "engineering-studio-and-workshop",
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              7.974401604057563,
-              5.0412133490139315
-            ],
-            [
-              7.974798395942436,
-              5.0412133490139315
-            ],
-            [
-              7.974798395942436,
-              5.041466650986068
-            ],
-            [
-              7.974401604057563,
-              5.041466650986068
-            ],
-            [
-              7.974401604057563,
-              5.0412133490139315
-            ]
-          ]
-        ]
-      },
-      "properties": {
         "slug": "engineering-studio-and-workshop",
         "title": "Engineering Studio and Workshop",
         "category": "teaching",
         "height_est": 12,
         "height_tagged": false,
-        "source": "hand-box",
-        "confidence": "low",
+        "match_distance_m": 0,
+        "source": "osm",
+        "confidence": "high",
         "center": [
           7.9746,
           5.04134
@@ -1721,6 +1740,7 @@
         "category": "teaching",
         "height_est": 9,
         "height_tagged": false,
+        "match_distance_m": 0,
         "source": "osm",
         "confidence": "high",
         "center": [
