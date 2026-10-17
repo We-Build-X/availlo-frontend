@@ -56,6 +56,9 @@ export function CampusMap({ buildings }: CampusMapProps) {
       return false
     }
   })
+  // Live mirror of is3D — read by the map-init effect at "load" time to
+  // re-assert the saved camera after the constructor `bounds` fit (which
+  // resets pitch/bearing after construction).
   const is3DRef = useRef(is3D)
   is3DRef.current = is3D
   const [showAll, setShowAll] = useState(false)
@@ -104,11 +107,13 @@ export function CampusMap({ buildings }: CampusMapProps) {
         style: MAPBOX_STYLE,
         center: CAMPUS_CENTER,
         zoom: 15.5,
-        pitch: is3DRef.current ? 60 : 0,
-        bearing: is3DRef.current ? -20 : 0,
         bounds: CAMPUS_BOUNDS,
         fitBoundsOptions: { padding: 48 },
         attributionControl: true,
+        // NOTE: constructor pitch/bearing are intentionally omitted — the
+        // init `bounds` fit resets pitch to 0 after construction, which
+        // desynced saved-3D sessions (button said "2D", camera was flat →
+        // the toggle appeared to need two clicks). Restored below on load.
       })
     } catch (err) {
       setMapError(err instanceof Error ? err.message : "Failed to create map")
@@ -130,7 +135,14 @@ export function CampusMap({ buildings }: CampusMapProps) {
     // zoom out far enough for the campus to become a dot.
     map.setMaxBounds(CAMPUS_MAX_BOUNDS)
     map.setMinZoom(CAMPUS_MIN_ZOOM)
-    map.on("load", () => setStyleLoaded(true))
+    map.on("load", () => {
+      setStyleLoaded(true)
+      // The init `bounds` fit zeroes pitch/bearing — restore the saved 3D
+      // camera here instead of trusting the constructor.
+      if (is3DRef.current) {
+        map.jumpTo({ pitch: 60, bearing: -20 })
+      }
+    })
     // Dev-only coordinate picker: tap anywhere to read exact lng/lat for
     // pinning new buildings. Stripped from production (see chip below).
     if (import.meta.env.DEV) map.on("click", (e) => {
