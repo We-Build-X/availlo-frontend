@@ -236,6 +236,7 @@ function main() {
         slug,
         title,
         category,
+        named: !slug.startsWith("unnamed-"),
         height_est,
         height_tagged,
         ...(Number.isFinite(Number(rawProps.area_m2)) && Number(rawProps.area_m2) > 0
@@ -265,6 +266,7 @@ function main() {
         slug: `unnamed-${unnamed}`,
         title: `Unnamed building ${unnamed}`,
         category: "other",
+        named: false,
         height_est: 8,
         source: p.properties?.source ?? "osm",
         confidence: "unmatched",

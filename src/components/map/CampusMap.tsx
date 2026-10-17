@@ -384,7 +384,10 @@ export function CampusMap({ buildings }: CampusMapProps) {
                     12,
                   ],
                   "fill-extrusion-base": 0,
-                  "fill-extrusion-opacity": 0.85,
+                  // Ghost context only: the joined campus-polygons layer is
+                  // authoritative. Full opacity caused double-walls wherever
+                  // our volumes and vector tiles overlap.
+                  "fill-extrusion-opacity": 0.3,
                 },
               },
               beforeId,
@@ -523,15 +526,20 @@ export function CampusMap({ buildings }: CampusMapProps) {
               minzoom: 14,
               paint: {
                 "fill-extrusion-color": [
-                  "match",
-                  ["feature-state", "status"],
-                  "FREE",
-                  STATUS_TO_COLOR.FREE,
-                  "ENDING_SOON",
-                  STATUS_TO_COLOR.ENDING_SOON,
-                  "OCCUPIED",
-                  STATUS_TO_COLOR.OCCUPIED,
-                  "#b9c2cf",
+                  "case",
+                  // Unnamed real buildings: muted dark slate so the eye
+                  // lands on named/colored venues first.
+                  ["==", ["get", "named"], false],
+                  "#7b8794",
+                  ["match", ["feature-state", "status"],
+                    "FREE",
+                    STATUS_TO_COLOR.FREE,
+                    "ENDING_SOON",
+                    STATUS_TO_COLOR.ENDING_SOON,
+                    "OCCUPIED",
+                    STATUS_TO_COLOR.OCCUPIED,
+                    "#b9c2cf",
+                  ],
                 ],
                 "fill-extrusion-height": ["coalesce", ["get", "height_est"], 9],
                 "fill-extrusion-base": 0,
