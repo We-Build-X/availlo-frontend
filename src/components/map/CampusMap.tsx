@@ -22,6 +22,8 @@ import {
   MAPBOX_STYLE,
   CAMPUS_BOUNDS,
   CAMPUS_CENTER,
+  CAMPUS_MAX_BOUNDS,
+  CAMPUS_MIN_ZOOM,
 } from "@/integrations/mapbox/client"
 import "mapbox-gl/dist/mapbox-gl.css"
 import type { BuildingFeature, BuildingStatus } from "@/hooks/useBuildingStatus"
@@ -35,6 +37,8 @@ const STATUS_TO_COLOR: Record<BuildingStatus, string> = {
   UNKNOWN: "#9ca3af", // gray-400
 }
 
+const THREE_D_KEY = "availlo-map-3d"
+
 interface CampusMapProps {
   buildings: BuildingFeature[]
 }
@@ -43,6 +47,20 @@ export function CampusMap({ buildings }: CampusMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const popupRef = useRef<mapboxgl.Popup | null>(null)
+  const [is3D, setIs3D] = useState(() => {
+    try {
+      // Default to 2D on small screens to protect low-end GPUs.
+      if (typeof window !== "undefined" && window.matchMedia?.("(max-width: 640px)").matches) return false
+      return localStorage.getItem(THREE_D_KEY) === "1"
+    } catch {
+      return false
+    }
+  })
+  // Live mirror of is3D — read by the map-init effect at "load" time to
+  // re-assert the saved camera after the constructor `bounds` fit (which
+  // resets pitch/bearing after construction).
+  const is3DRef = useRef(is3D)
+  is3DRef.current = is3D
   const [showAll, setShowAll] = useState(false)
   // Default to teaching + library venues so hostels, markets, bus stops,
   // admin blocks and parks don't clutter the class-finding map. Toggle below.
@@ -92,6 +110,10 @@ export function CampusMap({ buildings }: CampusMapProps) {
         bounds: CAMPUS_BOUNDS,
         fitBoundsOptions: { padding: 48 },
         attributionControl: true,
+        // NOTE: constructor pitch/bearing are intentionally omitted — the
+        // init `bounds` fit resets pitch to 0 after construction, which
+        // desynced saved-3D sessions (button said "2D", camera was flat →
+        // the toggle appeared to need two clicks). Restored below on load.
       })
     } catch (err) {
       setMapError(err instanceof Error ? err.message : "Failed to create map")
@@ -109,7 +131,18 @@ export function CampusMap({ buildings }: CampusMapProps) {
       console.error(`[mapbox] map error (${raw.type ?? "unknown"}):`, msg)
       setMapError(`${msg}`)
     })
-    map.on("load", () => setStyleLoaded(true))
+    // Campus-confined navigation: users can't pan away from UNIUYO or
+    // zoom out far enough for the campus to become a dot.
+    map.setMaxBounds(CAMPUS_MAX_BOUNDS)
+    map.setMinZoom(CAMPUS_MIN_ZOOM)
+    map.on("load", () => {
+      setStyleLoaded(true)
+      // The init `bounds` fit zeroes pitch/bearing — restore the saved 3D
+      // camera here instead of trusting the constructor.
+      if (is3DRef.current) {
+        map.jumpTo({ pitch: 60, bearing: -20 })
+      }
+    })
     // Dev-only coordinate picker: tap anywhere to read exact lng/lat for
     // pinning new buildings. Stripped from production (see chip below).
     if (import.meta.env.DEV) map.on("click", (e) => {
@@ -258,6 +291,11 @@ export function CampusMap({ buildings }: CampusMapProps) {
         return
       }
       const { buildingsNow, data } = buildData()
+      // Layer reorder is only performed on ticks where a layer was newly
+      // created. Unconditional moveLayer calls (the previous behavior)
+      // re-sorted the stack every 2 s, forcing full repaints that made
+      // stacked translucent extrusions visibly blink.
+      let created = false
       try {
         const source = map.getSource("campus-buildings") as
           | mapboxgl.GeoJSONSource
@@ -279,6 +317,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
         // Text labels from our own titles (Mapbox base-map names come from
         // its tiles and can't be edited — these sit under each marker).
         if (!map.getLayer("campus-buildings-labels")) {
+          created = true
           map.addLayer({
             id: "campus-buildings-labels",
             type: "symbol",
@@ -300,6 +339,7 @@ export function CampusMap({ buildings }: CampusMapProps) {
           })
         }
         if (!map.getLayer("campus-buildings-circle")) {
+          created = true
           map.addLayer({
             id: "campus-buildings-circle",
             type: "circle",
@@ -331,10 +371,24 @@ export function CampusMap({ buildings }: CampusMapProps) {
             },
           })
         }
-        if (
-          map.getLayer("campus-buildings-circle") &&
-          map.getLayer("campus-buildings-labels")
-        ) {
+        // ---- Phase 1 3D ghost extrusions: REMOVED.
+        // The joined `campus-polygons` layer already draws every real OSM
+        // footprint with proper heights + status colors. A 0.3-opacity
+        // copy underneath (same footprints, flat 12 m) caused double-tops
+        // above shorter venues, z-fighting shimmer, and inconsistent
+        // color depth across buildings.
+        try {
+          if (map.getLayer("campus-3d-buildings")) {
+            created = true
+            map.removeLayer("campus-3d-buildings")
+          }
+        } catch {
+          // not present
+        }
+        // Reorder markers + labels above volumes — but only when the
+        // stack actually changed this tick (existing deps: always correct
+        // otherwise, and every moveLayer forces a full repaint).
+        if (created && map.getLayer("campus-buildings-labels")) {
           try {
             map.moveLayer("campus-buildings-labels")
           } catch {
@@ -420,6 +474,107 @@ export function CampusMap({ buildings }: CampusMapProps) {
       map.off("moveend", update)
     }
   }, [ready])
+  // ---- Phase 2: named polygon volumes (campus-polygons.geojson) ----
+  // Real OSM footprints joined to hand pins by the build script. Fallback
+  // boxes (`source: hand-box` — pins with no OSM geometry nearby) are
+  // FILTERED OUT so we never re-create the ugly overlapping-boxes look:
+  // unmatched venues simply stay as circle markers. Heights tagged in OSM
+  // (height_tagged) are real; others are category estimates.
+  useEffect(() => {
+    if (!ready) return
+    const map = mapRef.current
+    if (!map) return
+    let cancelled = false
+
+    const ensurePolygons = (data: GeoJSON.FeatureCollection) => {
+      if (cancelled || !map.isStyleLoaded()) return
+      // Reorder only on creation ticks — see note in the marker ensure loop.
+      let created = false
+      try {
+        const source = map.getSource("campus-polygons") as
+          | mapboxgl.GeoJSONSource
+          | undefined
+        if (!source) {
+          map.addSource("campus-polygons", {
+            type: "geojson",
+            data: {
+              ...data,
+              features: data.features.filter(
+                (f) => f.properties?.source !== "hand-box",
+              ),
+            },
+            promoteId: "slug",
+          })
+        }
+        if (!map.getLayer("campus-polygons-extrusion")) {
+          created = true
+          const beforeId = map.getLayer("campus-buildings-circle")
+            ? "campus-buildings-circle"
+            : undefined
+          map.addLayer(
+            {
+              id: "campus-polygons-extrusion",
+              type: "fill-extrusion",
+              source: "campus-polygons",
+              minzoom: 14,
+              paint: {
+                "fill-extrusion-color": [
+                  "case",
+                  // Unnamed real buildings: muted dark slate so the eye
+                  // lands on named/colored venues first.
+                  ["==", ["get", "named"], false],
+                  "#7b8794",
+                  ["match", ["feature-state", "status"],
+                    "FREE",
+                    STATUS_TO_COLOR.FREE,
+                    "ENDING_SOON",
+                    STATUS_TO_COLOR.ENDING_SOON,
+                    "OCCUPIED",
+                    STATUS_TO_COLOR.OCCUPIED,
+                    "#b9c2cf",
+                  ],
+                ],
+                "fill-extrusion-height": ["coalesce", ["get", "height_est"], 9],
+                "fill-extrusion-base": 0,
+                "fill-extrusion-opacity": 0.9,
+              },
+            },
+            beforeId,
+          )
+        }
+        // Keep markers + labels clickable above volumes — only after a
+        // creation tick; repeating it every 5 s forced repaints (blink).
+        if (created) {
+          try {
+            if (map.getLayer("campus-buildings-circle"))
+              map.moveLayer("campus-polygons-extrusion", "campus-buildings-circle")
+            if (map.getLayer("campus-buildings-labels"))
+              map.moveLayer("campus-buildings-labels")
+          } catch {
+            // ordering already correct
+          }
+        }
+      } catch (err) {
+        console.warn("[mapbox] polygons layer failed:", err)
+      }
+    }
+
+    let tick: number | null = null
+    fetch(`${import.meta.env.BASE_URL}data/campus-polygons.geojson`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((data) => {
+        if (cancelled) return
+        ensurePolygons(data)
+        map.once("load", () => ensurePolygons(data))
+        tick = window.setInterval(() => ensurePolygons(data), 5000)
+      })
+      .catch((err) => console.warn("[mapbox] campus-polygons fetch failed:", err))
+
+    return () => {
+      cancelled = true
+      if (tick !== null) window.clearInterval(tick)
+    }
+  }, [ready])
   // Push per-building status into the map via setFeatureState.
   // (layerInfo is owned by the sync effect above; this only paints colors.)
   useEffect(() => {
@@ -435,12 +590,35 @@ export function CampusMap({ buildings }: CampusMapProps) {
           { source: "campus-buildings", id: b.slug },
           { status: b.status },
         )
+        // Named real footprints get the same status colors as markers.
+        // Unmatched slugs no-op silently — harmless by design.
+        map.setFeatureState(
+          { source: "campus-polygons", id: b.slug },
+          { status: b.status },
+        )
       } catch (err) {
         console.error("[mapbox] setFeatureState failed:", err)
         return
       }
     }
   }, [ready, buildings, showAll, styleLoaded])
+
+  const toggle3D = () => {
+    const next = !is3D
+    setIs3D(next)
+    try {
+      localStorage.setItem(THREE_D_KEY, next ? "1" : "0")
+    } catch {
+      // private mode — ignore
+    }
+    const map = mapRef.current
+    if (!map) return
+    map.easeTo({
+      pitch: next ? 60 : 0,
+      bearing: next ? -20 : 0,
+      duration: 800,
+    })
+  }
 
   if (!hasToken) {
     return (
@@ -496,6 +674,15 @@ export function CampusMap({ buildings }: CampusMapProps) {
             className="absolute top-3 left-3 z-10 flex items-center gap-2 rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
           >
             <ArrowLeft size={16} /> Back
+          </button>
+          <button
+            type="button"
+            onClick={toggle3D}
+            aria-pressed={is3D}
+            aria-label={is3D ? "Switch to 2D map" : "Switch to 3D map"}
+            className="absolute top-3 right-12 z-10 rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+          >
+            {is3D ? "2D" : "3D"}
           </button>
           <AvailabilityLegend className="absolute top-[4.75rem] left-3 z-10 rounded-xl border border-neutral-200 bg-white/90 p-2.5 shadow-sm backdrop-blur" />
         </>
