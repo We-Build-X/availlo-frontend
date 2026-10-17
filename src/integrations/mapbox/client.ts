@@ -50,4 +50,21 @@ export const CAMPUS_BOUNDS: [[number, number], [number, number]] = [
  */
 export const CAMPUS_CENTER: [number, number] = [7.9773, 5.0413]
 
+/**
+ * Hard navigation limits for /map — the map never leaves the campus
+ * region. Padded ~1 km beyond CAMPUS_BOUNDS so the surrounding ring
+ * roads (University of Uyo Rd) stay visible for orientation, but panning
+ * to town or zooming out to world view is impossible.
+ *
+ * Together with setMinZoom() in CampusMap this makes the app
+ * campus-confined rather than an unbounded world map.
+ */
+export const CAMPUS_MAX_BOUNDS: [[number, number], [number, number]] = [
+  [7.964, 5.0315],
+  [7.9905, 5.053],
+]
+
+/** Zoom below this turns the campus into a dot — block it. */
+export const CAMPUS_MIN_ZOOM = 13.8
+
 export { mapboxgl }

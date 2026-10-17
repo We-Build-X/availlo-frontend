@@ -22,6 +22,8 @@ import {
   MAPBOX_STYLE,
   CAMPUS_BOUNDS,
   CAMPUS_CENTER,
+  CAMPUS_MAX_BOUNDS,
+  CAMPUS_MIN_ZOOM,
 } from "@/integrations/mapbox/client"
 import "mapbox-gl/dist/mapbox-gl.css"
 import type { BuildingFeature, BuildingStatus } from "@/hooks/useBuildingStatus"
@@ -124,6 +126,10 @@ export function CampusMap({ buildings }: CampusMapProps) {
       console.error(`[mapbox] map error (${raw.type ?? "unknown"}):`, msg)
       setMapError(`${msg}`)
     })
+    // Campus-confined navigation: users can't pan away from UNIUYO or
+    // zoom out far enough for the campus to become a dot.
+    map.setMaxBounds(CAMPUS_MAX_BOUNDS)
+    map.setMinZoom(CAMPUS_MIN_ZOOM)
     map.on("load", () => setStyleLoaded(true))
     // Dev-only coordinate picker: tap anywhere to read exact lng/lat for
     // pinning new buildings. Stripped from production (see chip below).
