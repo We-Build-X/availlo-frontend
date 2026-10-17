@@ -236,6 +236,13 @@ function main() {
       confidence = "low";
     }
 
+    // `center` = where doubleClick/labels anchor. For matched venues use
+    // the footprint centroid — the hand-pin can sit tens of meters off
+    // the real shape, and labels anchored to it float in empty space.
+    const centerPt = m
+      ? centroidOf(geometry.coordinates[0])
+      : pt;
+
     // Tagged heights (OSM height/levels) beat category estimates.
     const height_est = height_tagged
       ? realHeight
@@ -258,7 +265,7 @@ function main() {
         ...(m ? { match_distance_m: Math.round(m.cost) } : {}),
         source,
         confidence,
-        center: pt,
+        center: centerPt,
       },
     };
   });

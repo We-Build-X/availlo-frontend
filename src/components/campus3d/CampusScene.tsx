@@ -171,15 +171,16 @@ export default function CampusScene({
     grid.position.y = 0.15;
     scene.add(grid);
 
-    // Shared materials — recolors mutate THESE, never rebuild geometry.
-    const statusMats = new Map<BuildingStatus, THREE.MeshLambertMaterial>();
+    // Roof materials carry the status color (caps); walls are the shared
+    // window texture (material index 1 = extruded sides of ExtrudeGeometry).
+    const roofMats = new Map<BuildingStatus, THREE.MeshLambertMaterial>();
     const lineMats = new Map<BuildingStatus, THREE.LineBasicMaterial>();
     for (const s of STATUSES) {
-      statusMats.set(s, new THREE.MeshLambertMaterial({ color: STATUS_TO_HEX[s] }));
+      roofMats.set(s, new THREE.MeshLambertMaterial({ color: STATUS_TO_HEX[s] }));
       lineMats.set(s, new THREE.LineBasicMaterial({ color: darken(STATUS_TO_HEX[s]) }));
     }
-    const unnamedMat = new THREE.MeshLambertMaterial({ color: UNNAMED_HEX });
-    const unnamedLineMat = new THREE.LineBasicMaterial({ color: darken(UNNAMED_HEX) });
+    const unnamedRoofMat = new THREE.MeshLambertMaterial({ color: 0x99a1ab });
+    const unnamedLineMat = new THREE.LineBasicMaterial({ color: darken(0x99a1ab) });
 
     const pickables: THREE.Mesh[] = [];
 
@@ -213,9 +214,46 @@ export default function CampusScene({
       const sprite = new THREE.Sprite(
         new THREE.SpriteMaterial({ map: tex, depthWrite: false }),
       );
-      sprite.scale.set(46, 11.5, 1);
+      sprite.scale.set(30, 7.5, 1);
       return sprite;
     };
+
+    /**
+     * Procedural window-grid wall texture. ExtrudeGeometry UVs are in
+     * world meters, so a RepeatWrapping texture with repeat = (1/3.6,
+     * 1/3.4) yields one window column every ~3.6 m of wall and one band
+     * every ~3.4 m of height — a storey for free, on every building
+     * (including the merged unnamed pool), for one canvas + one draw
+     * call of texture cost.
+     */
+    const wallTexture = (() => {
+      const c = document.createElement("canvas");
+      c.width = 128;
+      c.height = 128;
+      const x = c.getContext("2d");
+      if (x) {
+        x.fillStyle = "#f5f2ea";
+        x.fillRect(0, 0, 128, 128);
+        x.fillStyle = "#5f6b78";
+        // 2 window columns × 2 window rows per texture tile.
+        x.fillRect(14, 16, 42, 34);
+        x.fillRect(72, 16, 42, 34);
+        x.fillRect(14, 78, 42, 34);
+        x.fillRect(72, 78, 42, 34);
+      }
+      const t = new THREE.CanvasTexture(c);
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.wrapS = THREE.RepeatWrapping;
+      t.wrapT = THREE.RepeatWrapping;
+      t.repeat.set(1 / 3.6, 1 / 3.4);
+      t.magFilter = THREE.LinearFilter;
+      t.generateMipmaps = true;
+      return t;
+    })();
+    const wallMat = new THREE.MeshLambertMaterial({
+      color: 0xffffff,
+      map: wallTexture,
+    });
 
     // Recolor shared materials when statuses arrive/change.
     const applyStatuses = () => {
@@ -225,7 +263,10 @@ export default function CampusScene({
           line?: THREE.LineSegments;
         };
         const status: BuildingStatus = statusRef.current.get(slug) ?? "UNKNOWN";
-        mesh.material = statusMats.get(status) ?? statusMats.get("UNKNOWN")!;
+        mesh.material = [
+          roofMats.get(status) ?? roofMats.get("UNKNOWN")!,
+          wallMat,
+        ];
         if (line) line.material = lineMats.get(status) ?? lineMats.get("UNKNOWN")!;
       }
       needsRender = true;
@@ -282,12 +323,28 @@ export default function CampusScene({
           });
           geo.rotateX(-Math.PI / 2); // extrusion +Z -> world up (+Y)
 
+          // Label anchor: the ring centroid (mean of the unique points),
+          // NOT the pin — matched feetprints can sit tens of meters from
+          // their hand-pin, and a pin-anchored label floats in space.
+          let cx = 0;
+          let cz = 0;
+          const unique = ring.length > 1 ? ring.slice(0, -1) : ring;
+          for (const [lng, lat] of unique) {
+            cx += toX(lng);
+            cz += -toZ(lat);
+          }
+          cx /= unique.length;
+          cz /= unique.length;
+
           if (!p.named) {
             unnamedGeos.push(geo);
             continue;
           }
 
-          const mesh = new THREE.Mesh(geo, unnamedMat);
+          const mesh = new THREE.Mesh(geo, [
+            roofMats.get("UNKNOWN")!,
+            wallMat,
+          ]);
           mesh.userData = { slug: p.slug };
           mesh.renderOrder = 1;
           namedGroup.add(mesh);
@@ -301,20 +358,20 @@ export default function CampusScene({
           namedGroup.add(edges);
           mesh.userData = { slug: p.slug, line: edges };
 
-          if (p.center) {
-            const sprite = labelSprite(p.title);
-            sprite.position.set(toX(p.center[0]), height + 8, -toZ(p.center[1]));
-            sprite.userData = { slug: p.slug };
-            namedGroup.add(sprite);
-          }
+          const sprite = labelSprite(p.title);
+          sprite.position.set(cx, height + 3, cz);
+          sprite.userData = { slug: p.slug };
+          namedGroup.add(sprite);
         }
 
         // Unnamed pool: one merged mesh + one merged edges object —
-        // ~250 detections for ~2 draw calls.
+        // ~250 detections for ~2 draw calls. use_groups preserves each
+        // building's cap/wall material groups so the merged blob gets the
+        // window texture too.
         if (unnamedGeos.length) {
-          const merged = mergeGeometries(unnamedGeos, false);
+          const merged = mergeGeometries(unnamedGeos, true);
           if (merged) {
-            const blob = new THREE.Mesh(merged, unnamedMat);
+            const blob = new THREE.Mesh(merged, [unnamedRoofMat, wallMat]);
             scene.add(blob);
             const blobEdges = new THREE.LineSegments(
               new THREE.EdgesGeometry(merged, 26),
@@ -327,7 +384,7 @@ export default function CampusScene({
             // mergeGeometries unavailable for these rings — fall back to
             // individual meshes (disposal: scene traverse at cleanup).
             for (const geo of unnamedGeos) {
-              scene.add(new THREE.Mesh(geo, unnamedMat));
+              scene.add(new THREE.Mesh(geo, [unnamedRoofMat, wallMat]));
             }
           }
         }
@@ -339,7 +396,7 @@ export default function CampusScene({
           (maxLng - minLng) * M_PER_DEG_LNG,
           (maxLat - minLat) * M_PER_DEG_LAT,
         );
-        const dist = Math.min(Math.max(span * 0.85, 300), 1100);
+        const dist = Math.min(Math.max(span * 0.62, 260), 900);
         camera.position.set(dist * 0.25, dist * 0.75, dist * 0.8);
         controls.update();
 
@@ -426,10 +483,12 @@ export default function CampusScene({
           obj.material.dispose();
         }
       });
-      for (const m of statusMats.values()) m.dispose();
+      for (const m of roofMats.values()) m.dispose();
       for (const m of lineMats.values()) m.dispose();
-      unnamedMat.dispose();
+      unnamedRoofMat.dispose();
       unnamedLineMat.dispose();
+      wallMat.dispose();
+      wallTexture.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     };
