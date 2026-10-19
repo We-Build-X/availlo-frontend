@@ -31,7 +31,6 @@ const STATUS_TO_HEX: Record<BuildingStatus, number> = {
   OCCUPIED: 0xef4444,
   UNKNOWN: 0xb9c2cf,
 };
-const UNNAMED_HEX = 0xb0b7bf;
 const GROUND_HEX = 0xe7e2d5;
 const SKY_HEX = 0xf0ebdf;
 
@@ -170,9 +169,10 @@ export default function CampusScene({
     const grid = new THREE.GridHelper(2400, 48, 0xd8d2c4, 0xdedad0);
     grid.position.y = 0.15;
     scene.add(grid);
-
-    // Roof materials carry the status color (caps); walls are the shared
-    // window texture (material index 1 = extruded sides of ExtrudeGeometry).
+    // Roof materials carry the status color (caps) only as a FALLBACK —
+    // when terrain imagery is available, named venues get real satellite
+    // roof crops (see fetch-satellite.mjs) and status moves to the
+    // tinted label pill.
     const roofMats = new Map<BuildingStatus, THREE.MeshLambertMaterial>();
     const lineMats = new Map<BuildingStatus, THREE.LineBasicMaterial>();
     for (const s of STATUSES) {
@@ -181,42 +181,10 @@ export default function CampusScene({
     }
     const unnamedRoofMat = new THREE.MeshLambertMaterial({ color: 0x99a1ab });
     const unnamedLineMat = new THREE.LineBasicMaterial({ color: darken(0x99a1ab) });
+    const oneOffs: Array<THREE.Texture | THREE.Material> = [];
 
     const pickables: THREE.Mesh[] = [];
-
-    const labelSprite = (text: string): THREE.Sprite => {
-      const truncated = text.length > 22 ? `${text.slice(0, 21)}…` : text;
-      const canvas = document.createElement("canvas");
-      canvas.width = 512;
-      canvas.height = 128;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.fillStyle = "rgba(255,255,255,0.92)";
-        const pad = 20;
-        const w = canvas.width - pad * 2;
-        const h = canvas.height - pad * 2;
-        ctx.beginPath();
-        // roundRect needs Chrome 99+/Safari 16.4+; older WebViews rect() it.
-        if (typeof ctx.roundRect === "function") {
-          ctx.roundRect(pad, pad, w, h, 26);
-        } else {
-          ctx.rect(pad, pad, w, h);
-        }
-        ctx.fill();
-        ctx.fillStyle = "#1e293b";
-        ctx.font = "700 44px system-ui, -apple-system, sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(truncated, canvas.width / 2, canvas.height / 2 + 2, w - 30);
-      }
-      const tex = new THREE.CanvasTexture(canvas);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      const sprite = new THREE.Sprite(
-        new THREE.SpriteMaterial({ map: tex, depthWrite: false }),
-      );
-      sprite.scale.set(30, 7.5, 1);
-      return sprite;
-    };
+    const labels: THREE.Sprite[] = [];
 
     /**
      * Procedural window-grid wall texture. ExtrudeGeometry UVs are in
@@ -255,19 +223,68 @@ export default function CampusScene({
       map: wallTexture,
     });
 
-    // Recolor shared materials when statuses arrive/change.
+    const labelSprite = (text: string): THREE.Sprite => {
+      const truncated = text.length > 22 ? `${text.slice(0, 21)}…` : text;
+      const canvas = document.createElement("canvas");
+      canvas.width = 512;
+      canvas.height = 128;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "rgba(255,255,255,0.92)";
+        const pad = 20;
+        const w = canvas.width - pad * 2;
+        const h = canvas.height - pad * 2;
+        ctx.beginPath();
+        // roundRect needs Chrome 99+/Safari 16.4+; older WebViews rect() it.
+        if (typeof ctx.roundRect === "function") {
+          ctx.roundRect(pad, pad, w, h, 26);
+        } else {
+          ctx.rect(pad, pad, w, h);
+        }
+        ctx.fill();
+        ctx.fillStyle = "#1e293b";
+        ctx.font = "700 44px system-ui, -apple-system, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(truncated, canvas.width / 2, canvas.height / 2 + 2, w - 30);
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      const sprite = new THREE.Sprite(
+        new THREE.SpriteMaterial({ map: tex, depthWrite: false }),
+      );
+      sprite.scale.set(30, 7.5, 1);
+      return sprite;
+    };
+
+    // Recolor shared materials when statuses arrive/change. Buildings
+    // with a real satellite roof keep it (roof stays LOAD); availability
+    // shows on the label pill tint + edge lines.
+    const PILL_TINT: Record<BuildingStatus, number> = {
+      FREE: 0xbdf0dd,
+      ENDING_SOON: 0xffe8c2,
+      OCCUPIED: 0xffd4d4,
+      UNKNOWN: 0xffffff,
+    };
     const applyStatuses = () => {
       for (const mesh of pickables) {
-        const { slug, line } = mesh.userData as {
+        const ud = mesh.userData as {
           slug: string;
           line?: THREE.LineSegments;
+          roofMat?: THREE.MeshLambertMaterial;
+          roofLoaded?: boolean;
         };
+        const status: BuildingStatus = statusRef.current.get(ud.slug) ?? "UNKNOWN";
+        const roof = ud.roofLoaded && ud.roofMat ? ud.roofMat : (roofMats.get(status) ?? roofMats.get("UNKNOWN")!);
+        mesh.material = [roof, wallMat];
+        if (ud.line) {
+          ud.line.material = lineMats.get(status) ?? lineMats.get("UNKNOWN")!;
+        }
+      }
+      for (const sprite of labels) {
+        const { slug } = sprite.userData as { slug: string };
         const status: BuildingStatus = statusRef.current.get(slug) ?? "UNKNOWN";
-        mesh.material = [
-          roofMats.get(status) ?? roofMats.get("UNKNOWN")!,
-          wallMat,
-        ];
-        if (line) line.material = lineMats.get(status) ?? lineMats.get("UNKNOWN")!;
+        (sprite.material as THREE.SpriteMaterial).color.setHex(PILL_TINT[status]);
       }
       needsRender = true;
     };
@@ -362,6 +379,7 @@ export default function CampusScene({
           sprite.position.set(cx, height + 3, cz);
           sprite.userData = { slug: p.slug };
           namedGroup.add(sprite);
+          labels.push(sprite);
         }
 
         // Unnamed pool: one merged mesh + one merged edges object —
@@ -399,6 +417,97 @@ export default function CampusScene({
         const dist = Math.min(Math.max(span * 0.62, 260), 900);
         camera.position.set(dist * 0.25, dist * 0.75, dist * 0.8);
         controls.update();
+
+        // ---- satellite terrain (build-time fetched: `bun run fetch:satellite`) ----
+        // Real imagery as ground (roads, grass, paths) + as the ROOF crops
+        // of named venues. Falls back to flat ground + status-colored
+        // roofs when public/terrain is missing.
+        const texLoader = new THREE.TextureLoader();
+        void fetch(`${import.meta.env.BASE_URL}terrain/index.json`)
+          .then((r) => (r.ok ? r.json() : Promise.reject(new Error("no terrain"))))
+          .then(
+            (
+              manifest: {
+                ground?: { bbox: number[] };
+                roofs?: Record<string, { bbox: number[] }>;
+              },
+            ) => {
+              if (disposed) return;
+
+              if (manifest.ground?.bbox) {
+                const [gMinLng, gMinLat, gMaxLng, gMaxLat] = manifest.ground.bbox;
+                const gw = (gMaxLng - gMinLng) * M_PER_DEG_LNG;
+                const gh = (gMaxLat - gMinLat) * M_PER_DEG_LAT;
+                texLoader.load(
+                  `${import.meta.env.BASE_URL}terrain/campus-sat.jpg`,
+                  (tex) => {
+                    if (disposed) return;
+                    tex.colorSpace = THREE.SRGBColorSpace;
+                    tex.generateMipmaps = true;
+                    tex.minFilter = THREE.LinearMipmapLinearFilter;
+                    const mat = new THREE.MeshLambertMaterial({ map: tex });
+                    oneOffs.push(tex, mat);
+                    const img = new THREE.Mesh(new THREE.PlaneGeometry(gw, gh), mat);
+                    img.rotation.x = -Math.PI / 2;
+                    img.position.set(
+                      ((gMinLng + gMaxLng) / 2 - centerLng) * M_PER_DEG_LNG,
+                      0.06,
+                      -(((gMinLat + gMaxLat) / 2 - centerLat) * M_PER_DEG_LAT),
+                    );
+                    scene.add(img);
+                    grid.visible = false; // CAD grid redundant over real imagery
+                    needsRender = true;
+                  },
+                  undefined,
+                  () => {}, // terrain failed: flat-ground fallback stays
+                );
+              }
+
+              for (const mesh of pickables) {
+                const ud = mesh.userData as {
+                  slug: string; roofMat?: THREE.MeshLambertMaterial; roofLoaded?: boolean;
+                };
+                const entry = manifest.roofs?.[ud.slug];
+                if (!entry?.bbox) continue;
+                const [rMinLng, rMinLat, rMaxLng, rMaxLat] = entry.bbox;
+                const x0 = toX(rMinLng);
+                const w = (rMaxLng - rMinLng) * M_PER_DEG_LNG;
+                // Shape Y = -toZ(lat): south (low lat) is the LARGE y.
+                const ySouth = -toZ(rMinLat);
+                const yNorth = -toZ(rMaxLat);
+                const h = ySouth - yNorth;
+
+                const roofMat = new THREE.MeshLambertMaterial({ color: 0x8d959f });
+                oneOffs.push(roofMat);
+                ud.roofMat = roofMat;
+                texLoader.load(
+                  `${import.meta.env.BASE_URL}terrain/roof-${ud.slug}.jpg`,
+                  (tex) => {
+                    if (disposed) return;
+                    tex.colorSpace = THREE.SRGBColorSpace;
+                    tex.wrapS = THREE.RepeatWrapping;
+                    tex.wrapT = THREE.RepeatWrapping;
+                    // Cap UVs are raw shape meters: map the image frame
+                    // onto the footprint bbox. North must land at v'=1,
+                    // so v repeats negative ((ySouth - y) / h).
+                    tex.repeat.set(1 / w, -1 / h);
+                    tex.offset.set(-x0 / w, ySouth / h);
+                    tex.generateMipmaps = true;
+                    tex.minFilter = THREE.LinearMipmapLinearFilter;
+                    roofMat.map = tex;
+                    roofMat.color.setHex(0xffffff);
+                    roofMat.needsUpdate = true;
+                    ud.roofLoaded = true;
+                    applyStatuses();
+                    needsRender = true;
+                  },
+                  undefined,
+                  () => {}, // keep the status-colored fallback roof
+                );
+              }
+            },
+          )
+          .catch(() => {}); // no terrain manifest: confirm fallbacks
 
         applyStatuses();
         needsRender = true;
@@ -489,6 +598,7 @@ export default function CampusScene({
       unnamedLineMat.dispose();
       wallMat.dispose();
       wallTexture.dispose();
+      for (const o of oneOffs) o.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     };

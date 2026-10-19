@@ -11,6 +11,7 @@
     "build:polygons": "node scripts/build-campus-polygons.mjs",
     "fetch:buildings": "node scripts/fetch-open-buildings.mjs",
     "fetch:ms": "node scripts/fetch-ms-footprints.mjs",
+    "fetch:satellite": "node scripts/fetch-satellite.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint",
