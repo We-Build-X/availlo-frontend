@@ -1,16 +1,20 @@
 {
-  "generated": "2026-10-17T20:38:25.913Z",
+  "generated": "2026-10-17T23:56:55.600Z",
   "bbox": [
     7.968,
     5.034,
     7.988,
     5.05
   ],
-  "footprint_source": "/home/idighs/dev/projects/availlo-app/public/data/raw-osm-buildings.geojson",
+  "footprint_sources": [
+    "OSM Overpass cache",
+    "Microsoft GlobalMLBuildingFootprints"
+  ],
   "inputs": [
     "src/data/campus-buildings.json",
     "src/data/building-room-join.ts",
-    "/home/idighs/dev/projects/availlo-app/public/data/raw-osm-buildings.geojson"
+    "OSM Overpass cache",
+    "Microsoft GlobalMLBuildingFootprints"
   ],
   "attribution": [
     {
@@ -29,7 +33,7 @@
       "dataset": "Microsoft GlobalMLBuildingFootprints",
       "license": "CDLA-Permissive-2.0",
       "url": "https://github.com/microsoft/GlobalMLBuildingFootprints",
-      "used": false
+      "used": true
     },
     {
       "dataset": "Availlo hand pins",
@@ -37,5 +41,5 @@
       "used": true
     }
   ],
-  "notes": "Heights are estimates by category, not surveyed. Do not use for navigation or construction."
+  "notes": "Heights are ML estimates (ms-ml height_m) or category estimates, not surveyed. Do not use for navigation or construction."
 }

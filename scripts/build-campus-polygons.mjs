@@ -143,54 +143,62 @@ function main() {
   const buildings = JSON.parse(readFileSync(BUILDINGS_JSON, "utf8"));
   const joinSlugs = loadJoinSlugs(JOIN_TS);
 
-  // Candidate raw caches, most-detailed first. First one that exists wins.
+  // Raw caches merged into one candidate pool, OSM first (hand-curated,
+  // best semantics), Microsoft GlobalML second (ML detections — fills
+  // venues OSM never mapped: NEB, NECB, Fac. of Science/Computing, 5 ARMS,
+  // ICT II, Main Library, Geoscience...). `priority` sorts greedy
+  // assignment so an OSM candidate always outranks an ML candidate at the
+  // same pin, and committed OSM matches can never regress.
   const candidates = [
-    { path: osmPath, label: "open-buildings/osm file" },
-    { path: join(root, "public/data/raw-osm-buildings.geojson"), label: "OSM Overpass cache" },
+    { path: osmPath, label: "open-buildings file", tag: "open-buildings-v3", priority: 0 },
+    { path: join(root, "public/data/raw-osm-buildings.geojson"), label: "OSM Overpass cache", tag: "osm", priority: 0 },
+    { path: join(root, "public/data/raw-ms-buildings.geojson"), label: "Microsoft GlobalMLBuildingFootprints", tag: "ms-ml", priority: 1 },
   ];
-  let osmPolys = [];
-  let usedSource = null;
+  const footprints = []; // { geometry, properties, tag, priority }
+  const usedSources = [];
   for (const cand of candidates) {
-    if (cand.path && existsSync(cand.path)) {
-      try {
-        const raw = JSON.parse(readFileSync(cand.path, "utf8"));
-        osmPolys = (raw.features ?? []).filter(
-          (f) => f.geometry && (f.geometry.type === "Polygon" || f.geometry.type === "MultiPolygon"),
-        );
-        usedSource = cand.path;
-        console.log(`Merging ${osmPolys.length} polygons from ${cand.path}`);
-        break;
-      } catch (err) {
-        console.warn(`${cand.label} unreadable (${err.message}) — trying next source.`);
+    if (!cand.path || !existsSync(cand.path)) continue;
+    try {
+      const raw = JSON.parse(readFileSync(cand.path, "utf8"));
+      const polys = (raw.features ?? []).filter(
+        (f) => f.geometry && (f.geometry.type === "Polygon" || f.geometry.type === "MultiPolygon"),
+      );
+      for (const p of polys) {
+        footprints.push({ geometry: p.geometry, properties: p.properties ?? {}, tag: cand.tag, priority: cand.priority });
       }
+      if (polys.length) usedSources.push(cand.label);
+      console.log(`Merging ${polys.length} polygons from ${cand.path}`);
+    } catch (err) {
+      console.warn(`${cand.label} unreadable (${err.message}) — skipping source.`);
     }
   }
-  if (!osmPolys.length) {
+  if (!footprints.length) {
     console.log("No raw footprint cache found — generating fallback boxes for all pins.");
-    console.log("To merge real footprints: bun run fetch:buildings (downloads ~2.5 GB, filters to campus), then re-run this.");
+    console.log("To merge real footprints: bun run fetch:ms (27 MB tile) and/or bun run fetch:buildings (2.5 GB), then re-run this.");
   }
 
   const usedOsm = new Set();
   let matched = 0;
 
   // Global greedy assignment across ALL (pin, polygon) pairs:
-  // point-inside costs 0 and is claimed first (fixes first-come-first-serve
-  // mis-assignment where a nearby pin stole a polygon another pin was
-  // literally inside of), then by centroid distance, radius-capped.
+  // priority (OSM < ML) first — committed OSM matches can never regress —
+  // then point-inside costs 0 and is claimed first (fixes the old
+  // first-come-first-serve mis-assignment), then by centroid distance,
+  // radius-capped.
   const pairs = [];
   buildings.features.forEach((f, pi) => {
     const pt = f.geometry.coordinates;
-    for (let k = 0; k < osmPolys.length; k++) {
-      const g = osmPolys[k].geometry;
+    footprints.forEach((fp, k) => {
+      const g = fp.geometry;
       const polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
       for (const poly of polys) {
         const inside = pointInPolygon(pt, poly[0]);
         const d = inside ? 0 : haversineM(pt, centroidOf(poly));
-        if (d <= MATCH_RADIUS_M) pairs.push({ pin: pi, poly: k, cost: d });
+        if (d <= MATCH_RADIUS_M) pairs.push({ pin: pi, poly: k, cost: d, priority: fp.priority });
       }
-    }
+    });
   });
-  pairs.sort((a, b) => a.cost - b.cost);
+  pairs.sort((a, b) => a.priority - b.priority || a.cost - b.cost);
 
   const pinMatch = new Map();
   for (const { pin, poly, cost } of pairs) {
@@ -206,23 +214,34 @@ function main() {
     const slug = joinSlugs.get(title) ?? slugify(title);
     const m = pinMatch.get(i);
 
-    let geometry, source, confidence, height_tagged = false;
-    const rawProps = m ? (osmPolys[m.poly].properties ?? {}) : {};
+    let geometry, source, confidence, height_tagged = false, ml_confidence;
+    const fp = m ? footprints[m.poly] : null;
+    const rawProps = fp ? fp.properties : {};
     const realHeight = Number(rawProps.height_m);
     if (m) {
-      const g = osmPolys[m.poly].geometry;
+      const g = fp.geometry;
       const polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
-      geometry = { type: "Polygon", coordinates: m.cost === 0 ? polys[0] : polys[0] };
-      source = (usedSource?.includes("open-buildings")) ? "open-buildings-v3" : "osm";
+      geometry = { type: "Polygon", coordinates: polys[0] };
+      source = fp.tag;
       confidence = m.cost === 0 ? "high" : m.cost <= 30 ? "high" : "medium";
       matched++;
       if (Number.isFinite(realHeight) && realHeight > 0) height_tagged = true;
+      if (fp.tag === "ms-ml" && Number(rawProps.confidence) >= 0) {
+        ml_confidence = Number(rawProps.confidence);
+      }
     } else {
       const [hw, hh] = BOX_BY_CATEGORY[category] ?? BOX_BY_CATEGORY.other;
       geometry = { type: "Polygon", coordinates: boxAround(pt, hw, hh) };
       source = "hand-box";
       confidence = "low";
     }
+
+    // `center` = where doubleClick/labels anchor. For matched venues use
+    // the footprint centroid — the hand-pin can sit tens of meters off
+    // the real shape, and labels anchored to it float in empty space.
+    const centerPt = m
+      ? centroidOf(geometry.coordinates[0])
+      : pt;
 
     // Tagged heights (OSM height/levels) beat category estimates.
     const height_est = height_tagged
@@ -242,21 +261,36 @@ function main() {
         ...(Number.isFinite(Number(rawProps.area_m2)) && Number(rawProps.area_m2) > 0
           ? { area_m2: Number(rawProps.area_m2) }
           : {}),
+        ...(ml_confidence !== undefined ? { ml_confidence } : {}),
         ...(m ? { match_distance_m: Math.round(m.cost) } : {}),
         source,
         confidence,
-        center: pt,
+        center: centerPt,
       },
     };
   });
 
-  // Keep genuinely unmatched OSM polygons (real buildings we haven't named).
+  // Keep genuinely unmatched polygons (real buildings we haven't named).
+  // ML detections duplicating an OSM polygon are dropped: the same
+  // structure twice renders as double walls (OSM wins — hand-curated
+  // beats ML). 10 m centroid distance = same-structure threshold;
+  // distinct nearby wings sit farther apart than that.
   let unnamed = 0;
-  osmPolys.forEach((p, k) => {
+  const osmCentroids = footprints
+    .filter((fp) => fp.tag !== "ms-ml")
+    .map((fp) => {
+      const g = fp.geometry;
+      const polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
+      return centroidOf(polys[0]);
+    });
+  footprints.forEach((fp, k) => {
     if (usedOsm.has(k)) return;
-    const g = p.geometry;
+    const g = fp.geometry;
     const polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
     const c = centroidOf(polys[0]);
+    if (fp.tag === "ms-ml" && osmCentroids.some((cc) => haversineM(c, cc) < 10)) return;
+    const realHeight = Number(fp.properties?.height_m);
+    const tagged = Number.isFinite(realHeight) && realHeight > 0;
     unnamed++;
     features.push({
       type: "Feature",
@@ -267,29 +301,35 @@ function main() {
         title: `Unnamed building ${unnamed}`,
         category: "other",
         named: false,
-        height_est: 8,
-        source: p.properties?.source ?? "osm",
+        height_est: tagged ? realHeight : 8,
+        height_tagged: tagged,
+        ...(fp.tag === "ms-ml" && Number(fp.properties?.confidence) >= 0
+          ? { ml_confidence: Number(fp.properties.confidence) }
+          : {}),
+        source: fp.tag,
         confidence: "unmatched",
         center: c,
       },
     });
   });
 
-  writeFileSync(OUT_GEOJSON, JSON.stringify({ type: "FeatureCollection", features }, null, 2));
-  console.log(`Wrote ${OUT_GEOJSON}: ${features.length} polygons (${matched} OSM-matched, ${features.length - matched - unnamed} boxes, ${unnamed} unnamed).`);
+  // Compact JSON — 279-feature output ships to every /map and /3d load;
+  // pretty-printing nearly doubled the transfer size for no benefit.
+  writeFileSync(OUT_GEOJSON, JSON.stringify({ type: "FeatureCollection", features }));
+  console.log(`Wrote ${OUT_GEOJSON}: ${features.length} polygons (${matched} matched, ${features.length - matched - unnamed} boxes, ${unnamed} unnamed).`);
 
   const sources = {
     generated: new Date().toISOString(),
     bbox: [BBOX_MIN_LNG, BBOX_MIN_LAT, BBOX_MAX_LNG, BBOX_MAX_LAT],
-    footprint_source: usedSource,
-    inputs: ["src/data/campus-buildings.json", "src/data/building-room-join.ts"].concat(usedSource ? [usedSource] : []),
+    footprint_sources: usedSources,
+    inputs: ["src/data/campus-buildings.json", "src/data/building-room-join.ts"].concat(usedSources),
     attribution: [
-      { dataset: "Google Open Buildings v3", license: "CC-BY 4.0", url: "https://sites.research.google/open-buildings/", used: usedSource?.includes("open-buildings") ?? false },
-      { dataset: "OpenStreetMap buildings", license: "ODbL", url: "https://www.openstreetmap.org/copyright", used: usedSource?.includes("osm") ?? false },
-      { dataset: "Microsoft GlobalMLBuildingFootprints", license: "CDLA-Permissive-2.0", url: "https://github.com/microsoft/GlobalMLBuildingFootprints", used: false },
+      { dataset: "Google Open Buildings v3", license: "CC-BY 4.0", url: "https://sites.research.google/open-buildings/", used: usedSources.some((s) => s.includes("open-buildings")) },
+      { dataset: "OpenStreetMap buildings", license: "ODbL", url: "https://www.openstreetmap.org/copyright", used: usedSources.some((s) => s.includes("OSM")) },
+      { dataset: "Microsoft GlobalMLBuildingFootprints", license: "CDLA-Permissive-2.0", url: "https://github.com/microsoft/GlobalMLBuildingFootprints", used: usedSources.includes("Microsoft GlobalMLBuildingFootprints") },
       { dataset: "Availlo hand pins", license: "proprietary", used: true },
     ],
-    notes: "Heights are estimates by category, not surveyed. Do not use for navigation or construction.",
+    notes: "Heights are ML estimates (ms-ml height_m) or category estimates, not surveyed. Do not use for navigation or construction.",
   };
   writeFileSync(OUT_SOURCES, JSON.stringify(sources, null, 2));
   console.log(`Wrote ${OUT_SOURCES}`);

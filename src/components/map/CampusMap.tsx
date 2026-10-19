@@ -17,6 +17,17 @@ import { useNavigate } from "@tanstack/react-router"
 import { ArrowLeft } from "@solar-icons/react"
 import { createRoot } from "react-dom/client"
 import type { Root } from "react-dom/client"
+
+// Probed once at module load — cheap, avoids re-creating canvases per render.
+const hasWebGL = (() => {
+  try {
+    const c = document.createElement("canvas")
+    return !!(c.getContext("webgl2") || c.getContext("webgl"))
+  } catch {
+    return false
+  }
+})()
+
 import {
   mapboxgl,
   MAPBOX_STYLE,
@@ -684,6 +695,17 @@ export function CampusMap({ buildings }: CampusMapProps) {
           >
             {is3D ? "2D" : "3D"}
           </button>
+          {/* WebGL only — probe once, outside render */}
+          {hasWebGL && (
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/3d" })}
+              aria-label="Open immersive 3D campus view"
+              className="absolute top-14 right-12 z-10 flex items-center gap-1.5 rounded-full bg-slate-900/90 px-4 py-2.5 text-sm font-bold text-white shadow-lg hover:bg-slate-800"
+            >
+              3D View
+            </button>
+          )}
           <AvailabilityLegend className="absolute top-[4.75rem] left-3 z-10 rounded-xl border border-neutral-200 bg-white/90 p-2.5 shadow-sm backdrop-blur" />
         </>
       )}
