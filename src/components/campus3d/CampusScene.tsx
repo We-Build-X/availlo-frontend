@@ -65,6 +65,9 @@ interface CampusSceneProps {
   statusBySlug: Map<string, BuildingStatus>;
   /** Fired on tap: the venue slug, or "" when the user taps empty space. */
   onSelect: (slug: string) => void;
+  /** Current selection: venue slug to orbit into, "" to return to the
+   * campus fit, null = do nothing (initial state). */
+  focusSlug?: string | null;
 }
 
 /** Equirectangular meters-per-degree at the campus latitude. */
@@ -91,6 +94,7 @@ const hashStr = (s: string): number => {
 export default function CampusScene({
   statusBySlug,
   onSelect,
+  focusSlug = null,
 }: CampusSceneProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   // Latest props without tearing the scene down when statuses refresh.
@@ -100,6 +104,13 @@ export default function CampusScene({
   selectRef.current = onSelect;
 
   const [failed, setFailed] = useState(false);
+  // Camera-flight handle exposed from the imperative effect to the
+  // declarative focus effect (below).
+  const apiRef = useRef<{
+    focus: (slug: string) => void;
+    unFocus: () => void;
+    ready: boolean;
+  } | null>(null);
 
   const featuresPromise = useMemo(
     () =>
@@ -185,6 +196,30 @@ export default function CampusScene({
 
     const pickables: THREE.Mesh[] = [];
     const labels: THREE.Sprite[] = [];
+    // Venue centroids for tap-to-focus + the fitted-camera pose for the
+    // intro dolly and "back to campus" — populated during scene build,
+    // consumed by the focus effect through apiRef.
+    const centers = new Map<string, { x: number; y: number; z: number; h: number }>();
+    const fitPos = new THREE.Vector3();
+    const fitTarget = new THREE.Vector3();
+    let camAnim: {
+      t0: number;
+      dur: number;
+      fromPos: THREE.Vector3;
+      toPos: THREE.Vector3;
+      fromTarget: THREE.Vector3;
+      toTarget: THREE.Vector3;
+    } | null = null;
+    const animateTo = (toPos: THREE.Vector3, toTarget: THREE.Vector3, dur = 1100) => {
+      camAnim = {
+        t0: performance.now(),
+        dur,
+        fromPos: camera.position.clone(),
+        toPos: toPos.clone(),
+        fromTarget: controls.target.clone(),
+        toTarget: toTarget.clone(),
+      };
+    };
 
     /**
      * Procedural window-grid wall texture. ExtrudeGeometry UVs are in
@@ -380,6 +415,8 @@ export default function CampusScene({
           sprite.userData = { slug: p.slug };
           namedGroup.add(sprite);
           labels.push(sprite);
+
+          centers.set(p.slug, { x: cx, y: height / 2, z: cz, h: height });
         }
 
         // Unnamed pool: one merged mesh + one merged edges object —
@@ -417,6 +454,17 @@ export default function CampusScene({
         const dist = Math.min(Math.max(span * 0.62, 260), 900);
         camera.position.set(dist * 0.25, dist * 0.75, dist * 0.8);
         controls.update();
+
+        // Fitted pose + intro dolly: start 1.4x farther out and higher,
+        // glide in — arrival beats an instant jump.
+        fitPos.copy(camera.position);
+        fitTarget.copy(controls.target);
+        const introDir = camera.position.clone().sub(controls.target);
+        camera.position
+          .copy(controls.target)
+          .addScaledVector(introDir, 1.45)
+          .add(new THREE.Vector3(0, dist * 0.22, 0));
+        animateTo(fitPos, fitTarget, 1600);
 
         // ---- satellite terrain (build-time fetched: `bun run fetch:satellite`) ----
         // Real imagery as ground (roads, grass, paths) + as the ROOF crops
@@ -562,6 +610,18 @@ export default function CampusScene({
     // ---- render-on-demand loop ----
     const loop = () => {
       raf = requestAnimationFrame(loop);
+      // Camera flights: eased lerp; OrbitControls re-reads camera.position
+      // each update, so lerping position+target stays consistent.
+      if (camAnim) {
+        const t = Math.min(
+          Math.max((performance.now() - camAnim.t0) / camAnim.dur, 0),
+          1,
+        );
+        const k = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, k);
+        controls.target.lerpVectors(camAnim.fromTarget, camAnim.toTarget, k);
+        if (t >= 1) camAnim = null;
+      }
       // controls.update() returns true when the camera transform moved.
       const moved = controls.update();
       if (moved || needsRender) {
@@ -570,6 +630,23 @@ export default function CampusScene({
       }
     };
     raf = requestAnimationFrame(loop);
+
+    // Exposed to the focus effect (lives outside this effect closure).
+    apiRef.current = {
+      focus: (slug: string) => {
+        const c = centers.get(slug);
+        if (!c) return;
+        const dir = camera.position.clone().sub(controls.target);
+        if (dir.lengthSq() < 0.001) dir.set(0.4, 0.7, 0.6);
+        dir.normalize();
+        const pos = new THREE.Vector3(c.x, c.y, c.z)
+          .addScaledVector(dir, Math.max(c.h * 2.4, 95))
+          .add(new THREE.Vector3(0, Math.max(c.h * 0.9, 26), 0));
+        animateTo(pos, new THREE.Vector3(c.x, c.y, c.z), 1100);
+      },
+      unFocus: () => animateTo(fitPos, fitTarget, 1300),
+      ready: true,
+    };
 
     // Statuses can resolve after first paint (API fetch) — recolor on a
     // slow tick; cheap (shared-material swap, no geometry work).
@@ -604,6 +681,16 @@ export default function CampusScene({
     };
     // featuresPromise is stable (useMemo []); statuses flow via statusRef.
   }, [featuresPromise]);
+
+  // Declarative side of tap-to-focus: the page lifts the selection into
+  // `focusSlug`; this effect translates it into a camera flight.
+  useEffect(() => {
+    const api = apiRef.current;
+    if (!api || !api.ready) return;
+    if (focusSlug === null) return; // initial state — leave the camera
+    if (focusSlug === "") api.unFocus();
+    else api.focus(focusSlug);
+  }, [focusSlug]);
 
   if (failed) {
     return (

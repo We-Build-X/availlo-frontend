@@ -115,7 +115,11 @@ export default function Campus3D() {
           </div>
         }
       >
-        <CampusScene statusBySlug={statusBySlug} onSelect={onSelect} />
+        <CampusScene
+          statusBySlug={statusBySlug}
+          onSelect={onSelect}
+          focusSlug={selected ?? null}
+        />
       </Suspense>
 
       {/* Back */}
